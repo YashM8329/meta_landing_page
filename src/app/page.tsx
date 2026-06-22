@@ -59,7 +59,7 @@ export default function Home() {
         <BrochureForm />
       </main>
 
-      <StickyFooterCTA />
+      {/* <StickyFooterCTA /> */}
     </>
   );
 }
