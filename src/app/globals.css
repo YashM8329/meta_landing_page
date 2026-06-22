@@ -1,0 +1,274 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand palette — light base (crypto-wallet reference) */
+  --color-ink: #0A0A0A;
+  --color-ink-soft: #5B6472;
+  --color-ink-faint: #9AA3B2;
+  --color-surface: #F8F8F8;
+  --color-surface-2: #EEF1F5;
+  --color-line: #E9EBEF;
+
+  --color-accent: #1D6CEF;
+  --color-accent-deep: #144BC0;
+  --color-accent-light: #5B93F5;
+
+  --color-navy: #0A0A0A;
+  --color-navy-2: #14161C;
+  --color-metric-green: #18C896;
+
+  --font-sans: var(--font-urbanist);
+  --font-display: var(--font-urbanist);
+}
+
+/* Display font helper */
+.font-display {
+  font-family: var(--font-urbanist);
+}
+
+/* Mugen Grotesk — wordmark only */
+.font-mugen {
+  font-family: var(--font-mugen);
+}
+
+/* Typewriter caret */
+@keyframes caretBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.type-caret {
+  animation: caretBlink 1s step-end infinite;
+  font-weight: 300;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---- Gradients ---- */
+.text-gradient {
+  background: linear-gradient(120deg, #1D6CEF 0%, #5B93F5 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.bg-gradient-accent {
+  background: radial-gradient(circle at 75% 15%, #5B93F5 0%, #1D6CEF 45%, #144BC0 100%);
+}
+
+/* ---- Glow orbs (premium depth on light bg) ---- */
+.glow-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(64px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ---- Glass surfaces ---- */
+.glass {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 8px 32px rgba(10, 14, 26, 0.08);
+}
+
+/* Primary button — backlit-blue glass (clean gloss, no grid) */
+.btn-glass-accent {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #4f8bf5 0%, #1d6cef 52%, #1657cc 100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow:
+    0 0 22px rgba(29, 108, 239, 0.4),
+    0 10px 26px rgba(29, 108, 239, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  transition: transform 0.15s ease-out, box-shadow 0.25s ease-out;
+}
+/* soft top gloss (specular highlight) */
+.btn-glass-accent::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 52%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+.btn-glass-accent:hover {
+  box-shadow:
+    0 0 30px rgba(29, 108, 239, 0.6),
+    0 12px 30px rgba(29, 108, 239, 0.48),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+.btn-glass-accent:active {
+  transform: scale(0.97);
+}
+
+/* Instagram embed crop — hides the profile header (+ "View profile") and the
+   bottom action/caption bar, leaving only the video (which plays inline on tap).
+   Cross-origin iframe internals can't be styled, so we clip with the wrapper. */
+.ig-crop {
+  position: relative;
+  overflow: hidden;
+}
+.ig-crop iframe.instagram-media {
+  margin-top: -54px !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Continuous page grid (scrolls with content for true alignment) */
+.page-canvas {
+  background-color: #F6F7F9;
+  background-image:
+    linear-gradient(rgba(10, 14, 26, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10, 14, 26, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-attachment: local;
+}
+
+/* Hero square-grid backdrop (subtle LED-tile field, fades out) */
+.hero-grid-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(29, 108, 239, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(29, 108, 239, 0.09) 1px, transparent 1px);
+  background-size: 46px 46px;
+  -webkit-mask-image: radial-gradient(ellipse 75% 60% at 50% 42%, #000 30%, transparent 78%);
+  mask-image: radial-gradient(ellipse 75% 60% at 50% 42%, #000 30%, transparent 78%);
+}
+
+/* Abyss-style frosted blue gradient (dark hero) */
+.hero-abyss {
+  background:
+    radial-gradient(ellipse 95% 85% at 28% 26%,
+      #6f9bef 0%, #3a68cf 18%, #1f47a3 34%, #112c6e 50%, #0a1a44 66%, #060e26 84%, #04060f 100%);
+}
+
+/* White grid lines for the dark hero */
+.hero-grid-dark {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-mask-image: radial-gradient(ellipse 95% 80% at 45% 42%, #000 45%, transparent 88%);
+  mask-image: radial-gradient(ellipse 95% 80% at 45% 42%, #000 45%, transparent 88%);
+}
+
+/* Film-grain overlay */
+.grain-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.13;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Subtle blueprint column grid for light sections (grid-laid-out feel) */
+.page-grid-light {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(90deg, rgba(10, 14, 26, 0.04) 1px, transparent 1px);
+  background-size: 25% 100%;
+}
+
+/* Glass button — light (frosted white) */
+.btn-glass-light {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 6px 20px rgba(10, 14, 26, 0.1);
+  transition: transform 0.15s ease-out, box-shadow 0.2s ease-out;
+}
+.btn-glass-light:active {
+  transform: scale(0.97);
+}
+
+/* ---- LED grid texture ---- */
+.grid-texture {
+  background-image:
+    linear-gradient(rgba(46, 111, 232, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(46, 111, 232, 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+.grid-texture-dark {
+  background-image:
+    linear-gradient(rgba(46, 111, 232, 0.14) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(46, 111, 232, 0.14) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ---- Horizontal carousel ---- */
+.carousel-scroll {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 4px 20px 16px;
+}
+.carousel-scroll::-webkit-scrollbar {
+  display: none;
+}
+.carousel-snap {
+  scroll-snap-align: center;
+  flex-shrink: 0;
+}
+
+/* Tabular numbers for figures */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Marquee for logo strip */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 28s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+/* Subtle fade-up entrance */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up {
+  animation: fadeUp 0.5s ease-out both;
+}
