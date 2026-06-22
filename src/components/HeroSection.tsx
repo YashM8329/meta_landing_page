@@ -23,7 +23,7 @@ export default function HeroSection() {
   return (
     <section
       id="hero"
-      className="snap-start min-h-dvh relative hero-abyss flex flex-col items-center justify-center text-center px-6 pt-16 pb-28 overflow-hidden"
+      className="snap-start min-h-dvh relative hero-abyss flex flex-col lg:flex-row items-center justify-center lg:justify-between text-center lg:text-left px-6 lg:px-16 xl:px-24 pt-20 pb-28 lg:py-16 overflow-hidden gap-6 lg:gap-16"
       aria-label="Hero"
     >
       {/* white LED grid lines + film grain */}
@@ -39,11 +39,12 @@ export default function HeroSection() {
         transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
       />
 
+      {/* Text column */}
       <motion.div
         variants={container}
         initial="hidden"
         animate="show"
-        className="relative z-10 flex flex-col items-center w-full"
+        className="relative z-10 flex flex-col items-center lg:items-start w-full lg:flex-1 lg:max-w-[540px]"
       >
         <motion.p
           variants={item}
@@ -54,13 +55,64 @@ export default function HeroSection() {
 
         <motion.h1
           variants={item}
-          className="font-mugen font-extrabold text-[clamp(36px,12vw,62px)] leading-[0.9] tracking-[-0.01em] text-white"
+          className="font-mugen font-extrabold text-[clamp(36px,12vw,72px)] leading-[0.88] tracking-[-0.01em] text-white mb-4"
         >
           HYPERGRID
         </motion.h1>
 
-        {/* Product render (transparent PNG): outer = entrance, inner = gentle float */}
-        <motion.div variants={item} className="w-full mt-6">
+        {/* Subtitle — desktop only */}
+        <motion.p
+          variants={item}
+          className="hidden lg:block text-[17px] text-white/60 leading-relaxed max-w-[420px] mb-8"
+        >
+          The world&apos;s first unmanned, multiplayer LED-floor arena. A turnkey active attraction that earns revenue from day one.
+        </motion.p>
+
+        {/* CTA row — desktop only */}
+        <motion.div variants={item} className="hidden lg:flex items-center gap-3">
+          <a
+            href="#brochure-form"
+            className="btn-glass-accent text-white font-semibold text-[15px] px-7 py-3.5 rounded-lg flex items-center gap-2"
+          >
+            Request Brochure
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </a>
+          <a
+            href="#gameplay-video"
+            className="btn-glass-light text-ink font-semibold text-[15px] px-6 py-3.5 rounded-lg flex items-center gap-2"
+          >
+            Watch Video
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M6 4L12 8L6 12V4Z" fill="currentColor" />
+            </svg>
+          </a>
+        </motion.div>
+
+        {/* Stats row — desktop only */}
+        <motion.div variants={item} className="hidden lg:flex items-center gap-8 mt-10 border-t border-white/10 pt-8">
+          {[
+            { value: "100+", label: "Locations" },
+            { value: "88+", label: "Games outperformed" },
+            { value: "2.6 mo", label: "Avg payback" },
+          ].map(({ value, label }) => (
+            <div key={label}>
+              <p className="text-[26px] font-extrabold text-white leading-none tnum">{value}</p>
+              <p className="text-[12px] text-white/50 font-medium mt-1">{label}</p>
+            </div>
+          ))}
+        </motion.div>
+      </motion.div>
+
+      {/* Product image column */}
+      <motion.div
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="relative z-10 w-full lg:flex-1 lg:max-w-[680px]"
+      >
+        <motion.div variants={item}>
           <motion.div
             animate={reduce ? undefined : { y: [0, -10, 0] }}
             transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}

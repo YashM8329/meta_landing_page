@@ -55,14 +55,11 @@ const logos = [
   { src: "/logos/8-playdxb.png", alt: "Play DXB" },
 ];
 
-function TestimonialCard({ t }: { t: Testimonial }) {
+function TestimonialCardInner({ t, className = "" }: { t: Testimonial; className?: string }) {
   const [imgOk, setImgOk] = useState(true);
   return (
-    <div
-      className="carousel-snap relative rounded-[12px] overflow-hidden shadow-[0_16px_40px_rgba(10,14,26,0.18)]"
-      style={{ width: "80vw", maxWidth: "310px", aspectRatio: "4/5" }}
-    >
-      {/* Photo (top ~60%) or fallback */}
+    <div className={`relative rounded-[12px] overflow-hidden shadow-[0_16px_40px_rgba(10,14,26,0.18)] ${className}`}
+      style={{ aspectRatio: "4/5" }}>
       {imgOk ? (
         /* eslint-disable-next-line @next/next/no-img-element */
         <img
@@ -79,15 +76,11 @@ function TestimonialCard({ t }: { t: Testimonial }) {
           <span className="text-white/90 font-extrabold text-[64px] tracking-tight">{t.initials}</span>
         </div>
       )}
-
-      {/* Dark gradient over lower portion (stronger for readability) */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{ background: "linear-gradient(to top, rgba(5,8,16,0.97) 0%, rgba(5,8,16,0.93) 32%, rgba(5,8,16,0.6) 56%, rgba(5,8,16,0.15) 76%, transparent 92%)" }}
       />
-
-      {/* Info (bottom ~40%) */}
-      <div className="absolute bottom-0 left-0 right-0 p-4">
+      <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-5">
         <div className="flex items-end justify-between gap-3 mb-3">
           <div>
             <p className="text-white font-bold text-[17px] leading-tight">{t.name}</p>
@@ -101,6 +94,17 @@ function TestimonialCard({ t }: { t: Testimonial }) {
         </div>
         <p className="text-white text-[15px] leading-snug">&ldquo;{t.quote}&rdquo;</p>
       </div>
+    </div>
+  );
+}
+
+function MobileTestimonialCard({ t }: { t: Testimonial }) {
+  return (
+    <div
+      className="carousel-snap relative rounded-[12px] overflow-hidden shadow-[0_16px_40px_rgba(10,14,26,0.18)]"
+      style={{ width: "80vw", maxWidth: "310px" }}
+    >
+      <TestimonialCardInner t={t} />
     </div>
   );
 }
@@ -153,40 +157,50 @@ export default function ProofSection() {
       className="snap-start min-h-dvh relative flex flex-col justify-center pt-24 pb-28 overflow-hidden [@media(max-height:900px)]:justify-start"
       aria-label="Operator testimonials"
     >
-      <motion.h2 {...rise()} className="px-6 mb-6 text-[clamp(30px,8.5vw,42px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">
-        Loved by operators
-      </motion.h2>
+      <div className="lg:max-w-7xl lg:mx-auto lg:px-16 xl:px-24 w-full">
+        <motion.h2 {...rise()} className="px-6 lg:px-0 mb-6 text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">
+          Loved by operators
+        </motion.h2>
 
-      <div ref={trackRef} className="carousel-scroll" role="region" aria-label="Testimonials">
-        {testimonials.map((t) => (
-          <TestimonialCard key={t.name} t={t} />
-        ))}
-      </div>
+        {/* Mobile: horizontal scroll carousel */}
+        <div ref={trackRef} className="carousel-scroll lg:hidden" role="region" aria-label="Testimonials">
+          {testimonials.map((t) => (
+            <MobileTestimonialCard key={t.name} t={t} />
+          ))}
+        </div>
+        <div className="lg:hidden flex justify-center gap-1.5 mt-3 mb-8" role="tablist">
+          {testimonials.map((t, i) => (
+            <button
+              key={t.name}
+              role="tab"
+              aria-selected={i === activeIndex}
+              aria-label={`View testimonial from ${t.name}`}
+              onClick={() => scrollTo(i)}
+              className={`h-1.5 rounded-full transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+                i === activeIndex ? "w-6 bg-gradient-accent" : "w-1.5 bg-line"
+              }`}
+            />
+          ))}
+        </div>
 
-      <div className="flex justify-center gap-1.5 mt-3 mb-8" role="tablist">
-        {testimonials.map((t, i) => (
-          <button
-            key={t.name}
-            role="tab"
-            aria-selected={i === activeIndex}
-            aria-label={`View testimonial from ${t.name}`}
-            onClick={() => scrollTo(i)}
-            className={`h-1.5 rounded-full transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
-              i === activeIndex ? "w-6 bg-gradient-accent" : "w-1.5 bg-line"
-            }`}
-          />
-        ))}
-      </div>
+        {/* Desktop: 3-column grid */}
+        <motion.div {...rise(0.05)} className="hidden lg:grid lg:grid-cols-3 gap-6 mb-8">
+          {testimonials.map((t) => (
+            <TestimonialCardInner key={t.name} t={t} />
+          ))}
+        </motion.div>
 
-      <motion.div {...rise(0.05)} className="px-6 grid grid-cols-2 gap-3">
-        {logos.map((logo) => (
-          <div key={logo.src} className="h-[64px] rounded-[12px] bg-white border border-line flex items-center justify-center px-5">
-            <div className="relative h-8 w-full">
-              <Image src={logo.src} alt={logo.alt} fill unoptimized sizes="150px" className="object-contain" />
+        {/* Logo grid */}
+        <motion.div {...rise(0.08)} className="px-6 lg:px-0 grid grid-cols-2 lg:grid-cols-4 gap-3">
+          {logos.map((logo) => (
+            <div key={logo.src} className="h-[64px] rounded-[12px] bg-white border border-line flex items-center justify-center px-5">
+              <div className="relative h-8 w-full">
+                <Image src={logo.src} alt={logo.alt} fill unoptimized sizes="150px" className="object-contain" />
+              </div>
             </div>
-          </div>
-        ))}
-      </motion.div>
+          ))}
+        </motion.div>
+      </div>
     </section>
   );
 }

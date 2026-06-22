@@ -63,19 +63,19 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.5 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="px-6 mb-6"
+        className="px-6 lg:px-16 xl:px-24 mb-6"
       >
         {eyebrow && (
           <p className="text-[13px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-1">{eyebrow}</p>
         )}
-        <h2 className="text-[clamp(30px,8.5vw,42px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">
+        <h2 className="text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">
           {title}
         </h2>
       </motion.div>
 
-      <div ref={trackRef} className="carousel-scroll items-start" role="region" aria-label="Instagram reels">
+      <div ref={trackRef} className="carousel-scroll items-start lg:px-16 xl:px-24" role="region" aria-label="Instagram reels">
         {items.map((item, i) => (
-          <div key={item.url + i} className="carousel-snap" style={{ width: "82vw", maxWidth: "320px" }}>
+          <div key={item.url + i} className="carousel-snap" style={{ width: "82vw", maxWidth: "300px" }}>
             <InstagramEmbed url={item.url} account={item.account} caption={item.caption} />
           </div>
         ))}

@@ -10,6 +10,30 @@ export interface CarouselCard {
   accentGlow?: string;
 }
 
+function CardContent({ card }: { card: CarouselCard }) {
+  return (
+    <>
+      <div className="absolute inset-0 grid-texture-dark opacity-50" />
+      {card.accentGlow && (
+        <div
+          className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[70%] h-32"
+          style={{ background: `radial-gradient(ellipse 80% 60% at 50% 100%, ${card.accentGlow} 0%, transparent 70%)` }}
+        />
+      )}
+      <div
+        className="absolute top-0 left-0 right-0 h-32 pointer-events-none"
+        style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.3) 55%, transparent 100%)" }}
+      />
+      <div className="absolute top-0 left-0 right-0 px-5 pt-5">
+        <p className="font-extrabold text-white text-[24px] leading-[1.05] tracking-[-0.01em]">{card.label}</p>
+        {card.sublabel && (
+          <p className="text-white/70 text-[13px] font-medium mt-1.5 leading-snug">{card.sublabel}</p>
+        )}
+      </div>
+    </>
+  );
+}
+
 export default function CardCarousel({ cards }: { cards: CarouselCard[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -60,9 +84,10 @@ export default function CardCarousel({ cards }: { cards: CarouselCard[] }) {
 
   return (
     <>
+      {/* Mobile carousel */}
       <motion.div
         ref={trackRef}
-        className="carousel-scroll"
+        className="carousel-scroll lg:hidden"
         role="region"
         aria-label="Swipeable cards"
         variants={container}
@@ -78,28 +103,13 @@ export default function CardCarousel({ cards }: { cards: CarouselCard[] }) {
             style={{ width: "66vw", maxWidth: "240px", aspectRatio: "3/4", background: card.gradient }}
             aria-label={card.label}
           >
-            <div className="absolute inset-0 grid-texture-dark opacity-50" />
-            {card.accentGlow && (
-              <div
-                className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[70%] h-32"
-                style={{ background: `radial-gradient(ellipse 80% 60% at 50% 100%, ${card.accentGlow} 0%, transparent 70%)` }}
-              />
-            )}
-            <div
-              className="absolute top-0 left-0 right-0 h-32 pointer-events-none"
-              style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.3) 55%, transparent 100%)" }}
-            />
-            <div className="absolute top-0 left-0 right-0 px-5 pt-5">
-              <p className="font-extrabold text-white text-[24px] leading-[1.05] tracking-[-0.01em]">{card.label}</p>
-              {card.sublabel && (
-                <p className="text-white/70 text-[13px] font-medium mt-1.5 leading-snug">{card.sublabel}</p>
-              )}
-            </div>
+            <CardContent card={card} />
           </motion.div>
         ))}
       </motion.div>
 
-      <div className="flex justify-center gap-1.5 mt-4" role="tablist" aria-label="Carousel position">
+      {/* Mobile dots */}
+      <div className="lg:hidden flex justify-center gap-1.5 mt-4" role="tablist" aria-label="Carousel position">
         {cards.map((card, i) => (
           <button
             key={card.label}
@@ -113,6 +123,28 @@ export default function CardCarousel({ cards }: { cards: CarouselCard[] }) {
           />
         ))}
       </div>
+
+      {/* Desktop grid */}
+      <motion.div
+        className="hidden lg:grid gap-4 px-0"
+        style={{ gridTemplateColumns: `repeat(${Math.min(cards.length, 4)}, 1fr)` }}
+        variants={container}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.2 }}
+      >
+        {cards.map((card) => (
+          <motion.div
+            key={card.label}
+            variants={cardItem}
+            className="rounded-[12px] overflow-hidden relative shadow-[0_16px_40px_rgba(10,14,26,0.2)]"
+            style={{ aspectRatio: "3/4", background: card.gradient }}
+            aria-label={card.label}
+          >
+            <CardContent card={card} />
+          </motion.div>
+        ))}
+      </motion.div>
     </>
   );
 }

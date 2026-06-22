@@ -30,10 +30,43 @@ export default function NavBar() {
         visible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
-      <div className="glass max-w-[460px] mx-auto h-[56px] flex items-center justify-center border-x-0 border-t-0">
+      {/* Mobile: centred pill */}
+      <div className="lg:hidden glass max-w-[460px] mx-auto h-[56px] flex items-center justify-center border-x-0 border-t-0">
         <span className="font-mugen font-extrabold text-[20px] tracking-[-0.01em] text-ink">
           HYPER<span className="text-accent">GRID</span>
         </span>
+      </div>
+
+      {/* Desktop: full-width bar */}
+      <div className="hidden lg:flex glass h-[64px] items-center justify-between px-10 border-x-0 border-t-0">
+        <span className="font-mugen font-extrabold text-[22px] tracking-[-0.01em] text-ink">
+          HYPER<span className="text-accent">GRID</span>
+        </span>
+        <div className="flex items-center gap-8">
+          {[
+            { href: "#features", label: "Features" },
+            { href: "#moments-ai", label: "Moments AI" },
+            { href: "#proof", label: "Testimonials" },
+            { href: "#roi", label: "ROI" },
+          ].map(({ href, label }) => (
+            <a
+              key={href}
+              href={href}
+              className="text-[14px] font-medium text-ink-soft hover:text-ink transition-colors duration-150"
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+        <a
+          href="#brochure-form"
+          className="btn-glass-accent text-white text-[14px] font-semibold px-5 py-2.5 rounded-lg flex items-center gap-1.5"
+        >
+          Get Brochure
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </a>
       </div>
     </nav>
   );
