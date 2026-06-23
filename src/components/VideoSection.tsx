@@ -60,61 +60,63 @@ export default function VideoSection() {
   return (
     <section
       id="gameplay-video"
-      className="min-h-0 lg:py-12 relative flex flex-col lg:flex-row lg:items-center px-6 lg:px-16 xl:px-24 pt-6 pb-6 overflow-hidden gap-8 lg:gap-16"
+      className="min-h-0 lg:py-12 relative flex flex-col justify-center overflow-hidden"
       aria-label="Gameplay video"
     >
-      {/* Text column */}
-      <motion.div {...rise(0)} className="relative z-10 lg:flex-1 lg:max-w-[480px]">
-        <motion.h2
-          {...rise(0)}
-          className="text-[clamp(30px,8.5vw,48px)] leading-[1.02] font-extrabold tracking-[-0.025em] text-ink mb-4"
-        >
-          World&apos;s best active<br />social attraction
-        </motion.h2>
-        <motion.p {...rise(0.1)} className="hidden lg:block text-[16px] text-ink-soft leading-relaxed mb-6">
-          HyperGrid transforms any venue floor into a high-energy multiplayer arena. Guests step on, games begin — no staff required.
-        </motion.p>
-        <motion.div {...rise(0.15)} className="hidden lg:flex flex-col gap-4">
-          {[
-            { icon: "⚡", text: "Fully unattended — no staff needed" },
-            { icon: "🎮", text: "1–6 players, 4+ games with high replayability" },
-            { icon: "📍", text: "100+ installations across 20+ countries" },
-          ].map(({ icon, text }) => (
-            <div key={text} className="flex items-center gap-3">
-              <span className="w-9 h-9 rounded-md bg-accent/10 flex items-center justify-center text-[16px] flex-shrink-0">{icon}</span>
-              <span className="text-[15px] font-medium text-ink">{text}</span>
-            </div>
-          ))}
+      <div className="max-w-[1440px] mx-auto w-full flex flex-col lg:flex-row lg:items-center px-6 xl:px-0 gap-8 lg:gap-16">
+        {/* Text column */}
+        <motion.div {...rise(0)} className="relative z-10 lg:flex-1 lg:max-w-[480px]">
+          <motion.h2
+            {...rise(0)}
+            className="text-[clamp(30px,8.5vw,48px)] leading-[1.02] font-extrabold tracking-[-0.025em] text-ink mb-4"
+          >
+            World&apos;s best active<br />social attraction
+          </motion.h2>
+          <motion.p {...rise(0.1)} className="hidden lg:block text-[16px] text-ink-soft leading-relaxed mb-6">
+            HyperGrid transforms any venue floor into a high-energy multiplayer arena. Guests step on, games begin — no staff required.
+          </motion.p>
+          <motion.div {...rise(0.15)} className="hidden lg:flex flex-col gap-4">
+            {[
+              { icon: "⚡", text: "Fully unattended — no staff needed" },
+              { icon: "🎮", text: "1–6 players, 4+ games with high replayability" },
+              { icon: "📍", text: "100+ installations across 20+ countries" },
+            ].map(({ icon, text }) => (
+              <div key={text} className="flex items-center gap-3">
+                <span className="w-9 h-9 rounded-md bg-accent/10 flex items-center justify-center text-[16px] flex-shrink-0">{icon}</span>
+                <span className="text-[15px] font-medium text-ink">{text}</span>
+              </div>
+            ))}
+          </motion.div>
         </motion.div>
-      </motion.div>
 
-      {/* Video column */}
-      <motion.div
-        {...rise(0.12)}
-        className="relative z-10 flex-1 lg:flex-none rounded-[13px] overflow-hidden shadow-[0_20px_50px_rgba(10,14,26,0.18)] min-h-0 lg:w-[300px] xl:w-[340px]"
-        style={{ maxHeight: "calc(100dvh - 8rem)", aspectRatio: "9/16" }}
-      >
-        <button
-          type="button"
-          onClick={toggleMute}
-          aria-label={muted ? "Unmute video" : "Mute video"}
-          className="absolute inset-0 w-full h-full cursor-pointer"
+        {/* Video column */}
+        <motion.div
+          {...rise(0.12)}
+          className="relative z-10 flex-1 lg:flex-none rounded-[13px] overflow-hidden shadow-[0_20px_50px_rgba(10,14,26,0.18)] min-h-0 lg:w-[300px] xl:w-[340px]"
+          style={{ maxHeight: "calc(100dvh - 8rem)", aspectRatio: "9/16" }}
         >
-          <video
-            ref={videoRef}
-            className="absolute inset-0 w-full h-full object-cover"
-            src="/video/hypergrid-reel.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-          />
-          <AnimatePresence>
-            <MuteIcon />
-          </AnimatePresence>
-        </button>
-      </motion.div>
+          <button
+            type="button"
+            onClick={toggleMute}
+            aria-label={muted ? "Unmute video" : "Mute video"}
+            className="absolute inset-0 w-full h-full cursor-pointer"
+          >
+            <video
+              ref={videoRef}
+              className="absolute inset-0 w-full h-full object-cover"
+              src="/video/hypergrid-reel.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+            />
+            <AnimatePresence>
+              <MuteIcon />
+            </AnimatePresence>
+          </button>
+        </motion.div>
+      </div>
     </section>
   );
 }

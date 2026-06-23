@@ -158,7 +158,7 @@ export default function ProofSection() {
       className="min-h-0 lg:py-12 relative flex flex-col justify-center pt-6 pb-7 overflow-hidden"
       aria-label="Operator testimonials"
     >
-      <div className="max-w-[1400px] mx-auto lg:px-16 xl:px-24 w-full">
+      <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0">
         <motion.h2 {...rise()} className="px-6 lg:px-0 mb-6 text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">
           Loved by operators
         </motion.h2>

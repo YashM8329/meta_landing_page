@@ -52,10 +52,10 @@ export default function CaseStudy() {
   return (
     <section
       id="case-study"
-      className="min-h-0 lg:py-12 relative flex flex-col justify-center px-6 lg:px-16 xl:px-24 pt-6 pb-7 overflow-hidden"
+      className="min-h-0 lg:py-12 relative flex flex-col justify-center pt-6 pb-7 overflow-hidden"
       aria-label="Texas FEC case study"
     >
-      <div className="max-w-[1400px] mx-auto w-full">
+      <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0">
         <motion.div {...rise()} className="mb-4">
           <p className="text-[13px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-1">Case study</p>
           <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">

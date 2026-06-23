@@ -25,7 +25,7 @@ export default function MomentsSection({ cards }: { cards: CarouselCard[] }) {
       className="min-h-0 lg:py-12 relative flex flex-col justify-center pt-6 pb-7 overflow-hidden"
       aria-label="Moments AI"
     >
-      <div className="max-w-[1400px] mx-auto lg:px-16 xl:px-24 w-full">
+      <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0">
         <motion.div {...rise()} className="px-6 lg:px-0 mb-5">
           <p className="text-[13px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-1">AI Powered</p>
           <h2 className="text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">

@@ -65,23 +65,25 @@ export default function BrochureForm() {
 
   if (submitted) {
     return (
-      <section id="brochure-form" className="min-h-0 lg:py-12 flex flex-col justify-center px-6 text-center" aria-label="Confirmation">
-        <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-5 shadow-[0_8px_24px_rgba(29,108,239,0.4)]">
-          <svg width="30" height="30" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-            <path d="M7 14L12 19L21 9" stroke="white" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+      <section id="brochure-form" className="min-h-0 lg:py-12 flex flex-col justify-center text-center" aria-label="Confirmation">
+        <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0">
+          <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-5 shadow-[0_8px_24px_rgba(29,108,239,0.4)]">
+            <svg width="30" height="30" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+              <path d="M7 14L12 19L21 9" stroke="white" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+          <h2 className="text-[28px] font-extrabold tracking-[-0.02em] text-ink mb-2">Brochure on its way!</h2>
+          <p className="text-[15px] text-ink-soft leading-relaxed">
+            We&apos;ll be in touch at <span className="font-semibold text-ink">{form.email}</span><br />within 1 business day.
+          </p>
         </div>
-        <h2 className="text-[28px] font-extrabold tracking-[-0.02em] text-ink mb-2">Brochure on its way!</h2>
-        <p className="text-[15px] text-ink-soft leading-relaxed">
-          We&apos;ll be in touch at <span className="font-semibold text-ink">{form.email}</span><br />within 1 business day.
-        </p>
       </section>
     );
   }
 
   return (
-    <section id="brochure-form" className="min-h-0 lg:py-12 relative flex flex-col justify-center px-6 lg:px-16 xl:px-24 pt-6 pb-8 overflow-hidden" aria-label="Request brochure form">
-      <div className="max-w-[1400px] mx-auto w-full lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center">
+    <section id="brochure-form" className="min-h-0 lg:py-12 relative flex flex-col justify-center pt-6 pb-8 overflow-hidden" aria-label="Request brochure form">
+      <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0 lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center">
         {/* Left column: context */}
         <div className="hidden lg:flex flex-col">
           <p className="text-[13px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-2">Get the full picture</p>

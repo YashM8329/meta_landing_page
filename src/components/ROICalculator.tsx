@@ -40,10 +40,10 @@ export default function ROICalculator() {
   return (
     <section
       id="roi"
-      className="min-h-0 lg:py-12 relative flex flex-col justify-center pt-6 pb-7 px-6 lg:px-16 xl:px-24 overflow-hidden"
+      className="min-h-0 lg:py-12 relative flex flex-col justify-center pt-6 pb-7 overflow-hidden"
       aria-label="Revenue and ROI calculator"
     >
-      <div className="max-w-[1400px] mx-auto w-full">
+      <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0">
         <motion.div
           initial={{ opacity: 0, y: reduce ? 0 : 20 }}
           whileInView={{ opacity: 1, y: 0 }}

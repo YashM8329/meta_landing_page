@@ -134,7 +134,7 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
       className="min-h-0 lg:py-12 relative flex flex-col justify-center pt-6 pb-7 overflow-hidden"
       aria-label={title}
     >
-      <div className="px-6 lg:px-16 xl:px-24 mb-6">
+      <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0 mb-6">
         {eyebrow && (
           <p className="text-[13px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-1">{eyebrow}</p>
         )}
