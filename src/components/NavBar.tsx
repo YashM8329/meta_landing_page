@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 export default function NavBar() {
   const [visible, setVisible] = useState(false);
@@ -32,16 +33,26 @@ export default function NavBar() {
     >
       {/* Mobile: centred pill */}
       <div className="lg:hidden glass max-w-[460px] mx-auto h-[56px] flex items-center justify-center border-x-0 border-t-0">
-        <span className="font-mugen font-extrabold text-[20px] tracking-[-0.01em] text-ink">
-          HYPER<span className="text-accent">GRID</span>
-        </span>
+        <Image
+          src="/hero/hypergrid-logo.png"
+          alt="HYPERGRID"
+          width={110}
+          height={26}
+          priority
+          className="h-6 w-auto object-contain brightness-0"
+        />
       </div>
 
       {/* Desktop: full-width bar */}
       <div className="hidden lg:flex glass h-[64px] items-center justify-between px-10 border-x-0 border-t-0">
-        <span className="font-mugen font-extrabold text-[22px] tracking-[-0.01em] text-ink">
-          HYPER<span className="text-accent">GRID</span>
-        </span>
+        <Image
+          src="/hero/hypergrid-logo.png"
+          alt="HYPERGRID"
+          width={130}
+          height={30}
+          priority
+          className="h-7 w-auto object-contain brightness-0"
+        />
         <div className="flex items-center gap-8">
           {[
             { href: "#features", label: "Features" },

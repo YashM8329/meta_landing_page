@@ -131,7 +131,7 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
   return (
     <section
       id={sectionId}
-      className="lg:min-h-0 lg:py-12 min-h-dvh relative flex flex-col justify-center pt-6 pb-7 overflow-hidden [@media(max-height:900px)]:justify-start"
+      className="min-h-0 lg:py-12 relative flex flex-col justify-center pt-6 pb-7 overflow-hidden"
       aria-label={title}
     >
       <div className="px-6 lg:px-16 xl:px-24 mb-6">

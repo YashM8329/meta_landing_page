@@ -12,7 +12,7 @@ const FOOTPRINT_SQM = 25;
 
 function formatMoney(usd: number, symbol: string, rate: number): string {
   const v = Math.round(usd * rate);
-  if (v >= 1_000_000) return `${symbol}${Math.round(v / 100_000) / 10}M`;
+  if (v >= 1_000_000) return `${symbol}${Math.round(v / 1_000_000)}M`;
   if (v >= 1_000) return `${symbol}${Math.round(v / 1_000)}K`;
   return `${symbol}${v}`;
 }
@@ -40,7 +40,7 @@ export default function ROICalculator() {
   return (
     <section
       id="roi"
-      className="lg:min-h-0 lg:py-12 min-h-dvh relative flex flex-col justify-center pt-6 pb-7 px-6 lg:px-16 xl:px-24 overflow-hidden [@media(max-height:900px)]:justify-start"
+      className="min-h-0 lg:py-12 relative flex flex-col justify-center pt-6 pb-7 px-6 lg:px-16 xl:px-24 overflow-hidden"
       aria-label="Revenue and ROI calculator"
     >
       <div className="max-w-[1400px] mx-auto w-full">

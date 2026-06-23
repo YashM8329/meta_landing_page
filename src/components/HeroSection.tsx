@@ -55,9 +55,16 @@ export default function HeroSection() {
 
         <motion.h1
           variants={item}
-          className="font-mugen font-extrabold text-[clamp(36px,12vw,72px)] leading-[0.88] tracking-[-0.01em] text-white mb-4"
+          className="mb-6 relative z-10 flex justify-center lg:justify-start"
         >
-          HYPERGRID
+          <Image
+            src="/hero/hypergrid-logo.png"
+            alt="HYPERGRID"
+            width={480}
+            height={90}
+            priority
+            className="w-[280px] sm:w-[360px] md:w-[480px] h-auto object-contain"
+          />
         </motion.h1>
 
         {/* Subtitle — desktop only */}
