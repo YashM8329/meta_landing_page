@@ -39,7 +39,7 @@ export default function CaseStudy() {
   const summary = [
     { label: "Price / play", value: localPricePlay },
     { label: "Revenue / month", value: localRevenueMonth },
-    { label: "Payback (ROI)", value: `${paybackMonths} mo` },
+    { label: "Payback (ROI)", value: `${paybackMonths} months` },
   ];
 
   const rise = (delay = 0) => ({
@@ -92,9 +92,9 @@ export default function CaseStudy() {
               ))}
             </motion.div>
 
-            <p className="text-[12px] text-ink-faint mt-4">
+            {/* <p className="text-[12px] text-ink-faint mt-4">
               Source: FOG Technologies sell-sheet · Texas FEC earnings. Monthly = weekly avg × 4.33; payback on a {formatMoney(65000)} install basis.
-            </p>
+            </p> */}
           </div>
 
           {/* Right column: week-on-week table */}

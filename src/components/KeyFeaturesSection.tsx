@@ -71,7 +71,7 @@ export default function KeyFeaturesSection({ cards }: { cards: CarouselCard[] })
             </svg>
             <div>
               <p className="text-[12px] font-semibold uppercase tracking-[0.1em] text-ink-faint">Setup</p>
-              <p className="text-[24px] font-extrabold tracking-[-0.02em] text-ink tnum">1 day</p>
+              <p className="text-[24px] font-extrabold tracking-[-0.02em] text-ink tnum">2 days</p>
             </div>
           </div>
           <div className="hidden lg:flex rounded-[12px] border border-line bg-white px-4 py-3.5 items-center gap-3">
@@ -82,7 +82,7 @@ export default function KeyFeaturesSection({ cards }: { cards: CarouselCard[] })
             </svg>
             <div>
               <p className="text-[12px] font-semibold uppercase tracking-[0.1em] text-ink-faint">Players</p>
-              <p className="text-[24px] font-extrabold tracking-[-0.02em] text-ink tnum">1–6</p>
+              <p className="text-[24px] font-extrabold tracking-[-0.02em] text-ink tnum">1-6</p>
             </div>
           </div>
         </motion.div>

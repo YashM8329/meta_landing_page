@@ -14,12 +14,12 @@ import SmoothScroll from "@/components/SmoothScroll";
 
 /* S3 — Key Features (7 cards). Blue-family gradients. */
 const featureCards: CarouselCard[] = [
-  { label: "Unmanned", sublabel: "Fully unattended operation", gradient: "linear-gradient(160deg,#0a1838 0%,#11317a 55%,#1d6cef 100%)", accentGlow: "rgba(29,108,239,0.45)", image: "/features/unmanned.png" },
-  { label: "Turnkey", sublabel: "Ready to earn from day one", gradient: "linear-gradient(160deg,#08142e 0%,#0f2e6e 55%,#2f74e6 100%)", accentGlow: "rgba(47,116,230,0.4)", image: "/features/turnkey.png" },
-  { label: "Appealing", sublabel: "Interactive attract mode", gradient: "linear-gradient(160deg,#0a1638 0%,#143a8c 55%,#3f86f0 100%)", accentGlow: "rgba(63,134,240,0.4)", image: "/features/appealing.png" },
-  { label: "Multiplayer", sublabel: "1–6 players per session", gradient: "linear-gradient(160deg,#07112a 0%,#0d2c6b 55%,#1f63d8 100%)", accentGlow: "rgba(31,99,216,0.4)", image: "/features/multiplayer.png" },
-  { label: "Guided play", sublabel: "On-screen tutorials reduce friction", gradient: "linear-gradient(160deg,#0a1838 0%,#123178 55%,#2a6ee6 100%)", accentGlow: "rgba(42,110,230,0.4)", image: "/features/tutorial.png" },
-  { label: "Repeatable", sublabel: "4+ games, high replayability", gradient: "linear-gradient(160deg,#081530 0%,#0f2f72 55%,#246ae0 100%)", accentGlow: "rgba(36,106,224,0.4)", image: "/features/repeatable.png" },
+  { label: "Unattended", sublabel: "Zero staff required, simple UI", gradient: "linear-gradient(160deg,#0a1838 0%,#11317a 55%,#1d6cef 100%)", accentGlow: "rgba(29,108,239,0.45)", image: "/features/unmanned.png" },
+  { label: "Turnkey", sublabel: "Just need space and power", gradient: "linear-gradient(160deg,#08142e 0%,#0f2e6e 55%,#2f74e6 100%)", accentGlow: "rgba(47,116,230,0.4)", image: "/features/turnkey.png" },
+  { label: "Appealing", sublabel: "Bright, crowd-pulling design", gradient: "linear-gradient(160deg,#0a1638 0%,#143a8c 55%,#3f86f0 100%)", accentGlow: "rgba(63,134,240,0.4)", image: "/features/appealing.png" },
+  { label: "Multiplayer", sublabel: "1–6 players of any age group", gradient: "linear-gradient(160deg,#07112a 0%,#0d2c6b 55%,#1f63d8 100%)", accentGlow: "rgba(31,99,216,0.4)", image: "/features/multiplayer.png" },
+  { label: "Tutorials", sublabel: "Make the game easy to understand", gradient: "linear-gradient(160deg,#0a1838 0%,#123178 55%,#2a6ee6 100%)", accentGlow: "rgba(42,110,230,0.4)", image: "/features/tutorial.png" },
+  { label: "Repeatable", sublabel: "4+ engaging games, high replayability", gradient: "linear-gradient(160deg,#081530 0%,#0f2f72 55%,#246ae0 100%)", accentGlow: "rgba(36,106,224,0.4)", image: "/features/repeatable.png" },
   { label: "Multilingual", sublabel: "Supports all major languages", gradient: "linear-gradient(160deg,#091633 0%,#103079 55%,#2b70e8 100%)", accentGlow: "rgba(43,112,232,0.4)", image: "/features/multilingual.png" },
 ];
 

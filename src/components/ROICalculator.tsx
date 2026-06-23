@@ -31,7 +31,7 @@ export default function ROICalculator() {
     { label: "Revenue / month",       value: formatMoney(monthlyUsd, symbol, rate) },
     { label: "5-year revenue",         value: formatMoney(monthlyUsd * 60, symbol, rate) },
     { label: "Revenue / sqm / month", value: formatMoney(monthlyUsd / FOOTPRINT_SQM, symbol, rate) },
-    { label: "Payback period",         value: `${Math.round(paybackMonths)} mo` },
+    { label: "Payback period",         value: `${Math.round(paybackMonths)} months` },
   ];
 
   const onPlayers = useCallback((e: React.ChangeEvent<HTMLInputElement>) => setPlayers(Number(e.target.value)), []);
@@ -51,9 +51,9 @@ export default function ROICalculator() {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="mb-6"
         >
-          <p className="text-[13px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-1">Revenue calculator</p>
+          {/* <p className="text-[13px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-1">Revenue calculator</p> */}
           <h2 className="text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">
-            Superb Revenue &amp; ROI
+            Calculate Revenue &amp; ROI
           </h2>
           {/* Currency indicator — shows when non-USD */}
           {code !== "USD" && (
@@ -114,12 +114,12 @@ export default function ROICalculator() {
             </div>
 
             {/* Install cost note */}
-            <p className="text-[12px] text-ink-faint mt-6 border-t border-line pt-4">
+            {/* <p className="text-[12px] text-ink-faint mt-6 border-t border-line pt-4">
               Based on a{" "}
               <span className="font-semibold text-ink-soft">{installLocal} install cost</span>
               {" "}and{" "}
               <span className="font-semibold text-ink-soft">25 sqm footprint</span>.
-            </p>
+            </p> */}
           </div>
 
           {/* Metrics */}
