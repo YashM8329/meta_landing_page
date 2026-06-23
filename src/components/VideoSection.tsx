@@ -63,7 +63,7 @@ export default function VideoSection() {
       className="min-h-0 lg:py-12 relative flex flex-col justify-center overflow-hidden"
       aria-label="Gameplay video"
     >
-      <div className="max-w-[1440px] mx-auto w-full flex flex-col lg:flex-row lg:items-center px-6 xl:px-0 gap-8 lg:gap-16">
+      <div className="max-w-[1440px] mx-auto w-full flex flex-col lg:flex-row lg:items-center lg:justify-between px-6 xl:px-0 gap-8 lg:gap-16">
         {/* Text column */}
         <motion.div {...rise(0)} className="relative z-10 lg:flex-1 lg:max-w-[480px]">
           <motion.h2
@@ -92,8 +92,8 @@ export default function VideoSection() {
         {/* Video column */}
         <motion.div
           {...rise(0.12)}
-          className="relative z-10 flex-1 lg:flex-none rounded-[13px] overflow-hidden shadow-[0_20px_50px_rgba(10,14,26,0.18)] min-h-0 lg:w-[300px] xl:w-[340px]"
-          style={{ maxHeight: "calc(100dvh - 8rem)", aspectRatio: "9/16" }}
+          className="relative z-10 flex-1 lg:flex-none rounded-[13px] overflow-hidden shadow-[0_20px_50px_rgba(10,14,26,0.18)] min-h-0 lg:w-[691px] xl:w-[806px]"
+          style={{ maxHeight: "calc(100dvh - 8rem)", aspectRatio: "16/9" }}
         >
           <button
             type="button"

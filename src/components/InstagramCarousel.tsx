@@ -134,28 +134,30 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
       className="min-h-0 lg:py-12 relative flex flex-col justify-center pt-6 pb-7 overflow-hidden"
       aria-label={title}
     >
-      <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0 mb-6">
-        {eyebrow && (
-          <p className="text-[13px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-1">{eyebrow}</p>
-        )}
-        <h2 className="text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">
-          {title}
-        </h2>
-      </div>
+      <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0">
+        <div className="mb-6">
+          {eyebrow && (
+            <p className="text-[13px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-1">{eyebrow}</p>
+          )}
+          <h2 className="text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">
+            {title}
+          </h2>
+        </div>
 
-      <div className="marquee-container py-4">
-        <div ref={scrollRef} className="marquee-scroll items-start">
-          {trackItems.map((item, i) => (
-            <div key={item.url + "-" + i} className="shrink-0 w-[260px] md:w-[300px]">
-              <InstagramEmbed url={item.url} account={item.account} caption={item.caption} />
-            </div>
-          ))}
-          {/* Duplicated set for seamless loop */}
-          {trackItems.map((item, i) => (
-            <div key={item.url + "-dup-" + i} className="shrink-0 w-[260px] md:w-[300px]" aria-hidden="true">
-              <InstagramEmbed url={item.url} account={item.account} caption={item.caption} />
-            </div>
-          ))}
+        <div className="marquee-container py-4">
+          <div ref={scrollRef} className="marquee-scroll items-start">
+            {trackItems.map((item, i) => (
+              <div key={item.url + "-" + i} className="shrink-0 w-[260px] md:w-[300px]">
+                <InstagramEmbed url={item.url} account={item.account} caption={item.caption} />
+              </div>
+            ))}
+            {/* Duplicated set for seamless loop */}
+            {trackItems.map((item, i) => (
+              <div key={item.url + "-dup-" + i} className="shrink-0 w-[260px] md:w-[300px]" aria-hidden="true">
+                <InstagramEmbed url={item.url} account={item.account} caption={item.caption} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

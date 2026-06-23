@@ -23,7 +23,7 @@ export default function HeroSection() {
   return (
     <section
       id="hero"
-      className="min-h-dvh relative hero-abyss flex flex-col justify-center overflow-hidden pt-8 pb-8 lg:py-10"
+      className="min-h-dvh relative hero-abyss flex flex-col justify-center overflow-hidden pt-8 pb-8 lg:py-10 mb-[30px] lg:mb-0"
       aria-label="Hero"
     >
       {/* white LED grid lines + film grain */}
@@ -45,7 +45,7 @@ export default function HeroSection() {
           variants={container}
           initial="hidden"
           animate="show"
-          className="relative z-10 flex flex-col items-center lg:items-start w-full lg:flex-1 lg:max-w-[540px]"
+          className="relative z-10 flex flex-col items-start lg:items-start w-full lg:flex-1 lg:max-w-[540px]"
         >
           <motion.p
             variants={item}
@@ -56,7 +56,7 @@ export default function HeroSection() {
 
           <motion.h1
             variants={item}
-            className="mb-6 relative z-10 flex justify-center lg:justify-start"
+            className="mb-6 relative z-10 flex justify-start lg:justify-start"
           >
             <Image
               src="/hero/hypergrid-logo.png"
