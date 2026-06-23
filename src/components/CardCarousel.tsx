@@ -129,43 +129,45 @@ export default function CardCarousel({ cards }: { cards: CarouselCard[] }) {
   return (
     <>
       {/* ── Mobile carousel ── */}
-      <motion.div
-        ref={trackRef}
-        className="carousel-scroll lg:hidden"
-        role="region"
-        aria-label="Swipeable cards"
-        variants={container}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, amount: 0.2 }}
-      >
-        {cards.map((card) => (
-          <motion.div
-            key={card.label}
-            variants={cardItem}
-            className="carousel-snap rounded-[12px] overflow-hidden relative shadow-[0_16px_40px_rgba(10,14,26,0.2)]"
-            style={{ width: "66vw", maxWidth: "240px", aspectRatio: "3/4", background: card.gradient }}
-            aria-label={card.label}
-          >
-            <CardContent card={card} />
-          </motion.div>
-        ))}
-      </motion.div>
+      <div className="lg:hidden">
+        <motion.div
+          ref={trackRef}
+          className="carousel-scroll"
+          role="region"
+          aria-label="Swipeable cards"
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.2 }}
+        >
+          {cards.map((card) => (
+            <motion.div
+              key={card.label}
+              variants={cardItem}
+              className="carousel-snap rounded-[12px] overflow-hidden relative shadow-[0_16px_40px_rgba(10,14,26,0.2)]"
+              style={{ width: "66vw", maxWidth: "240px", aspectRatio: "3/4", background: card.gradient }}
+              aria-label={card.label}
+            >
+              <CardContent card={card} />
+            </motion.div>
+          ))}
+        </motion.div>
 
-      {/* Mobile dots */}
-      <div className="lg:hidden flex justify-center gap-1.5 mt-4" role="tablist" aria-label="Carousel position">
-        {cards.map((card, i) => (
-          <button
-            key={card.label}
-            role="tab"
-            aria-selected={i === activeIndex}
-            aria-label={`View ${card.label}`}
-            onClick={() => scrollTo(i)}
-            className={`h-1.5 rounded-full transition-all duration-200 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
-              i === activeIndex ? "w-6 bg-gradient-accent" : "w-1.5 bg-line"
-            }`}
-          />
-        ))}
+        {/* Mobile dots */}
+        <div className="flex justify-center gap-1.5 mt-4" role="tablist" aria-label="Carousel position">
+          {cards.map((card, i) => (
+            <button
+              key={card.label}
+              role="tab"
+              aria-selected={i === activeIndex}
+              aria-label={`View ${card.label}`}
+              onClick={() => scrollTo(i)}
+              className={`h-1.5 rounded-full transition-all duration-200 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+                i === activeIndex ? "w-6 bg-gradient-accent" : "w-1.5 bg-line"
+              }`}
+            />
+          ))}
+        </div>
       </div>
 
       {/* ── Desktop grid ── */}

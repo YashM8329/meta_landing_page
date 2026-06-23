@@ -155,33 +155,35 @@ export default function ProofSection() {
   return (
     <section
       id="proof"
-      className="min-h-dvh relative flex flex-col justify-center pt-24 pb-28 overflow-hidden [@media(max-height:900px)]:justify-start"
+      className="lg:min-h-0 lg:py-20 min-h-dvh relative flex flex-col justify-center pt-24 pb-28 overflow-hidden [@media(max-height:900px)]:justify-start"
       aria-label="Operator testimonials"
     >
-      <div className="lg:max-w-7xl lg:mx-auto lg:px-16 xl:px-24 w-full">
+      <div className="max-w-[1400px] mx-auto lg:px-16 xl:px-24 w-full">
         <motion.h2 {...rise()} className="px-6 lg:px-0 mb-6 text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">
           Loved by operators
         </motion.h2>
 
         {/* Mobile: horizontal scroll carousel */}
-        <div ref={trackRef} className="carousel-scroll lg:hidden" role="region" aria-label="Testimonials">
-          {testimonials.map((t) => (
-            <MobileTestimonialCard key={t.name} t={t} />
-          ))}
-        </div>
-        <div className="lg:hidden flex justify-center gap-1.5 mt-3 mb-8" role="tablist">
-          {testimonials.map((t, i) => (
-            <button
-              key={t.name}
-              role="tab"
-              aria-selected={i === activeIndex}
-              aria-label={`View testimonial from ${t.name}`}
-              onClick={() => scrollTo(i)}
-              className={`h-1.5 rounded-full transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
-                i === activeIndex ? "w-6 bg-gradient-accent" : "w-1.5 bg-line"
-              }`}
-            />
-          ))}
+        <div className="lg:hidden">
+          <div ref={trackRef} className="carousel-scroll" role="region" aria-label="Testimonials">
+            {testimonials.map((t) => (
+              <MobileTestimonialCard key={t.name} t={t} />
+            ))}
+          </div>
+          <div className="flex justify-center gap-1.5 mt-3 mb-8" role="tablist">
+            {testimonials.map((t, i) => (
+              <button
+                key={t.name}
+                role="tab"
+                aria-selected={i === activeIndex}
+                aria-label={`View testimonial from ${t.name}`}
+                onClick={() => scrollTo(i)}
+                className={`h-1.5 rounded-full transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+                  i === activeIndex ? "w-6 bg-gradient-accent" : "w-1.5 bg-line"
+                }`}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Desktop: 3-column grid */}

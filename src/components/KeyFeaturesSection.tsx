@@ -37,10 +37,10 @@ export default function KeyFeaturesSection({ cards }: { cards: CarouselCard[] })
   return (
     <section
       id="features"
-      className="min-h-dvh relative flex flex-col justify-center pt-24 pb-28 overflow-hidden [@media(max-height:900px)]:justify-start"
+      className="lg:min-h-0 lg:py-20 min-h-dvh relative flex flex-col justify-center pt-24 pb-28 overflow-hidden [@media(max-height:900px)]:justify-start"
       aria-label="Key Features"
     >
-      <div className="lg:max-w-7xl lg:mx-auto lg:px-16 xl:px-24 w-full">
+      <div className="max-w-[1400px] mx-auto lg:px-16 xl:px-24 w-full">
         <motion.h2
           {...rise()}
           className="px-6 lg:px-0 mb-6 text-[clamp(32px,9vw,48px)] leading-[0.98] font-extrabold tracking-[-0.03em] text-ink"

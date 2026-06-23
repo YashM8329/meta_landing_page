@@ -33,10 +33,10 @@ export default function CaseStudy() {
   return (
     <section
       id="case-study"
-      className="min-h-dvh relative flex flex-col justify-center px-6 lg:px-16 xl:px-24 pt-24 pb-28 overflow-hidden [@media(max-height:1000px)]:justify-start"
+      className="lg:min-h-0 lg:py-20 min-h-dvh relative flex flex-col justify-center px-6 lg:px-16 xl:px-24 pt-24 pb-28 overflow-hidden [@media(max-height:1000px)]:justify-start"
       aria-label="Texas FEC case study"
     >
-      <div className="lg:max-w-7xl lg:mx-auto w-full">
+      <div className="max-w-[1400px] mx-auto w-full">
         <motion.div {...rise()} className="mb-4">
           <p className="text-[13px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-1">Case study</p>
           <h2 className="text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">
