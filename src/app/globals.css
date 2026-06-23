@@ -296,3 +296,29 @@ html.lenis body {
 .lenis-scrolling iframe {
   pointer-events: none;
 }
+
+/* ---- Infinite Marquee ---- */
+.marquee-scroll {
+  display: flex;
+  flex-shrink: 0;
+  gap: 24px;
+  padding-right: 24px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+}
+
+.marquee-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Container to mask edges with a premium fade effect */
+.marquee-container {
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  mask-image: linear-gradient(to right, transparent, white 8%, white 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, white 8%, white 92%, transparent);
+}

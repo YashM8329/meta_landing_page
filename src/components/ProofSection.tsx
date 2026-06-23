@@ -155,7 +155,7 @@ export default function ProofSection() {
   return (
     <section
       id="proof"
-      className="lg:min-h-0 lg:py-20 min-h-dvh relative flex flex-col justify-center pt-24 pb-28 overflow-hidden [@media(max-height:900px)]:justify-start"
+      className="lg:min-h-0 lg:py-12 min-h-dvh relative flex flex-col justify-center pt-6 pb-7 overflow-hidden [@media(max-height:900px)]:justify-start"
       aria-label="Operator testimonials"
     >
       <div className="max-w-[1400px] mx-auto lg:px-16 xl:px-24 w-full">

@@ -33,7 +33,7 @@ export default function CaseStudy() {
   return (
     <section
       id="case-study"
-      className="lg:min-h-0 lg:py-20 min-h-dvh relative flex flex-col justify-center px-6 lg:px-16 xl:px-24 pt-24 pb-28 overflow-hidden [@media(max-height:1000px)]:justify-start"
+      className="lg:min-h-0 lg:py-12 min-h-dvh relative flex flex-col justify-center px-6 lg:px-16 xl:px-24 pt-6 pb-7 overflow-hidden [@media(max-height:1000px)]:justify-start"
       aria-label="Texas FEC case study"
     >
       <div className="max-w-[1400px] mx-auto w-full">

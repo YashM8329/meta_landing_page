@@ -1,16 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion, type Variants } from "framer-motion";
-
+import { useEffect, useRef } from "react";
 
 export interface CarouselCard {
   label: string;
   sublabel?: string;
   gradient: string;
   accentGlow?: string;
-  /** Optional feature image shown in the lower portion of the card */
   image?: string;
 }
 
@@ -37,7 +34,7 @@ function CardContent({ card }: { card: CarouselCard }) {
           {/* Re-apply the card gradient as a tint so colours stay on-brand */}
           <div
             className="absolute inset-0"
-            style={{ background: card.gradient, mixBlendMode: "multiply", opacity: 0.45 }}
+            style={{ background: card.gradient, mixBlendMode: "multiply", opacity: 0.20 }}
           />
         </>
       )}
@@ -56,9 +53,9 @@ function CardContent({ card }: { card: CarouselCard }) {
       <div
         className="absolute top-0 left-0 right-0 pointer-events-none"
         style={{
-          height: card.image ? "55%" : "50%",
+          height: card.image ? "50%" : "50%",
           background: card.image
-            ? "linear-gradient(to bottom, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.55) 55%, transparent 100%)"
+            ? "linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.15) 60%, transparent 100%)"
             : "linear-gradient(to bottom, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.3) 55%, transparent 100%)",
         }}
       />
@@ -79,118 +76,142 @@ function CardContent({ card }: { card: CarouselCard }) {
 }
 
 export default function CardCarousel({ cards }: { cards: CarouselCard[] }) {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const reduce = useReducedMotion();
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Ensure the track has enough cards to exceed the screen width
+  let trackCards = cards;
+  if (cards.length > 0) {
+    while (trackCards.length < 8) {
+      trackCards = [...trackCards, ...cards];
+    }
+  }
 
   useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-    const cardEls = Array.from(track.children) as HTMLElement[];
-    const observer = new IntersectionObserver(
-      (entries) => {
-        let best = { index: activeIndex, ratio: 0 };
-        entries.forEach((entry) => {
-          const idx = cardEls.indexOf(entry.target as HTMLElement);
-          if (idx >= 0 && entry.intersectionRatio > best.ratio) {
-            best = { index: idx, ratio: entry.intersectionRatio };
-          }
-        });
-        if (best.ratio > 0) setActiveIndex(best.index);
-      },
-      { root: track, threshold: [0.5] }
-    );
-    cardEls.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const container = scrollRef.current;
+    if (!container || cards.length === 0) return;
 
-  const scrollTo = (index: number) => {
-    const track = trackRef.current;
-    if (!track) return;
-    const card = track.children[index] as HTMLElement;
-    if (!card) return;
-    const trackRect = track.getBoundingClientRect();
-    const cardRect = card.getBoundingClientRect();
-    const offset =
-      cardRect.left - trackRect.left + track.scrollLeft - (trackRect.width - cardRect.width) / 2;
-    track.scrollTo({ left: offset, behavior: "smooth" });
-  };
+    let isPaused = false;
+    let timeoutId: NodeJS.Timeout;
+    let animationFrameId: number;
+    let lastTimestamp = 0;
 
-  const container: Variants = {
-    hidden: {},
-    show: { transition: { staggerChildren: 0.08, delayChildren: 0.04 } },
-  };
-  const cardItem: Variants = {
-    hidden: { opacity: 0, y: reduce ? 0 : 24 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
-  };
+    // Calculate width of one full set of cards (including gaps)
+    const getTrackWidth = () => {
+      if (container.children.length > trackCards.length) {
+        const startEl = container.children[0] as HTMLElement;
+        const dupEl = container.children[trackCards.length] as HTMLElement;
+        if (startEl && dupEl) {
+          return dupEl.offsetLeft - startEl.offsetLeft;
+        }
+      }
+      return container.scrollWidth / 2;
+    };
+
+    let trackWidth = getTrackWidth();
+
+    const handleResize = () => {
+      trackWidth = getTrackWidth();
+    };
+    window.addEventListener("resize", handleResize);
+
+    // Infinite scroll wrapping logic
+    const handleScroll = () => {
+      const scrollLeft = container.scrollLeft;
+      if (scrollLeft >= trackWidth) {
+        container.scrollLeft = scrollLeft - trackWidth;
+      } else if (scrollLeft <= 0) {
+        container.scrollLeft = scrollLeft + trackWidth;
+      }
+    };
+    container.addEventListener("scroll", handleScroll);
+
+    // Pause on user interaction and resume after 3 seconds of idleness
+    const pauseAndResetTimeout = () => {
+      isPaused = true;
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        isPaused = false;
+      }, 3000);
+    };
+
+    const handleTouchStart = () => {
+      pauseAndResetTimeout();
+    };
+
+    const handleMouseDown = () => {
+      pauseAndResetTimeout();
+    };
+
+    container.addEventListener("touchstart", handleTouchStart, { passive: true });
+    container.addEventListener("touchmove", pauseAndResetTimeout, { passive: true });
+    container.addEventListener("wheel", pauseAndResetTimeout, { passive: true });
+    container.addEventListener("mousedown", handleMouseDown);
+
+    // Hover state pausing (desktop)
+    const handleMouseEnter = () => {
+      isPaused = true;
+      clearTimeout(timeoutId); // don't auto-resume while hovered
+    };
+    const handleMouseLeave = () => {
+      isPaused = false;
+    };
+    container.addEventListener("mouseenter", handleMouseEnter);
+    container.addEventListener("mouseleave", handleMouseLeave);
+
+    const animate = (timestamp: number) => {
+      if (!lastTimestamp) lastTimestamp = timestamp;
+      const delta = timestamp - lastTimestamp;
+      lastTimestamp = timestamp;
+
+      if (!isPaused) {
+        // Increment scroll position smoothly (speed = 0.04px per millisecond)
+        container.scrollLeft += 0.04 * delta;
+      }
+
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      container.removeEventListener("scroll", handleScroll);
+      container.removeEventListener("touchstart", handleTouchStart);
+      container.removeEventListener("touchmove", pauseAndResetTimeout);
+      container.removeEventListener("wheel", pauseAndResetTimeout);
+      container.removeEventListener("mousedown", handleMouseDown);
+      container.removeEventListener("mouseenter", handleMouseEnter);
+      container.removeEventListener("mouseleave", handleMouseLeave);
+      cancelAnimationFrame(animationFrameId);
+      clearTimeout(timeoutId);
+    };
+  }, [trackCards.length, cards.length]);
 
   return (
-    <>
-      {/* ── Mobile carousel ── */}
-      <div className="lg:hidden">
-        <motion.div
-          ref={trackRef}
-          className="carousel-scroll"
-          role="region"
-          aria-label="Swipeable cards"
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.2 }}
-        >
-          {cards.map((card) => (
-            <motion.div
-              key={card.label}
-              variants={cardItem}
-              className="carousel-snap rounded-[12px] overflow-hidden relative shadow-[0_16px_40px_rgba(10,14,26,0.2)]"
-              style={{ width: "66vw", maxWidth: "240px", aspectRatio: "3/4", background: card.gradient }}
-              aria-label={card.label}
-            >
-              <CardContent card={card} />
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Mobile dots */}
-        <div className="flex justify-center gap-1.5 mt-4" role="tablist" aria-label="Carousel position">
-          {cards.map((card, i) => (
-            <button
-              key={card.label}
-              role="tab"
-              aria-selected={i === activeIndex}
-              aria-label={`View ${card.label}`}
-              onClick={() => scrollTo(i)}
-              className={`h-1.5 rounded-full transition-all duration-200 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
-                i === activeIndex ? "w-6 bg-gradient-accent" : "w-1.5 bg-line"
-              }`}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* ── Desktop grid ── */}
-      <motion.div
-        className="hidden lg:grid gap-4"
-        style={{ gridTemplateColumns: `repeat(${Math.min(cards.length, 4)}, 1fr)` }}
-        variants={container}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, amount: 0.2 }}
-      >
-        {cards.map((card) => (
-          <motion.div
-            key={card.label}
-            variants={cardItem}
-            className="rounded-[12px] overflow-hidden relative shadow-[0_16px_40px_rgba(10,14,26,0.2)]"
+    <div className="marquee-container py-4">
+      <div ref={scrollRef} className="marquee-scroll">
+        {trackCards.map((card, i) => (
+          <div
+            key={card.label + "-" + i}
+            className="rounded-[12px] overflow-hidden relative shadow-[0_16px_40px_rgba(10,14,26,0.2)] shrink-0 w-[240px] md:w-[280px]"
             style={{ aspectRatio: "3/4", background: card.gradient }}
             aria-label={card.label}
           >
             <CardContent card={card} />
-          </motion.div>
+          </div>
         ))}
-      </motion.div>
-    </>
+        {/* Duplicated set for seamless loop */}
+        {trackCards.map((card, i) => (
+          <div
+            key={card.label + "-dup-" + i}
+            className="rounded-[12px] overflow-hidden relative shadow-[0_16px_40px_rgba(10,14,26,0.2)] shrink-0 w-[240px] md:w-[280px]"
+            style={{ aspectRatio: "3/4", background: card.gradient }}
+            aria-hidden="true"
+          >
+            <CardContent card={card} />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
