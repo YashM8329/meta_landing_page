@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+
 @theme {
   /* Brand palette — light base (crypto-wallet reference) */
   --color-ink: #0A0A0A;
@@ -232,6 +233,7 @@
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   padding: 4px 20px 16px;
+
 }
 .carousel-scroll::-webkit-scrollbar {
   display: none;

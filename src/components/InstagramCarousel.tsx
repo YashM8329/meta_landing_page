@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import InstagramEmbed from "./InstagramEmbed";
 
+
 export interface ReelItem {
   url: string;
   account: string;
