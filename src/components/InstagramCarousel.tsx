@@ -56,7 +56,7 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
   return (
     <section
       id={sectionId}
-      className="snap-start min-h-dvh relative flex flex-col justify-center pt-24 pb-28 overflow-hidden [@media(max-height:900px)]:justify-start"
+      className="min-h-dvh relative flex flex-col justify-center pt-24 pb-28 overflow-hidden [@media(max-height:900px)]:justify-start"
       aria-label={title}
     >
       <motion.div

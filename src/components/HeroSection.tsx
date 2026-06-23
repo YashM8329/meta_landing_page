@@ -23,7 +23,7 @@ export default function HeroSection() {
   return (
     <section
       id="hero"
-      className="snap-start min-h-dvh relative hero-abyss flex flex-col lg:flex-row items-center justify-center lg:justify-between text-center lg:text-left px-6 lg:px-16 xl:px-24 pt-20 pb-28 lg:py-16 overflow-hidden gap-6 lg:gap-16"
+      className="min-h-dvh relative hero-abyss flex flex-col lg:flex-row items-center justify-center lg:justify-between text-center lg:text-left px-6 lg:px-16 xl:px-24 pt-20 pb-28 lg:py-16 overflow-hidden gap-6 lg:gap-16"
       aria-label="Hero"
     >
       {/* white LED grid lines + film grain */}

@@ -60,7 +60,7 @@ export default function VideoSection() {
   return (
     <section
       id="gameplay-video"
-      className="snap-start min-h-dvh relative flex flex-col lg:flex-row lg:items-center px-6 lg:px-16 xl:px-24 pt-16 pb-28 lg:py-16 overflow-hidden gap-8 lg:gap-16"
+      className="min-h-dvh relative flex flex-col lg:flex-row lg:items-center px-6 lg:px-16 xl:px-24 pt-16 pb-28 lg:py-16 overflow-hidden gap-8 lg:gap-16"
       aria-label="Gameplay video"
     >
       {/* Text column */}

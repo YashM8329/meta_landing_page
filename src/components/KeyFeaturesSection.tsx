@@ -37,7 +37,7 @@ export default function KeyFeaturesSection({ cards }: { cards: CarouselCard[] })
   return (
     <section
       id="features"
-      className="snap-start min-h-dvh relative flex flex-col justify-center pt-24 pb-28 overflow-hidden [@media(max-height:900px)]:justify-start"
+      className="min-h-dvh relative flex flex-col justify-center pt-24 pb-28 overflow-hidden [@media(max-height:900px)]:justify-start"
       aria-label="Key Features"
     >
       <div className="lg:max-w-7xl lg:mx-auto lg:px-16 xl:px-24 w-full">

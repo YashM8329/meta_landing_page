@@ -10,6 +10,7 @@ import CaseStudy from "@/components/CaseStudy";
 import BrochureForm from "@/components/BrochureForm";
 import { CarouselCard } from "@/components/CardCarousel";
 import StickyFooterCTA from "@/components/StickyFooterCTA";
+import SmoothScroll from "@/components/SmoothScroll";
 
 /* S3 — Key Features (7 cards). Blue-family gradients. */
 const featureCards: CarouselCard[] = [
@@ -45,9 +46,10 @@ const venueReels: ReelItem[] = [
 export default function Home() {
   return (
     <>
+      <SmoothScroll />
       <NavBar />
 
-      <main className="page-canvas h-dvh overflow-y-scroll snap-y snap-proximity">
+      <main className="page-canvas min-h-screen relative">
         <HeroSection />
         <VideoSection />
         <KeyFeaturesSection cards={featureCards} />

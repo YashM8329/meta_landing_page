@@ -65,7 +65,7 @@ export default function BrochureForm() {
 
   if (submitted) {
     return (
-      <section id="brochure-form" className="snap-start min-h-dvh flex flex-col justify-center px-6 text-center" aria-label="Confirmation">
+      <section id="brochure-form" className="min-h-dvh flex flex-col justify-center px-6 text-center" aria-label="Confirmation">
         <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-5 shadow-[0_8px_24px_rgba(29,108,239,0.4)]">
           <svg width="30" height="30" viewBox="0 0 28 28" fill="none" aria-hidden="true">
             <path d="M7 14L12 19L21 9" stroke="white" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -80,7 +80,7 @@ export default function BrochureForm() {
   }
 
   return (
-    <section id="brochure-form" className="snap-start min-h-dvh relative flex flex-col justify-center px-6 lg:px-16 xl:px-24 pt-24 pb-32 overflow-hidden [@media(max-height:900px)]:justify-start" aria-label="Request brochure form">
+    <section id="brochure-form" className="min-h-dvh relative flex flex-col justify-center px-6 lg:px-16 xl:px-24 pt-24 pb-32 overflow-hidden [@media(max-height:900px)]:justify-start" aria-label="Request brochure form">
       <div className="lg:max-w-7xl lg:mx-auto w-full lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center">
         {/* Left column: context */}
         <div className="hidden lg:flex flex-col">

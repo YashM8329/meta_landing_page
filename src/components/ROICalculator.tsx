@@ -40,7 +40,7 @@ export default function ROICalculator() {
   return (
     <section
       id="roi"
-      className="snap-start min-h-dvh relative flex flex-col justify-center pt-24 pb-28 px-6 lg:px-16 xl:px-24 overflow-hidden [@media(max-height:900px)]:justify-start"
+      className="min-h-dvh relative flex flex-col justify-center pt-24 pb-28 px-6 lg:px-16 xl:px-24 overflow-hidden [@media(max-height:900px)]:justify-start"
       aria-label="Revenue and ROI calculator"
     >
       <div className="lg:max-w-7xl lg:mx-auto w-full">
