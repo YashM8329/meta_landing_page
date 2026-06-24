@@ -21,9 +21,11 @@ export default function CaseStudy() {
 
   const formatMoney = (usd: number): string => {
     const v = Math.round(usd * rate);
-    if (v >= 1_000_000) return `${symbol}${Math.round(v / 1_000_000)}M`;
-    if (v >= 1_000) return `${symbol}${Math.round(v / 1_000)}K`;
-    return `${symbol}${v}`;
+    if (v >= 1_000_000) {
+      const millions = Number((v / 1_000_000).toFixed(2));
+      return `${symbol}${millions}M`;
+    }
+    return `${symbol}${v.toLocaleString()}`;
   };
 
   const formatPrice = (usd: number): string => {
@@ -57,10 +59,10 @@ export default function CaseStudy() {
     >
       <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0">
         <motion.div {...rise()} className="mb-4">
-          <p className="text-[13px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-1">Case study</p>
+          {/* <p className="text-[13px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-1">Case study</p> */}
           <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
             <h2 className="text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">
-              Texas FEC Chain
+              Texas FEC Chain Case Study
             </h2>
             {code !== "USD" && (
               <p className="text-[13px] text-ink-faint mt-1">
@@ -79,15 +81,15 @@ export default function CaseStudy() {
               entertainment center.
             </motion.p>
             <motion.p {...rise(0.06)} className="text-[22px] lg:text-[26px] font-extrabold tracking-[-0.02em] text-accent leading-tight mb-5 lg:mb-8">
-              #1 of 88+ games — every single week.
+              #1 of 88+ games every single week.
             </motion.p>
 
             {/* Summary stats */}
             <motion.div {...rise(0.12)} className="flex flex-col gap-2.5">
               {summary.map((s) => (
                 <div key={s.label} className="flex items-center justify-between rounded-[12px] border border-line bg-white px-5 py-4">
-                  <span className="text-[14px] font-semibold text-ink-soft">{s.label}</span>
-                  <span className="text-[28px] lg:text-[32px] font-extrabold text-accent tnum leading-none">{s.value}</span>
+                  <span className="text-[15px] sm:text-[20px] font-semibold text-ink-soft">{s.label}</span>
+                  <span className="text-[22px] sm:text-[28px] lg:text-[32px] font-extrabold text-accent tnum leading-none">{s.value}</span>
                 </div>
               ))}
             </motion.div>
