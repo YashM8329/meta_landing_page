@@ -45,7 +45,7 @@ export default function HeroSection() {
           variants={container}
           initial="hidden"
           animate="show"
-          className="relative z-10 flex flex-col items-start lg:items-start w-full lg:flex-1 lg:max-w-[540px]"
+          className="relative z-10 flex flex-col items-center lg:items-start w-full lg:flex-1 lg:max-w-[540px] text-center lg:text-left"
         >
           <motion.p
             variants={item}
@@ -56,7 +56,7 @@ export default function HeroSection() {
 
           <motion.h1
             variants={item}
-            className="mb-6 relative z-10 flex justify-start lg:justify-start"
+            className="mb-6 relative z-10 flex justify-center lg:justify-start w-full"
           >
             <Image
               src="/hero/hypergrid-logo.png"
@@ -64,7 +64,7 @@ export default function HeroSection() {
               width={480}
               height={90}
               priority
-              className="w-[280px] sm:w-[360px] md:w-[480px] h-auto object-contain -ml-[10px] sm:-ml-[14px] md:-ml-[13.5px]"
+              className="w-[280px] sm:w-[360px] md:w-[480px] h-auto object-contain lg:-ml-[13.5px]"
             />
           </motion.h1>
 

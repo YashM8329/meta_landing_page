@@ -1,38 +1,53 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 export default function NavBar() {
   const [visible, setVisible] = useState(false);
+  const lastScrollYRef = useRef(0);
 
   useEffect(() => {
-    const videoSection = document.getElementById("gameplay-video");
-    if (!videoSection) return;
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const heroThreshold = window.innerHeight * 0.7; // 70% of screen height is hero section
+      const lastScrollY = lastScrollYRef.current;
+      const diff = currentScrollY - lastScrollY;
+      
+      if (currentScrollY < heroThreshold) {
+        // Always hide when in the hero section
+        setVisible(false);
+      } else if (diff > 5) {
+        // Scrolling down -> hide navbar
+        setVisible(false);
+      } else if (diff < -5) {
+        // Scrolling up -> show navbar
+        setVisible(true);
+      }
+      
+      lastScrollYRef.current = currentScrollY;
+    };
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // Show navbar only once S2 has scrolled above the viewport top
-        const scrolledPast =
-          !entry.isIntersecting && entry.boundingClientRect.bottom < 0;
-        setVisible(scrolledPast);
-      },
-      { threshold: 0 }
-    );
+    // Check initial position on mount
+    handleScroll();
 
-    observer.observe(videoSection);
-    return () => observer.disconnect();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
   }, []);
 
   return (
     <nav
       aria-label="Site navigation"
-      className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ease-out ${
-        visible ? "translate-y-0" : "-translate-y-full"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-out ${
+        visible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
       }`}
     >
       {/* Mobile: centred pill */}
-      <div className="lg:hidden glass max-w-[460px] mx-auto h-[56px] flex items-center justify-center border-x-0 border-t-0">
+      <div className="lg:hidden mx-auto max-w-[460px] h-[56px] flex items-center justify-center border-b border-white/20 bg-white/70 backdrop-blur-md shadow-[0_8px_32px_rgba(10,14,26,0.08)]">
         <Image
           src="/hero/hypergrid-logo.png"
           alt="HYPERGRID"
@@ -44,7 +59,7 @@ export default function NavBar() {
       </div>
 
       {/* Desktop: full-width bar */}
-      <div className="hidden lg:block glass border-x-0 border-t-0">
+      <div className="hidden lg:block border-b border-white/20 bg-white/75 backdrop-blur-lg shadow-[0_8px_32px_rgba(10,14,26,0.05)]">
         <div className="max-w-[1440px] mx-auto w-full h-[64px] flex items-center justify-between px-6 xl:px-0">
           <Image
             src="/hero/hypergrid-logo.png"
