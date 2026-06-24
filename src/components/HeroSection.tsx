@@ -64,7 +64,7 @@ export default function HeroSection() {
               width={480}
               height={90}
               priority
-              className="w-[280px] sm:w-[360px] md:w-[480px] h-auto object-contain"
+              className="w-[280px] sm:w-[360px] md:w-[480px] h-auto object-contain -ml-[10px] sm:-ml-[14px] md:-ml-[13.5px]"
             />
           </motion.h1>
 
@@ -73,7 +73,7 @@ export default function HeroSection() {
             variants={item}
             className="hidden lg:block text-[17px] text-white/60 leading-relaxed max-w-[420px] mb-8"
           >
-            The world&apos;s first unmanned, multiplayer LED-floor arena. A turnkey active attraction that earns revenue from day one.
+            The world&apos;s first unmanned, multiplayer LED-floor arena.
           </motion.p>
 
           {/* CTA row — desktop only */}
@@ -102,7 +102,7 @@ export default function HeroSection() {
           <motion.div variants={item} className="hidden lg:flex items-center gap-8 mt-10 border-t border-white/10 pt-8">
             {[
               { value: "100+", label: "Locations" },
-              { value: "88+", label: "Games outperformed" },
+              { value: "10+", label: "Countries" },
               { value: "3 mo", label: "Avg payback" },
             ].map(({ value, label }) => (
               <div key={label}>
