@@ -4,9 +4,11 @@ import { useEffect, useRef } from "react";
 import InstagramEmbed from "./InstagramEmbed";
 
 export interface ReelItem {
-  url: string;
+  videoSrc: string;
   account: string;
   caption: string;
+  likes?: string;
+  comments?: string;
 }
 
 interface Props {
@@ -182,20 +184,20 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
           <div ref={scrollRef} className="marquee-scroll items-start">
             {/* Left duplicate set for seamless scroll left */}
             {trackItems.map((item, i) => (
-              <div key={item.url + "-left-" + i} className="shrink-0 w-[260px] md:w-[300px]" aria-hidden="true">
-                <InstagramEmbed url={item.url} account={item.account} caption={item.caption} />
+              <div key={item.videoSrc + "-left-" + i} className="shrink-0 w-[260px] md:w-[300px]" aria-hidden="true">
+                <InstagramEmbed videoSrc={item.videoSrc} account={item.account} caption={item.caption} likes={item.likes} comments={item.comments} />
               </div>
             ))}
             {/* Original set */}
             {trackItems.map((item, i) => (
-              <div key={item.url + "-" + i} className="shrink-0 w-[260px] md:w-[300px]">
-                <InstagramEmbed url={item.url} account={item.account} caption={item.caption} />
+              <div key={item.videoSrc + "-" + i} className="shrink-0 w-[260px] md:w-[300px]">
+                <InstagramEmbed videoSrc={item.videoSrc} account={item.account} caption={item.caption} likes={item.likes} comments={item.comments} />
               </div>
             ))}
             {/* Right duplicate set for seamless scroll right */}
             {trackItems.map((item, i) => (
-              <div key={item.url + "-right-" + i} className="shrink-0 w-[260px] md:w-[300px]" aria-hidden="true">
-                <InstagramEmbed url={item.url} account={item.account} caption={item.caption} />
+              <div key={item.videoSrc + "-right-" + i} className="shrink-0 w-[260px] md:w-[300px]" aria-hidden="true">
+                <InstagramEmbed videoSrc={item.videoSrc} account={item.account} caption={item.caption} likes={item.likes} comments={item.comments} />
               </div>
             ))}
           </div>
