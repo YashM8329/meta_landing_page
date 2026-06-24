@@ -59,7 +59,7 @@ const logos = [
 function TestimonialCardInner({ t, className = "" }: { t: Testimonial; className?: string }) {
   const [imgOk, setImgOk] = useState(true);
   return (
-    <div className={`relative rounded-[12px] overflow-hidden shadow-[0_16px_40px_rgba(10,14,26,0.18)] ${className}`}
+    <div className={`relative rounded-[12px] overflow-hidden shadow-none lg:shadow-[0_16px_40px_rgba(10,14,26,0.18)] ${className}`}
       style={{ aspectRatio: "4/5" }}>
       {imgOk ? (
         /* eslint-disable-next-line @next/next/no-img-element */
@@ -81,19 +81,19 @@ function TestimonialCardInner({ t, className = "" }: { t: Testimonial; className
         className="absolute inset-0 pointer-events-none"
         style={{ background: "linear-gradient(to top, rgba(5,8,16,0.97) 0%, rgba(5,8,16,0.93) 32%, rgba(5,8,16,0.6) 56%, rgba(5,8,16,0.15) 76%, transparent 92%)" }}
       />
-      <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-5">
-        <div className="flex items-end justify-between gap-3 mb-3">
-          <div>
-            <p className="text-white font-bold text-[17px] leading-tight">{t.name}</p>
-            <p className="text-white/75 text-[12.5px] mt-0.5">{t.title}</p>
-          </div>
-          <span className="bg-white rounded-md h-9 px-2.5 flex items-center shrink-0">
-            <span className="relative h-5 w-[82px]">
-              <Image src={t.logo} alt={t.logoAlt} fill unoptimized sizes="100px" className="object-contain" />
+      <div className="absolute bottom-0 left-0 right-0 pt-4 pb-4 px-4 lg:pt-5 lg:pb-5 lg:px-5 h-[190px] lg:h-[220px] flex flex-col justify-start">
+        <div className="mb-3">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-white font-bold text-[17px] lg:text-[32px] leading-tight">{t.name}</p>
+            <span className="bg-white rounded-md h-9 px-2.5 flex items-center shrink-0">
+              <span className="relative h-5 w-[82px]">
+                <Image src={t.logo} alt={t.logoAlt} fill unoptimized sizes="100px" className="object-contain" />
+              </span>
             </span>
-          </span>
+          </div>
+          <p className="text-white/75 text-[12.5px] lg:text-[17px] mt-0.5">{t.title}</p>
         </div>
-        <p className="text-white text-[15px] leading-snug">&ldquo;{t.quote}&rdquo;</p>
+        <p className="text-white text-[15px] lg:text-[20px] leading-snug">&ldquo;{t.quote}&rdquo;</p>
       </div>
     </div>
   );
@@ -102,7 +102,7 @@ function TestimonialCardInner({ t, className = "" }: { t: Testimonial; className
 function MobileTestimonialCard({ t }: { t: Testimonial }) {
   return (
     <div
-      className="carousel-snap relative rounded-[12px] overflow-hidden shadow-[0_16px_40px_rgba(10,14,26,0.18)]"
+      className="carousel-snap relative"
       style={{ width: "80vw", maxWidth: "310px" }}
     >
       <TestimonialCardInner t={t} />
@@ -115,25 +115,24 @@ export default function ProofSection() {
   const [activeIndex, setActiveIndex] = useState(0);
   const reduce = useReducedMotion();
 
-  useEffect(() => {
+  const handleScroll = () => {
     const track = trackRef.current;
     if (!track) return;
     const cards = Array.from(track.children) as HTMLElement[];
-    const observer = new IntersectionObserver(
-      (entries) => {
-        let best = { index: activeIndex, ratio: 0 };
-        entries.forEach((entry) => {
-          const idx = cards.indexOf(entry.target as HTMLElement);
-          if (idx >= 0 && entry.intersectionRatio > best.ratio) best = { index: idx, ratio: entry.intersectionRatio };
-        });
-        if (best.ratio > 0) setActiveIndex(best.index);
-      },
-      { root: track, threshold: [0.5] }
-    );
-    cards.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (cards.length === 0) return;
+    const trackCenter = track.scrollLeft + track.clientWidth / 2;
+    let closestIndex = 0;
+    let closestDistance = Infinity;
+    cards.forEach((card, idx) => {
+      const cardCenter = card.offsetLeft + card.clientWidth / 2;
+      const distance = Math.abs(trackCenter - cardCenter);
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestIndex = idx;
+      }
+    });
+    setActiveIndex(closestIndex);
+  };
 
   const scrollTo = (index: number) => {
     const track = trackRef.current;
@@ -159,13 +158,19 @@ export default function ProofSection() {
       aria-label="Operator testimonials"
     >
       <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0">
-        <motion.h2 {...rise()} className="px-6 lg:px-0 mb-6 text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">
+        <motion.h2 {...rise()} className="px-0 lg:px-0 mb-6 text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink text-left w-full">
           Loved by operators
         </motion.h2>
 
         {/* Mobile: horizontal scroll carousel */}
         <div className="lg:hidden">
-          <div ref={trackRef} className="carousel-scroll" role="region" aria-label="Testimonials">
+          <div
+            ref={trackRef}
+            onScroll={handleScroll}
+            className="carousel-scroll"
+            role="region"
+            aria-label="Testimonials"
+          >
             {testimonials.map((t) => (
               <MobileTestimonialCard key={t.name} t={t} />
             ))}
@@ -194,7 +199,7 @@ export default function ProofSection() {
         </motion.div>
 
         {/* Logo grid */}
-        <motion.div {...rise(0.08)} className="px-6 lg:px-0 grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <motion.div {...rise(0.08)} className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {logos.map((logo) => (
             <div key={logo.src} className="h-[64px] rounded-[12px] bg-white border border-line flex items-center justify-center px-5">
               <div className="relative h-8 w-full">
