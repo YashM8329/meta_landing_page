@@ -30,9 +30,9 @@ const mugen = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "HyperGrid — World's Best Active Social Attraction | FOG Technologies",
+  title: "HyperGrid — World's Best Active Social Attraction",
   description:
-    "HYPER GRID is a fully unattended, large-format social play attraction. Ranked #1 of 88 games at every venue it enters. Request your operator brochure.",
+    "HyperGrid is the world's first unmanned, multiplayer LED-floor arena. Ranked #1 of 88+ games at every venue it enters. Request your operator brochure.",
 };
 
 export default function RootLayout({
