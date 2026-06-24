@@ -124,7 +124,13 @@
   overflow: hidden;
 }
 .ig-crop iframe.instagram-media {
-  margin-top: -54px !important;
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  width: 115% !important;
+  min-width: 115% !important;
+  height: 125% !important;
+  transform: translate(-50%, -50%) !important;
   border: none !important;
   box-shadow: none !important;
   border-radius: 0 !important;
@@ -319,8 +325,6 @@ html.lenis body {
   width: 100%;
   overflow: hidden;
   position: relative;
-  mask-image: linear-gradient(to right, transparent, white 8%, white 92%, transparent);
-  -webkit-mask-image: linear-gradient(to right, transparent, white 8%, white 92%, transparent);
 }
 
 /* ---- PhoneInput Custom Styles to match mockup ---- */

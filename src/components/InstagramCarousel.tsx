@@ -50,17 +50,22 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
 
     let trackWidth = getTrackWidth();
 
+    // Start in the middle (at the start of the original set)
+    requestAnimationFrame(() => {
+      container.scrollLeft = trackWidth;
+    });
+
     const handleResize = () => {
       trackWidth = getTrackWidth();
     };
     window.addEventListener("resize", handleResize);
 
-    // Infinite scroll wrapping logic
+    // Infinite scroll wrapping logic for triple track
     const handleScroll = () => {
       const scrollLeft = container.scrollLeft;
-      if (scrollLeft >= trackWidth) {
+      if (scrollLeft >= trackWidth * 2) {
         container.scrollLeft = scrollLeft - trackWidth;
-      } else if (scrollLeft <= 0) {
+      } else if (scrollLeft <= trackWidth - 10) {
         container.scrollLeft = scrollLeft + trackWidth;
       }
     };
@@ -75,36 +80,63 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
       }, 3000);
     };
 
+    let isDown = false;
+    let startX = 0;
+    let scrollLeftStart = 0;
+
     const handleTouchStart = () => {
       pauseAndResetTimeout();
     };
 
-    const handleMouseDown = () => {
-      pauseAndResetTimeout();
+    const handleMouseDown = (e: MouseEvent) => {
+      isPaused = true;
+      isDown = true;
+      startX = e.pageX - container.offsetLeft;
+      scrollLeftStart = container.scrollLeft;
+      container.style.cursor = "grabbing";
+    };
+
+    const handleMouseEnter = () => {
+      isPaused = true;
+    };
+
+    const handleMouseLeave = () => {
+      isDown = false;
+      container.style.cursor = "grab";
+      isPaused = false;
+    };
+
+    const handleMouseUp = () => {
+      isDown = false;
+      container.style.cursor = "grab";
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - container.offsetLeft;
+      const walk = (x - startX) * 1.5; // scroll speed multiplier
+      container.scrollLeft = scrollLeftStart - walk;
     };
 
     container.addEventListener("touchstart", handleTouchStart, { passive: true });
     container.addEventListener("touchmove", pauseAndResetTimeout, { passive: true });
     container.addEventListener("wheel", pauseAndResetTimeout, { passive: true });
     container.addEventListener("mousedown", handleMouseDown);
-
-    // Hover state pausing (desktop)
-    const handleMouseEnter = () => {
-      isPaused = true;
-      clearTimeout(timeoutId); // don't auto-resume while hovered
-    };
-    const handleMouseLeave = () => {
-      isPaused = false;
-    };
     container.addEventListener("mouseenter", handleMouseEnter);
     container.addEventListener("mouseleave", handleMouseLeave);
+    container.addEventListener("mouseup", handleMouseUp);
+    container.addEventListener("mousemove", handleMouseMove);
+
+    // Set initial cursor style
+    container.style.cursor = "grab";
 
     const animate = (timestamp: number) => {
       if (!lastTimestamp) lastTimestamp = timestamp;
       const delta = timestamp - lastTimestamp;
       lastTimestamp = timestamp;
 
-      if (!isPaused) {
+      if (!isPaused && !isDown) {
         // Increment scroll position smoothly (speed = 0.04px per millisecond)
         container.scrollLeft += 0.04 * delta;
       }
@@ -123,6 +155,8 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
       container.removeEventListener("mousedown", handleMouseDown);
       container.removeEventListener("mouseenter", handleMouseEnter);
       container.removeEventListener("mouseleave", handleMouseLeave);
+      container.removeEventListener("mouseup", handleMouseUp);
+      container.removeEventListener("mousemove", handleMouseMove);
       cancelAnimationFrame(animationFrameId);
       clearTimeout(timeoutId);
     };
@@ -146,14 +180,21 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
 
         <div className="marquee-container py-4">
           <div ref={scrollRef} className="marquee-scroll items-start">
+            {/* Left duplicate set for seamless scroll left */}
+            {trackItems.map((item, i) => (
+              <div key={item.url + "-left-" + i} className="shrink-0 w-[260px] md:w-[300px]" aria-hidden="true">
+                <InstagramEmbed url={item.url} account={item.account} caption={item.caption} />
+              </div>
+            ))}
+            {/* Original set */}
             {trackItems.map((item, i) => (
               <div key={item.url + "-" + i} className="shrink-0 w-[260px] md:w-[300px]">
                 <InstagramEmbed url={item.url} account={item.account} caption={item.caption} />
               </div>
             ))}
-            {/* Duplicated set for seamless loop */}
+            {/* Right duplicate set for seamless scroll right */}
             {trackItems.map((item, i) => (
-              <div key={item.url + "-dup-" + i} className="shrink-0 w-[260px] md:w-[300px]" aria-hidden="true">
+              <div key={item.url + "-right-" + i} className="shrink-0 w-[260px] md:w-[300px]" aria-hidden="true">
                 <InstagramEmbed url={item.url} account={item.account} caption={item.caption} />
               </div>
             ))}

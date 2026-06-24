@@ -38,6 +38,22 @@ interface Props {
 export default function InstagramEmbed({ url, account, caption }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+  const [isInteractive, setIsInteractive] = useState(false);
+  const dragStartRef = useRef<{ x: number; y: number } | null>(null);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    dragStartRef.current = { x: e.clientX, y: e.clientY };
+  };
+
+  const handleMouseUp = (e: React.MouseEvent) => {
+    if (!dragStartRef.current) return;
+    const dx = Math.abs(e.clientX - dragStartRef.current.x);
+    const dy = Math.abs(e.clientY - dragStartRef.current.y);
+    if (dx < 5 && dy < 5) {
+      setIsInteractive(true);
+    }
+    dragStartRef.current = null;
+  };
 
   useEffect(() => {
     const el = ref.current;
@@ -66,8 +82,8 @@ export default function InstagramEmbed({ url, account, caption }: Props) {
     >
       {!inView ? (
         <div
-          className="relative flex flex-col justify-end p-4"
-          style={{ aspectRatio: "4/5", background: "linear-gradient(160deg,#0a1838 0%,#11317a 60%,#1d6cef 100%)" }}
+          className="relative flex flex-col justify-end p-4 aspect-[9/16] w-full"
+          style={{ background: "linear-gradient(160deg,#0a1838 0%,#11317a 60%,#1d6cef 100%)" }}
           aria-label={`Instagram reel from ${account}`}
         >
           <div className="absolute inset-0 grid-texture-dark opacity-40" />
@@ -86,13 +102,20 @@ export default function InstagramEmbed({ url, account, caption }: Props) {
       ) : (
         /* Cropped: header (profile + "View profile") and footer (likes/comment/
            "view more") are clipped off; the video plays inline on tap. */
-        <div className="ig-crop" style={{ height: 400 }}>
+        <div className="ig-crop relative aspect-[9/16] w-full">
           <blockquote
             className="instagram-media"
             data-instgrm-permalink={url}
             data-instgrm-version="14"
             style={{ margin: 0, width: "100%", minWidth: "unset", border: "none", boxShadow: "none" }}
           />
+          {!isInteractive && (
+            <div
+              className="absolute inset-0 z-20 cursor-grab active:cursor-grabbing"
+              onMouseDown={handleMouseDown}
+              onMouseUp={handleMouseUp}
+            />
+          )}
         </div>
       )}
     </div>
