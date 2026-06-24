@@ -93,7 +93,7 @@ export default function VideoSection() {
         <motion.div
           {...rise(0.12)}
           className="relative z-10 flex-1 lg:flex-none rounded-[13px] overflow-hidden shadow-[0_20px_50px_rgba(10,14,26,0.18)] min-h-0 lg:w-[691px] xl:w-[806px]"
-          style={{ maxHeight: "calc(100dvh - 8rem)", aspectRatio: "16/9" }}
+          style={{ maxHeight: "calc(100svh - 8rem)", aspectRatio: "16/9" }}
         >
           <video
             ref={videoRef}

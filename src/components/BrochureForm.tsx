@@ -360,7 +360,7 @@ export default function BrochureForm() {
                     </div>
                   )}
                   {venueOptions.length > 0 && (
-                    <ul className="absolute left-0 right-0 mt-1 bg-white border border-line rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
+                    <ul className="absolute left-0 right-0 bottom-full mb-1 bg-white border border-line rounded-lg shadow-lg max-h-48 overflow-y-auto z-50">
                       {venueOptions.map((opt, idx) => (
                         <li
                           key={idx}
@@ -407,7 +407,7 @@ export default function BrochureForm() {
                     </div>
                   )}
                   {venueOptions.length > 0 && (
-                    <ul className="absolute left-0 right-0 mt-1 bg-white border border-line rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
+                    <ul className="absolute left-0 right-0 bottom-full mb-1 bg-white border border-line rounded-lg shadow-lg max-h-48 overflow-y-auto z-50">
                       {venueOptions.map((opt, idx) => (
                         <li
                           key={idx}

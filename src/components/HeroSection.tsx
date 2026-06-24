@@ -23,7 +23,7 @@ export default function HeroSection() {
   return (
     <section
       id="hero"
-      className="min-h-dvh relative hero-abyss flex flex-col justify-center overflow-hidden pt-8 pb-8 lg:py-10 mb-[30px] lg:mb-0"
+      className="min-h-[100svh] lg:min-h-dvh relative hero-abyss flex flex-col justify-center overflow-hidden pt-8 pb-8 lg:py-10 mb-[30px] lg:mb-0"
       aria-label="Hero"
     >
       {/* white LED grid lines + film grain */}
