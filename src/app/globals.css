@@ -90,8 +90,8 @@
   background: linear-gradient(180deg, #4f8bf5 0%, #1d6cef 52%, #1657cc 100%);
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow:
-    0 0 22px rgba(29, 108, 239, 0.4),
-    0 10px 26px rgba(29, 108, 239, 0.38),
+    0 0 22px rgba(29, 108, 239, 0.2),
+    0 10px 26px rgba(29, 108, 239, 0.19),
     inset 0 1px 0 rgba(255, 255, 255, 0.55);
   transition: transform 0.15s ease-out, box-shadow 0.25s ease-out;
 }
@@ -108,8 +108,8 @@
 }
 .btn-glass-accent:hover {
   box-shadow:
-    0 0 30px rgba(29, 108, 239, 0.6),
-    0 12px 30px rgba(29, 108, 239, 0.48),
+    0 0 30px rgba(29, 108, 239, 0.3),
+    0 12px 30px rgba(29, 108, 239, 0.24),
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 .btn-glass-accent:active {
@@ -322,3 +322,95 @@ html.lenis body {
   mask-image: linear-gradient(to right, transparent, white 8%, white 92%, transparent);
   -webkit-mask-image: linear-gradient(to right, transparent, white 8%, white 92%, transparent);
 }
+
+/* ---- PhoneInput Custom Styles to match mockup ---- */
+.PhoneInput {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 50px;
+  border-radius: 8px;
+  border: 1px solid var(--color-line);
+  background-color: #fff;
+  transition: all 0.15s ease-in-out;
+  overflow: hidden;
+}
+.PhoneInput:focus-within {
+  outline: none;
+  border-color: transparent;
+  box-shadow: 0 0 0 2px rgba(29, 108, 239, 0.4);
+}
+.PhoneInput--error {
+  border-color: #f87171;
+  background-color: #fef2f2;
+}
+
+.PhoneInputCountry {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  height: 100%;
+  border-right: 1px solid var(--color-line);
+  cursor: pointer;
+  position: relative;
+}
+
+.PhoneInputCountrySelect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.PhoneInputCountryIcon {
+  width: 24px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.PhoneInputCountryIcon--square {
+  width: 16px;
+}
+
+.PhoneInputCountryIconImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.PhoneInputCountrySelectArrow {
+  display: block;
+  width: 6px;
+  height: 6px;
+  margin-left: 6px;
+  border-left: 1.5px solid #5B6472;
+  border-bottom: 1.5px solid #5B6472;
+  transform: rotate(-45deg);
+  margin-top: -3px;
+  opacity: 0.8;
+}
+
+.PhoneInputInput {
+  flex: 1;
+  height: 100%;
+  border: none;
+  background: transparent;
+  padding: 0 16px;
+  font-size: 15px;
+  color: var(--color-ink);
+}
+.PhoneInputInput:focus {
+  outline: none;
+}
+.PhoneInputInput::placeholder {
+  color: var(--color-ink-faint);
+}
+
