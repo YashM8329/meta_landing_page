@@ -89,7 +89,7 @@ export default function MomentsSection({ cards }: { cards: CarouselCard[] }) {
             >
               <video
                 className="absolute inset-0 w-full h-full object-cover"
-                src="/video/hypergrid-reel.mp4"
+                src="/video/moments-reel.mp4"
                 autoPlay
                 muted
                 loop

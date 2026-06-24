@@ -159,10 +159,30 @@ export default function BrochureForm() {
       return;
     }
     setSubmitting(true);
-    /* TODO: wire submission endpoint */
-    await new Promise((r) => setTimeout(r, 1000));
-    setSubmitting(false);
-    setSubmitted(true);
+    try {
+      const response = await fetch("/api/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
+
+      const resData = await response.json();
+
+      if (!response.ok) {
+        throw new Error(resData.error || "Failed to send lead details.");
+      }
+
+      setSubmitted(true);
+    } catch (err: any) {
+      setErrors((p) => ({
+        ...p,
+        email: err.message || "Something went wrong. Please try again later."
+      }));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (submitted) {
