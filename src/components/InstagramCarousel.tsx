@@ -180,7 +180,7 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
           </h2>
         </div>
 
-        <div className="marquee-container py-4">
+        <div className="marquee-container py-4 select-none">
           <div ref={scrollRef} className="marquee-scroll items-start">
             {/* Left duplicate set for seamless scroll left */}
             {trackItems.map((item, i) => (

@@ -134,36 +134,63 @@ export default function CardCarousel({ cards }: { cards: CarouselCard[] }) {
       }, 3000);
     };
 
+    let isDown = false;
+    let startX = 0;
+    let scrollLeftStart = 0;
+
     const handleTouchStart = () => {
       pauseAndResetTimeout();
     };
 
-    const handleMouseDown = () => {
-      pauseAndResetTimeout();
+    const handleMouseDown = (e: MouseEvent) => {
+      isPaused = true;
+      isDown = true;
+      startX = e.pageX - container.offsetLeft;
+      scrollLeftStart = container.scrollLeft;
+      container.style.cursor = "grabbing";
+    };
+
+    const handleMouseEnter = () => {
+      isPaused = true;
+    };
+
+    const handleMouseLeave = () => {
+      isDown = false;
+      container.style.cursor = "grab";
+      isPaused = false;
+    };
+
+    const handleMouseUp = () => {
+      isDown = false;
+      container.style.cursor = "grab";
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - container.offsetLeft;
+      const walk = (x - startX) * 1.5; // scroll speed multiplier
+      container.scrollLeft = scrollLeftStart - walk;
     };
 
     container.addEventListener("touchstart", handleTouchStart, { passive: true });
     container.addEventListener("touchmove", pauseAndResetTimeout, { passive: true });
     container.addEventListener("wheel", pauseAndResetTimeout, { passive: true });
     container.addEventListener("mousedown", handleMouseDown);
-
-    // Hover state pausing (desktop)
-    const handleMouseEnter = () => {
-      isPaused = true;
-      clearTimeout(timeoutId); // don't auto-resume while hovered
-    };
-    const handleMouseLeave = () => {
-      isPaused = false;
-    };
     container.addEventListener("mouseenter", handleMouseEnter);
     container.addEventListener("mouseleave", handleMouseLeave);
+    container.addEventListener("mouseup", handleMouseUp);
+    container.addEventListener("mousemove", handleMouseMove);
+
+    // Set initial cursor style
+    container.style.cursor = "grab";
 
     const animate = (timestamp: number) => {
       if (!lastTimestamp) lastTimestamp = timestamp;
       const delta = timestamp - lastTimestamp;
       lastTimestamp = timestamp;
 
-      if (!isPaused) {
+      if (!isPaused && !isDown) {
         // Increment scroll position smoothly (speed = 0.04px per millisecond)
         container.scrollLeft += 0.04 * delta;
       }
@@ -182,13 +209,15 @@ export default function CardCarousel({ cards }: { cards: CarouselCard[] }) {
       container.removeEventListener("mousedown", handleMouseDown);
       container.removeEventListener("mouseenter", handleMouseEnter);
       container.removeEventListener("mouseleave", handleMouseLeave);
+      container.removeEventListener("mouseup", handleMouseUp);
+      container.removeEventListener("mousemove", handleMouseMove);
       cancelAnimationFrame(animationFrameId);
       clearTimeout(timeoutId);
     };
   }, [trackCards.length, cards.length]);
 
   return (
-    <div className="marquee-container py-4">
+    <div className="marquee-container py-4 select-none">
       <div ref={scrollRef} className="marquee-scroll">
         {trackCards.map((card, i) => (
           <div
