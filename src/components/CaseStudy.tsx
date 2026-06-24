@@ -22,7 +22,7 @@ export default function CaseStudy() {
   const formatMoney = (usd: number): string => {
     const v = Math.round(usd * rate);
     if (v >= 1_000_000) {
-      const millions = Number((v / 1_000_000).toFixed(2));
+      const millions = Number((v / 1_000_000).toFixed(1));
       return `${symbol}${millions}M`;
     }
     return `${symbol}${v.toLocaleString()}`;

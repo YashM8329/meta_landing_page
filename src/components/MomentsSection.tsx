@@ -1,15 +1,15 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import CardCarousel, { CarouselCard } from "./CardCarousel";
 import Typewriter from "./Typewriter";
 
 const steps = [
   {
     n: "1",
-    text: "Two cameras record gameplay",
+    label: "Two cameras",
+    sublabel: "record gameplay",
     icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 lg:w-7 lg:h-7">
         <path d="M23 7l-7 5 7 5V7z" />
         <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
       </svg>
@@ -17,9 +17,10 @@ const steps = [
   },
   {
     n: "2",
-    text: "Scan the QR after gameplay",
+    label: "Scan the QR",
+    sublabel: "after gameplay",
     icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 lg:w-7 lg:h-7">
         <rect x="3" y="3" width="6" height="6" rx="1" />
         <rect x="15" y="3" width="6" height="6" rx="1" />
         <rect x="15" y="15" width="6" height="6" rx="1" />
@@ -30,9 +31,10 @@ const steps = [
   },
   {
     n: "3",
-    text: "Download and share on social",
+    label: "Download & share",
+    sublabel: "on social media",
     icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 lg:w-7 lg:h-7">
         <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
         <polyline points="16 6 12 2 8 6" />
         <line x1="12" y1="2" x2="12" y2="15" />
@@ -41,7 +43,7 @@ const steps = [
   },
 ];
 
-export default function MomentsSection({ cards }: { cards: CarouselCard[] }) {
+export default function MomentsSection({ cards }: { cards?: any } = {}) {
   const reduce = useReducedMotion();
   const rise = (delay = 0) => ({
     initial: { opacity: 0, y: reduce ? 0 : 20 },
@@ -57,49 +59,88 @@ export default function MomentsSection({ cards }: { cards: CarouselCard[] }) {
       aria-label="Moments AI"
     >
       <div className="max-w-[1440px] mx-auto w-full px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
-          {/* Left Column: Title and Steps */}
-          <div className="lg:col-span-5 flex flex-col justify-center">
-            <motion.div {...rise()} className="mb-6 lg:mb-8 text-left">
-              {/* <p className="text-[13px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-1">AI Powered</p> */}
-              <h2 className="text-[clamp(32px,7vw,48px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-ink">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          {/* Left Column: Title, Subtitle, and Horizontal Steps */}
+          <div className="lg:col-span-7 flex flex-col justify-center">
+            <motion.div {...rise()} className="mb-2 text-left">
+              <h2 className="text-[clamp(32px,7vw,48px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-ink mb-2">
                 Moments{" "}
                 <Typewriter words={["Videos", "Photos"]} className="text-accent" />
               </h2>
+              <p className="text-[17px] font-semibold text-ink-soft tracking-tight">
+                Relive. Share. Repeat.
+              </p>
             </motion.div>
 
-            {/* Steps */}
-            <motion.div {...rise(0.05)} className="flex flex-col gap-3.5 w-full">
-              {steps.map((s) => (
-                <div key={s.n} className="flex items-center gap-4 rounded-[12px] border border-line bg-white p-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
-                  <span className="flex-shrink-0 w-9 h-9 rounded-lg bg-accent/10 text-accent flex items-center justify-center">
-                    {s.icon}
-                  </span>
-                  <span className="text-[15px] font-semibold text-ink leading-snug">{s.text}</span>
+            {/* Horizontal Timeline Steps */}
+            <motion.div 
+              {...rise(0.05)} 
+              className="flex items-start justify-between w-full mt-10 md:mt-12 gap-2 lg:gap-6"
+            >
+              {steps.map((s, idx) => (
+                <div key={s.n} className="flex-1 flex items-start">
+                  <div className="flex flex-col items-center text-center w-full">
+                    {/* Icon Square Wrapper */}
+                    <div className="w-16 h-16 rounded-[18px] lg:w-24 lg:h-24 lg:rounded-[24px] bg-slate-900/5 border border-line text-ink flex items-center justify-center mb-4 shadow-[0_4px_16px_rgba(0,0,0,0.02)] hover:bg-slate-900/10 hover:shadow-md transition-all duration-300">
+                      {s.icon}
+                    </div>
+                    {/* Caption Labels */}
+                    <p className="text-[13px] lg:text-[16px] font-bold text-ink leading-tight">
+                      {s.label}
+                    </p>
+                    <p className="text-[12px] lg:text-[14px] font-medium text-ink-soft leading-normal mt-0.5">
+                      {s.sublabel}
+                    </p>
+                  </div>
+
+                  {/* Flow Arrow (skip for final card) */}
+                  {idx < steps.length - 1 && (
+                    <div className="text-ink-faint flex items-center justify-center pt-5 lg:pt-9 px-1 sm:px-2 md:px-4 self-start">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 lg:w-6 lg:h-6">
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <polyline points="12 5 19 12 12 19" />
+                      </svg>
+                    </div>
+                  )}
                 </div>
               ))}
             </motion.div>
           </div>
 
-          {/* Right Column: One Video Space */}
-          <div className="lg:col-span-7 flex justify-center w-full">
+          {/* Right Column: Video in Classic Phone Frame mockup */}
+          <div className="lg:col-span-5 flex justify-center w-full">
             <motion.div
               {...rise(0.12)}
-              className="relative rounded-[24px] overflow-hidden shadow-[0_20px_50px_rgba(10,14,26,0.15)] aspect-[9/16] w-full max-w-[320px] md:max-w-[340px] bg-slate-900 border border-line"
+              className="relative mx-auto w-full max-w-[310px] sm:max-w-[325px] aspect-[9/18.5] rounded-[40px] bg-black pt-[44px] pb-[54px] px-[12px] shadow-[0_25px_60px_rgba(0,0,0,0.35)] ring-1 ring-white/10"
             >
-              <video
-                className="absolute inset-0 w-full h-full object-cover"
-                src="/video/moments-reel.mp4"
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
-              <div className="absolute bottom-6 left-6 right-6 text-white z-10">
-                <p className="text-[12px] font-semibold tracking-wider uppercase text-white/70 mb-1">Instant Share</p>
-                <h3 className="text-[18px] font-bold leading-tight">Your Gameplay, Auto-Delivered</h3>
+              {/* Top Speaker Slot */}
+              <div className="absolute top-[20px] left-1/2 -translate-x-1/2 w-16 h-1.5 bg-zinc-850 rounded-full" />
+
+              {/* Inner Screen Viewport (Rectangular/Sharp corners) */}
+              <div className="relative w-full h-full bg-slate-900 overflow-hidden border border-zinc-900/60">
+                <video
+                  className="absolute inset-0 w-full h-full object-cover"
+                  src="/video/moments-reel.mp4"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                />
+                
+                {/* Vignette bottom-glow */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+
+                {/* Bottom Title Overlay */}
+                <div className="absolute bottom-6 left-5 right-5 text-white z-10">
+                  <p className="text-[10px] font-bold tracking-widest uppercase text-white/70 mb-1">Instant Share</p>
+                  <h3 className="text-[15px] font-black leading-tight drop-shadow-sm">Your Gameplay, Auto-Delivered</h3>
+                </div>
+              </div>
+
+              {/* Bottom Home Button */}
+              <div className="absolute bottom-[9px] left-1/2 -translate-x-1/2 w-9 h-9 rounded-full border border-zinc-800 bg-black flex items-center justify-center">
+                <div className="w-[30px] h-[30px] rounded-full border border-zinc-900 bg-transparent" />
               </div>
             </motion.div>
           </div>

@@ -15,11 +15,11 @@ const specs = [
     ),
   },
   {
-    label: "Power",
-    value: "2.5 kW",
+    label: "Gameplay",
+    value: "3-6 mins",
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" />
+        <polygon points="5 3 19 12 5 21 5 3" />
       </svg>
     ),
   },

@@ -13,7 +13,7 @@ const FOOTPRINT_SQM = 25;
 function formatMoney(usd: number, symbol: string, rate: number): string {
   const v = Math.round(usd * rate);
   if (v >= 1_000_000) {
-    const millions = Math.round(v / 1_000_000);
+    const millions = Number((v / 1_000_000).toFixed(1));
     return `${symbol}${millions}M`;
   }
   return `${symbol}${v.toLocaleString()}`;
