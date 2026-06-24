@@ -103,7 +103,7 @@ export default function HeroSection() {
             {[
               { value: "100+", label: "Locations" },
               { value: "10+", label: "Countries" },
-              { value: "3 mo", label: "Avg payback" },
+              { value: "3 months", label: "ROI" },
             ].map(({ value, label }) => (
               <div key={label}>
                 <p className="text-[26px] font-extrabold text-white leading-none tnum">{value}</p>
