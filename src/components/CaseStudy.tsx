@@ -64,11 +64,11 @@ export default function CaseStudy() {
             <h2 className="text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">
               Texas FEC Chain Case Study
             </h2>
-            {code !== "USD" && (
+            {/* {code !== "USD" && (
               <p className="text-[13px] text-ink-faint mt-1">
                 Showing in <span className="font-semibold text-ink-soft">{code}</span> · approximate conversion
               </p>
-            )}
+            )} */}
           </div>
         </motion.div>
 

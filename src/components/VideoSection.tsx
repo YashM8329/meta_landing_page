@@ -95,26 +95,25 @@ export default function VideoSection() {
           className="relative z-10 flex-1 lg:flex-none rounded-[13px] overflow-hidden shadow-[0_20px_50px_rgba(10,14,26,0.18)] min-h-0 lg:w-[691px] xl:w-[806px]"
           style={{ maxHeight: "calc(100dvh - 8rem)", aspectRatio: "16/9" }}
         >
+          <video
+            ref={videoRef}
+            className="absolute inset-0 w-full h-full object-cover"
+            src="/video/hypergrid-reel.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+          />
           <button
             type="button"
             onClick={toggleMute}
             aria-label={muted ? "Unmute video" : "Mute video"}
-            className="absolute inset-0 w-full h-full cursor-pointer"
-          >
-            <video
-              ref={videoRef}
-              className="absolute inset-0 w-full h-full object-cover"
-              src="/video/hypergrid-reel.mp4"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-            />
-            <AnimatePresence>
-              <MuteIcon />
-            </AnimatePresence>
-          </button>
+            className="absolute inset-0 w-full h-full cursor-pointer bg-transparent z-10"
+          />
+          <AnimatePresence>
+            <MuteIcon />
+          </AnimatePresence>
         </motion.div>
       </div>
     </section>

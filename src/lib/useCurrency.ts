@@ -6,6 +6,7 @@ export interface CurrencyInfo {
   symbol: string;
   code: string;
   rate: number; // vs USD
+  countryName?: string;
 }
 
 const DEFAULT: CurrencyInfo = { symbol: "$", code: "USD", rate: 1 };
@@ -38,7 +39,9 @@ export function useCurrency(): CurrencyInfo {
       .then((r) => r.json())
       .then((data) => {
         const code = typeof data?.currency === "string" ? data.currency : "";
-        setCurrency(CURRENCIES[code] ?? DEFAULT);
+        const country = typeof data?.country_name === "string" ? data.country_name : "";
+        const cur = CURRENCIES[code] ?? DEFAULT;
+        setCurrency({ ...cur, countryName: country });
       })
       .catch(() => {/* keep default USD */});
   }, []);
