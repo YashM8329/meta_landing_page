@@ -25,7 +25,7 @@ export default function HeroSection() {
   return (
     <section
       id="hero"
-      className="min-h-[100svh] lg:min-h-dvh relative hero-abyss flex flex-col justify-start lg:justify-center overflow-hidden py-[28px] mb-[0px] lg:mb-0"
+      className="min-h-[100svh] lg:min-h-dvh relative hero-abyss flex flex-col justify-center overflow-hidden py-[28px] mb-[0px] lg:mb-0"
       aria-label="Hero"
     >
       {/* white LED grid lines + film grain */}
@@ -41,7 +41,7 @@ export default function HeroSection() {
         transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      <div className="max-w-[1440px] mx-auto w-full relative z-10 flex flex-col lg:flex-row items-center justify-center lg:justify-between px-6 xl:px-0 gap-0 lg:gap-16">
+      <div className="max-w-[1440px] mx-auto w-full relative z-10 flex flex-col lg:flex-row items-center justify-center lg:justify-between px-6 xl:px-0 gap-8 sm:gap-12 lg:gap-16">
         {/* Text column */}
         <motion.div
           variants={container}
@@ -81,7 +81,7 @@ export default function HeroSection() {
           {/* Big Stacked Action Headlines */}
           <motion.div
             variants={item}
-            className="flex flex-col text-[38px] sm:text-[56px] md:text-[68px] font-black tracking-tight leading-[1.02] uppercase mb-2 lg:mb-8 text-white w-full text-left"
+            className="flex flex-col text-[38px] sm:text-[56px] md:text-[68px] font-black tracking-tight leading-[1.02] uppercase mb-6 sm:mb-10 lg:mb-8 text-white w-full text-left"
           >
             <span>PLAY.</span>
             <span>COMPETE.</span>
@@ -181,7 +181,7 @@ export default function HeroSection() {
           {/* Mobile-only Stats Grid matching mockup */}
           <motion.div 
             variants={item}
-            className="lg:hidden grid grid-cols-3 gap-2 sm:gap-3 -mt-3 w-full"
+            className="lg:hidden grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 mt-4 sm:mt-6 lg:mt-0 w-full"
           >
             {/* Card 1: Venues */}
             <div className="bg-white rounded-2xl p-3 sm:p-4 flex flex-col gap-0.5 shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
