@@ -9,7 +9,7 @@ const steps = [
     label: "Two cameras",
     sublabel: "record gameplay",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 lg:w-7 lg:h-7">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 lg:w-7 lg:h-7">
         <path d="M23 7l-7 5 7 5V7z" />
         <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
       </svg>
@@ -20,7 +20,7 @@ const steps = [
     label: "Scan the QR",
     sublabel: "after gameplay",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 lg:w-7 lg:h-7">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 lg:w-7 lg:h-7">
         <rect x="3" y="3" width="6" height="6" rx="1" />
         <rect x="15" y="3" width="6" height="6" rx="1" />
         <rect x="15" y="15" width="6" height="6" rx="1" />
@@ -34,7 +34,7 @@ const steps = [
     label: "Download & share",
     sublabel: "on social media",
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 lg:w-7 lg:h-7">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 lg:w-7 lg:h-7">
         <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
         <polyline points="16 6 12 2 8 6" />
         <line x1="12" y1="2" x2="12" y2="15" />
@@ -55,7 +55,7 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
   return (
     <section
       id="moments-ai"
-      className="min-h-0 lg:py-16 relative flex flex-col justify-center pt-8 pb-10 overflow-hidden"
+      className="min-h-0 lg:py-16 relative flex flex-col justify-center pt-8 pb-7 overflow-hidden"
       aria-label="Moments AI"
     >
       <div className="max-w-[1440px] mx-auto w-full px-6">
@@ -63,19 +63,19 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
           {/* Left Column: Title, Subtitle, and Horizontal Steps */}
           <div className="lg:col-span-7 flex flex-col justify-center">
             <motion.div {...rise()} className="mb-2 text-left">
-              <h2 className="text-[clamp(32px,7vw,48px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-ink mb-2">
+              <h2 className="text-[clamp(32px,7vw,48px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-ink mb-0">
                 Moments{" "}
                 <Typewriter words={["Videos", "Photos"]} className="text-accent" />
               </h2>
-              <p className="text-[17px] font-semibold text-ink-soft tracking-tight">
+              {/* <p className="text-[17px] font-semibold text-ink-soft tracking-tight">
                 Relive. Share. Repeat.
-              </p>
+              </p> */}
             </motion.div>
 
             {/* Horizontal Timeline Steps */}
             <motion.div 
               {...rise(0.05)} 
-              className="flex items-start justify-between w-full mt-10 md:mt-12 gap-2 lg:gap-6"
+              className="flex items-start justify-between w-full mt-5 md:mt-12 gap-2 lg:gap-6"
             >
               {steps.map((s, idx) => (
                 <div key={s.n} className="flex-1 flex items-start">
@@ -111,7 +111,7 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
           <div className="lg:col-span-5 flex justify-center w-full">
             <motion.div
               {...rise(0.12)}
-              className="relative mx-auto w-full max-w-[310px] sm:max-w-[325px] aspect-[9/18.5] rounded-[40px] bg-black pt-[44px] pb-[54px] px-[12px] shadow-[0_25px_60px_rgba(0,0,0,0.35)] ring-1 ring-white/10"
+              className="relative mx-auto w-full max-w-[310px] sm:max-w-[325px] aspect-[9/18.5] rounded-[40px] bg-black pt-[44px] pb-[54px] px-[12px] ring-1 ring-white/10"
             >
               {/* Top Speaker Slot */}
               <div className="absolute top-[20px] left-1/2 -translate-x-1/2 w-16 h-1.5 bg-zinc-850 rounded-full" />

@@ -50,7 +50,7 @@ export default function Home() {
 
       <main className="page-canvas min-h-screen relative">
         <HeroSection />
-        <VideoSection />
+        {/* <VideoSection /> */}
         <KeyFeaturesSection cards={featureCards} />
         <MomentsSection cards={momentsCards} />
         <InstagramCarousel items={venueReels} title="100+ Locations Worldwide" sectionId="locations" />

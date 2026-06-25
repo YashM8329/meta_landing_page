@@ -59,7 +59,7 @@ export default function KeyFeaturesSection({ cards }: { cards: CarouselCard[] })
   return (
     <section
       id="features"
-      className="min-h-0 lg:py-16 relative flex flex-col justify-center pt-8 pb-10 overflow-hidden"
+      className="min-h-0 lg:py-16 relative flex flex-col justify-center pt-8 pb-7 overflow-hidden"
       aria-label="Key Features"
     >
       <div className="max-w-[1440px] mx-auto w-full px-6">
@@ -75,7 +75,7 @@ export default function KeyFeaturesSection({ cards }: { cards: CarouselCard[] })
         </div>
 
         {/* Specs Grid */}
-        <motion.div 
+        {/* <motion.div 
           {...rise(0.05)} 
           className="mt-8 grid grid-cols-2 lg:grid-cols-4 gap-4 w-full"
         >
@@ -85,22 +85,22 @@ export default function KeyFeaturesSection({ cards }: { cards: CarouselCard[] })
               className="group rounded-[18px] border border-line bg-white/70 backdrop-blur-md p-5 shadow-[0_8px_30px_rgba(0,0,0,0.015)] hover:shadow-[0_15px_45px_rgba(29,108,239,0.08)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
             >
               {/* Top Row: Icon + Label */}
-              <div className="flex items-center gap-3">
+              {/* <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-accent/10 text-accent flex items-center justify-center transition-colors duration-300 group-hover:bg-accent group-hover:text-white">
                   {s.icon}
                 </div>
                 <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-ink-faint">
                   {s.label}
                 </span>
-              </div>
+              </div> */}
               
               {/* Bottom Value */}
-              <p className="text-[26px] font-black tracking-tight text-ink tnum mt-4">
+              {/* <p className="text-[26px] font-black tracking-tight text-ink tnum mt-4">
                 {s.value}
-              </p>
-            </div>
-          ))}
-        </motion.div>
+              </p> */}
+            {/* </div> */}
+          {/* ))} */}
+        {/* </motion.div> */}
       </div>
     </section>
   );

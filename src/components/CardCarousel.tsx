@@ -217,7 +217,7 @@ export default function CardCarousel({ cards }: { cards: CarouselCard[] }) {
   }, [trackCards.length, cards.length]);
 
   return (
-    <div className="marquee-container py-4 select-none">
+    <div className="marquee-container select-none">
       <div ref={scrollRef} className="marquee-scroll">
         {trackCards.map((card, i) => (
           <div
