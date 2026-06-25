@@ -26,7 +26,6 @@ function CardContent({ card }: { card: CarouselCard }) {
               src={card.image}
               alt={card.label}
               fill
-              unoptimized
               className="object-cover object-bottom"
               sizes="(min-width: 1024px) 25vw, 70vw"
             />

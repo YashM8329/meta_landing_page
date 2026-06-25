@@ -144,7 +144,6 @@ export default function HeroSection() {
                 width={1300}
                 height={797}
                 priority
-                unoptimized
                 className="w-full h-auto drop-shadow-[0_30px_60px_rgba(0,0,0,0.5)] scale-105 sm:scale-110 lg:scale-100 relative -top-3 lg:top-0"
               />
             </motion.div>

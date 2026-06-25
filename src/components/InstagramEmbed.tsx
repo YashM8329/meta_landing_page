@@ -15,9 +15,15 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // Play when in view, pause when out of view
+  // Prevent hydration mismatch from browser extensions that inject around <video> tags
+  useEffect(() => { setMounted(true); }, []);
+
+  // Play when in view, pause when out of view.
+  // Depends on `mounted` so it runs after the <video> element is in the DOM.
   useEffect(() => {
+    if (!mounted) return;
     const video = videoRef.current;
     if (!video) return;
 
@@ -30,12 +36,12 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
           setIsPlaying(false);
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.1 }
     );
 
     observer.observe(video);
     return () => observer.disconnect();
-  }, []);
+  }, [mounted]);
 
   const handleVideoPress = () => {
     const video = videoRef.current;
@@ -54,17 +60,19 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
       ref={containerRef}
       className="relative rounded-[16px] overflow-hidden border border-white/10 bg-slate-950 shadow-[0_15px_35px_rgba(0,0,0,0.3)] aspect-[9/16] w-full group select-none"
     >
-      {/* HTML5 Video element */}
-      <video
-        ref={videoRef}
-        className="absolute inset-0 w-full h-full object-cover cursor-pointer"
-        src={videoSrc}
-        loop
-        muted
-        playsInline
-        preload="metadata"
-        onClick={handleVideoPress}
-      />
+      {/* HTML5 Video element — only rendered client-side to avoid extension hydration conflicts */}
+      {mounted && (
+        <video
+          ref={videoRef}
+          className="absolute inset-0 w-full h-full object-cover cursor-pointer"
+          src={videoSrc}
+          loop
+          muted
+          playsInline
+          preload="none"
+          onClick={handleVideoPress}
+        />
+      )}
 
       {/* Play/Pause icon indicator when paused */}
       {!isPlaying && (

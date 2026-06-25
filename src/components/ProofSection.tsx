@@ -66,6 +66,7 @@ function TestimonialCardInner({ t, className = "" }: { t: Testimonial; className
         <img
           src={t.photo}
           alt={t.name}
+          loading="lazy"
           onError={() => setImgOk(false)}
           className="absolute inset-0 w-full h-full object-cover object-top"
         />
@@ -87,7 +88,7 @@ function TestimonialCardInner({ t, className = "" }: { t: Testimonial; className
             <p className="text-white font-bold text-[17px] lg:text-[32px] leading-tight">{t.name}</p>
             <span className="bg-white rounded-md h-9 px-2.5 flex items-center shrink-0">
               <span className="relative h-5 w-[82px]">
-                <Image src={t.logo} alt={t.logoAlt} fill unoptimized sizes="100px" className="object-contain" />
+                <Image src={t.logo} alt={t.logoAlt} fill sizes="100px" className="object-contain" />
               </span>
             </span>
           </div>
@@ -203,7 +204,7 @@ export default function ProofSection() {
           {logos.map((logo) => (
             <div key={logo.src} className="h-[64px] rounded-[12px] bg-white border border-line flex items-center justify-center px-5">
               <div className="relative h-8 w-full">
-                <Image src={logo.src} alt={logo.alt} fill unoptimized sizes="150px" className="object-contain" />
+                <Image src={logo.src} alt={logo.alt} fill sizes="150px" className="object-contain" />
               </div>
             </div>
           ))}

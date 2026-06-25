@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import Typewriter from "./Typewriter";
 
@@ -45,6 +46,21 @@ const steps = [
 
 export default function MomentsSection({ cards }: { cards?: any } = {}) {
   const reduce = useReducedMotion();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch from browser extensions that inject around <video> tags.
+  // Video src is set directly in JSX once mounted — no IntersectionObserver delay.
+  useEffect(() => { setMounted(true); }, []);
+
+  // Start playback as soon as the video element is in the DOM
+  useEffect(() => {
+    if (!mounted) return;
+    const v = videoRef.current;
+    if (!v) return;
+    v.play().catch(() => {});
+  }, [mounted]);
+
   const rise = (delay = 0) => ({
     initial: { opacity: 0, y: reduce ? 0 : 20 },
     whileInView: { opacity: 1, y: 0 },
@@ -118,15 +134,17 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
 
               {/* Inner Screen Viewport (Rectangular/Sharp corners) */}
               <div className="relative w-full h-full bg-slate-900 overflow-hidden border border-zinc-900/60">
-                <video
-                  className="absolute inset-0 w-full h-full object-cover"
-                  src="/video/moments-reel.mp4"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                />
+                {mounted && (
+                  <video
+                    ref={videoRef}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    src="/video/moments-reel.mp4"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                  />
+                )}
                 
                 {/* Vignette bottom-glow */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />

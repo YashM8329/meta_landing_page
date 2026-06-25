@@ -11,11 +11,24 @@ export default function VideoSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
   const [pulse, setPulse] = useState(0); // increments each tap to retrigger icon
+  const [mounted, setMounted] = useState(false);
 
   // Guarantee muted by default (React doesn't always reflect the `muted` attribute)
   useEffect(() => {
     if (videoRef.current) videoRef.current.muted = true;
   }, []);
+
+  // Prevent hydration mismatch from browser extensions that inject around <video> tags.
+  // Video src is set directly in JSX once mounted — no IntersectionObserver delay.
+  useEffect(() => { setMounted(true); }, []);
+
+  // Start playback as soon as the video element is in the DOM
+  useEffect(() => {
+    if (!mounted) return;
+    const v = videoRef.current;
+    if (!v) return;
+    v.play().catch(() => {});
+  }, [mounted]);
 
   const toggleMute = () => {
     const v = videoRef.current;
@@ -95,16 +108,17 @@ export default function VideoSection() {
           className="relative z-10 flex-1 lg:flex-none rounded-[13px] overflow-hidden shadow-[0_20px_50px_rgba(10,14,26,0.18)] min-h-0 lg:w-[691px] xl:w-[806px]"
           style={{ maxHeight: "calc(100svh - 8rem)", aspectRatio: "16/9" }}
         >
-          <video
-            ref={videoRef}
-            className="absolute inset-0 w-full h-full object-cover"
-            src="/video/hypergrid-reel.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-          />
+          {mounted && (
+            <video
+              ref={videoRef}
+              className="absolute inset-0 w-full h-full object-cover"
+              src="/video/hypergrid-reel.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+            />
+          )}
           <button
             type="button"
             onClick={toggleMute}
