@@ -85,7 +85,7 @@ export default function HeroSection() {
           >
             <span>PLAY.</span>
             <span>COMPETE.</span>
-            <span>CREATE</span>
+            <span>SHARE</span>
             <span className="text-[#000000]">MOMENTS.</span>
           </motion.div>
 
@@ -183,88 +183,39 @@ export default function HeroSection() {
             className="lg:hidden grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 mt-4 sm:mt-6 lg:mt-0 w-full"
           >
             {/* Card 1: Venues */}
-            <div className="bg-white rounded-2xl p-3 sm:p-4 flex flex-col gap-0.5 shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-[#ECEFFC] text-[#4f64b4] flex items-center justify-center flex-shrink-0">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                    <circle cx="12" cy="10" r="3" />
-                  </svg>
-                </div>
-                <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-[#8A95A5]">VENUES</span>
-              </div>
-              <p className="text-[16px] sm:text-[20px] font-black text-[#0A0A0A] tracking-tight mt-0.5">100+</p>
+            <div className="bg-white rounded-2xl p-3 sm:p-4 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
+              <p className="text-[20px] sm:text-[24px] font-black text-[#0A0A0A] tracking-tighter leading-none">100+</p>
+              <p className="text-[10px] sm:text-[12px] font-bold text-[#8A95A5] mt-1.5 leading-tight">Venues</p>
             </div>
 
             {/* Card 2: Countries */}
-            <div className="bg-white rounded-2xl p-3 sm:p-4 flex flex-col gap-0.5 shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-[#ECEFFC] text-[#4f64b4] flex items-center justify-center flex-shrink-0">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10" />
-                    <line x1="2" y1="12" x2="22" y2="12" />
-                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                  </svg>
-                </div>
-                <span className="text-[8px] sm:text-[9.5px] font-extrabold uppercase tracking-wider text-[#8A95A5]">COUNTRIES</span>
-              </div>
-              <p className="text-[16px] sm:text-[20px] font-black text-[#0A0A0A] tracking-tight mt-0.5">10+</p>
+            <div className="bg-white rounded-2xl p-3 sm:p-4 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
+              <p className="text-[20px] sm:text-[24px] font-black text-[#0A0A0A] tracking-tighter leading-none">10+</p>
+              <p className="text-[10px] sm:text-[12px] font-bold text-[#8A95A5] mt-1.5 leading-tight">Countries</p>
             </div>
 
             {/* Card 3: Players */}
-            <div className="bg-white rounded-2xl p-3 sm:p-4 flex flex-col gap-0.5 shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-[#ECEFFC] text-[#4f64b4] flex items-center justify-center flex-shrink-0">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                    <circle cx="9" cy="7" r="4" />
-                  </svg>
-                </div>
-                <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-[#8A95A5]">PLAYERS</span>
-              </div>
-              <p className="text-[16px] sm:text-[20px] font-black text-[#0A0A0A] tracking-tight mt-0.5">1-6</p>
+            <div className="bg-white rounded-2xl p-3 sm:p-4 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
+              <p className="text-[20px] sm:text-[24px] font-black text-[#0A0A0A] tracking-tighter leading-none">1-6</p>
+              <p className="text-[10px] sm:text-[12px] font-bold text-[#8A95A5] mt-1.5 leading-tight">Players</p>
             </div>
 
             {/* Card 4: Gameplay */}
-            <div className="bg-white rounded-2xl p-3 sm:p-4 flex flex-col gap-0.5 shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-[#ECEFFC] text-[#4f64b4] flex items-center justify-center flex-shrink-0">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="ml-0.5">
-                    <polygon points="6 3 20 12 6 21 6 3" />
-                  </svg>
-                </div>
-                <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-[#8A95A5]">GAMEPLAY</span>
-              </div>
-              <p className="text-[16px] sm:text-[20px] font-black text-[#0A0A0A] tracking-tight mt-0.5">3-6 mins</p>
+            <div className="bg-white rounded-2xl p-3 sm:p-4 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
+              <p className="text-[20px] sm:text-[24px] font-black text-[#0A0A0A] tracking-tighter leading-none">3-6 Min</p>
+              <p className="text-[10px] sm:text-[12px] font-bold text-[#8A95A5] mt-1.5 leading-tight">Gameplay</p>
             </div>
 
             {/* Card 5: Age */}
-            <div className="bg-white rounded-2xl p-3 sm:p-4 flex flex-col gap-0.5 shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-[#ECEFFC] text-[#4f64b4] flex items-center justify-center flex-shrink-0">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 12 16 14" />
-                  </svg>
-                </div>
-                <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-[#8A95A5]">AGE</span>
-              </div>
-              <p className="text-[16px] sm:text-[20px] font-black text-[#0A0A0A] tracking-tight mt-0.5">4+ years</p>
+            <div className="bg-white rounded-2xl p-3 sm:p-4 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
+              <p className="text-[20px] sm:text-[24px] font-black text-[#0A0A0A] tracking-tighter leading-none">4+ Yrs</p>
+              <p className="text-[10px] sm:text-[12px] font-bold text-[#8A95A5] mt-1.5 leading-tight">Age</p>
             </div>
 
             {/* Card 6: Area */}
-            <div className="bg-white rounded-2xl p-3 sm:p-4 flex flex-col gap-0.5 shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-[#ECEFFC] text-[#4f64b4] flex items-center justify-center flex-shrink-0">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2" />
-                    <path d="M9 3v18" strokeWidth="1.5" opacity="0.6" />
-                    <path d="M3 9h18" strokeWidth="1.5" opacity="0.6" />
-                  </svg>
-                </div>
-                <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-[#8A95A5]">AREA</span>
-              </div>
-              <p className="text-[16px] sm:text-[20px] font-black text-[#0A0A0A] tracking-tight mt-0.5">25 sqm</p>
+            <div className="bg-white rounded-2xl p-3 sm:p-4 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
+              <p className="text-[20px] sm:text-[24px] font-black text-[#0A0A0A] tracking-tighter leading-none">25 Sqm</p>
+              <p className="text-[10px] sm:text-[12px] font-bold text-[#8A95A5] mt-1.5 leading-tight">Area</p>
             </div>
           </motion.div>
         </motion.div>

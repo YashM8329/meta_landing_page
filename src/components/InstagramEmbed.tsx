@@ -58,7 +58,7 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
   return (
     <div
       ref={containerRef}
-      className="relative rounded-[16px] overflow-hidden border border-white/10 bg-slate-950 shadow-[0_15px_35px_rgba(0,0,0,0.3)] aspect-[9/16] w-full group select-none"
+      className="relative rounded-[16px] overflow-hidden border border-white/10 bg-slate-950 aspect-[9/16] w-full group select-none"
     >
       {/* HTML5 Video element — only rendered client-side to avoid extension hydration conflicts */}
       {mounted && (
