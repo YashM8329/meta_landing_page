@@ -16,30 +16,40 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [hasIntersected, setHasIntersected] = useState(false);
 
   // Prevent hydration mismatch from browser extensions that inject around <video> tags
   useEffect(() => { setMounted(true); }, []);
 
-  // Play when in view, pause when out of view.
-  // Depends on `mounted` so it runs after the <video> element is in the DOM.
+  // Play when in view, pause when out of view, and only load video when close to viewport.
   useEffect(() => {
     if (!mounted) return;
-    const video = videoRef.current;
-    if (!video) return;
+    const container = containerRef.current;
+    if (!container) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          video.play().then(() => setIsPlaying(true)).catch(() => {});
+          setHasIntersected(true);
+          // Play video after a brief tick to allow source assignment to settle if newly intersected
+          setTimeout(() => {
+            const video = videoRef.current;
+            if (video && entry.isIntersecting) {
+              video.play().then(() => setIsPlaying(true)).catch(() => {});
+            }
+          }, 50);
         } else {
-          video.pause();
-          setIsPlaying(false);
+          const video = videoRef.current;
+          if (video) {
+            video.pause();
+            setIsPlaying(false);
+          }
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.05, rootMargin: "150px" }
     );
 
-    observer.observe(video);
+    observer.observe(container);
     return () => observer.disconnect();
   }, [mounted]);
 
@@ -60,12 +70,12 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
       ref={containerRef}
       className="relative rounded-[16px] overflow-hidden border border-white/10 bg-slate-950 aspect-[9/16] w-full group select-none"
     >
-      {/* HTML5 Video element — only rendered client-side to avoid extension hydration conflicts */}
+      {/* HTML5 Video element — only loaded when intersecting the viewport */}
       {mounted && (
         <video
           ref={videoRef}
           className="absolute inset-0 w-full h-full object-cover cursor-pointer"
-          src={videoSrc}
+          src={hasIntersected ? videoSrc : undefined}
           loop
           muted
           playsInline
