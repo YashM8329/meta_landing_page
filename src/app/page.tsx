@@ -11,6 +11,7 @@ import BrochureForm from "@/components/BrochureForm";
 import { CarouselCard } from "@/components/CardCarousel";
 import StickyFooterCTA from "@/components/StickyFooterCTA";
 import SmoothScroll from "@/components/SmoothScroll";
+import Footer from "@/components/Footer";
 
 /* S3 — Key Features (7 cards). Blue-family gradients. */
 const featureCards: CarouselCard[] = [
@@ -59,6 +60,8 @@ export default function Home() {
         <CaseStudy />
         <BrochureForm />
       </main>
+
+      <Footer />
 
       {/* <StickyFooterCTA /> */}
     </>
