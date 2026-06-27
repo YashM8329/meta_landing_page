@@ -166,7 +166,7 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
 
             {/* Vinyl record spinning */}
             <div className="w-7 h-7 rounded-full bg-slate-900 border-2 border-white flex items-center justify-center overflow-hidden animate-spin-slow shadow-md cursor-pointer mt-1">
-              <div className="w-3 h-3 rounded-full bg-black border border-white/20" />
+              <img src="/logos/logo.png" alt="FOG Audio" className="w-4.5 h-4.5 object-contain" />
             </div>
           </div>
         </div>

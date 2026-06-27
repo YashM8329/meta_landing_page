@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 export default function NavBar() {
   const [visible, setVisible] = useState(false);
@@ -87,12 +88,24 @@ export default function NavBar() {
           </div>
           <a
             href="#brochure-form"
-            className="btn-glass-accent text-white text-[14px] font-semibold px-5 py-2.5 rounded-lg flex items-center gap-1.5"
+            className="relative text-white text-[14px] font-semibold px-5 py-2.5 rounded-lg flex items-center justify-center gap-1.5 overflow-hidden shadow-md select-none bg-gradient-to-r from-[#1D6CEF] via-[#2f74e6] to-[#1D6CEF] hover:brightness-105 active:scale-[0.98] transition-all duration-150"
           >
-            Get Brochure
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            {/* Halftone pattern overlay denser on left and right flanks (white dots) */}
+            <div 
+              className="absolute inset-0 opacity-40 pointer-events-none"
+              style={{
+                backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.7) 1.5px, transparent 2px)',
+                backgroundSize: '6px 6px',
+                WebkitMaskImage: 'linear-gradient(to right, black 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.05) 65%, black 100%)',
+                maskImage: 'linear-gradient(to right, black 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.05) 65%, black 100%)',
+              }}
+            />
+            <div className="flex items-center justify-center gap-1.5 relative z-10">
+              Get Brochure
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
           </a>
         </div>
       </div>

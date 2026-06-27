@@ -25,10 +25,10 @@ const featureCards: CarouselCard[] = [
 
 /* S4 — Moments AI (4 cards) */
 const momentsCards: CarouselCard[] = [
-  { label: "Auto-Edited", sublabel: "Pro VFX and trending music", gradient: "linear-gradient(160deg,#08142e 0%,#0f2e6e 55%,#1d6cef 100%)", accentGlow: "rgba(29,108,239,0.5)" },
-  { label: "Auto-Branded", sublabel: "Your logo and location baked in", gradient: "linear-gradient(160deg,#0a1638 0%,#143a8c 55%,#3f86f0 100%)", accentGlow: "rgba(63,134,240,0.45)" },
-  { label: "Drives Footfall", sublabel: "Every share brings new players in", gradient: "linear-gradient(160deg,#07112a 0%,#0d2c6b 55%,#2a6ee6 100%)", accentGlow: "rgba(42,110,230,0.45)" },
-  { label: "Always On-Trend", sublabel: "Templates refreshed to match trends", gradient: "linear-gradient(160deg,#081530 0%,#0f2f72 55%,#246ae0 100%)", accentGlow: "rgba(36,106,224,0.45)" },
+  { label: "Auto-Edited", sublabel: "Professional gameplay highlights", gradient: "linear-gradient(160deg,#08142e 0%,#0f2e6e 55%,#1d6cef 100%)", accentGlow: "rgba(29,108,239,0.5)" },
+  { label: "Geo-Branded", sublabel: "Your FEC logo and location watermarked", gradient: "linear-gradient(160deg,#0a1638 0%,#143a8c 55%,#3f86f0 100%)", accentGlow: "rgba(63,134,240,0.45)" },
+  { label: "Local Traffic", sublabel: "Every share acts as a local referral", gradient: "linear-gradient(160deg,#07112a 0%,#0d2c6b 55%,#2a6ee6 100%)", accentGlow: "rgba(42,110,230,0.45)" },
+  { label: "Zero-Cost Acquisition", sublabel: "Turn player reach into free marketing", gradient: "linear-gradient(160deg,#081530 0%,#0f2f72 55%,#246ae0 100%)", accentGlow: "rgba(36,106,224,0.45)" },
 ];
 
 /* S5 — Locations: international reels (provided by business) */

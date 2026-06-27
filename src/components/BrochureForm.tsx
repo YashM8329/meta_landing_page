@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import PhoneInput, { Country } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { isValidPhoneNumber } from "libphonenumber-js";
@@ -30,6 +31,35 @@ interface FieldError {
 }
 
 const COUNTRIES = Object.values(en).sort();
+
+const COUNTRY_PHONE_SPECS: Record<string, { code: string; length: number | number[] }> = {
+  "United States": { code: "+1", length: 10 },
+  "Canada": { code: "+1", length: 10 },
+  "India": { code: "+91", length: 10 },
+  "United Arab Emirates": { code: "+971", length: 9 },
+  "UAE": { code: "+971", length: 9 },
+  "United Kingdom": { code: "+44", length: [10, 11] },
+  "Australia": { code: "+61", length: 9 },
+  "Germany": { code: "+49", length: [10, 11] },
+  "France": { code: "+33", length: 9 },
+  "Singapore": { code: "+65", length: 8 },
+  "Saudi Arabia": { code: "+966", length: 9 },
+  "Qatar": { code: "+974", length: 8 },
+  "Kuwait": { code: "+965", length: 8 },
+  "Oman": { code: "+968", length: 8 },
+  "Bahrain": { code: "+973", length: 8 },
+  "New Zealand": { code: "+64", length: [8, 9, 10] },
+  "South Africa": { code: "+27", length: 9 },
+  "Japan": { code: "+81", length: [9, 10] },
+  "China": { code: "+86", length: 11 },
+  "Brazil": { code: "+55", length: [10, 11] },
+  "Mexico": { code: "+52", length: 10 },
+  "Ireland": { code: "+353", length: 9 },
+  "Netherlands": { code: "+31", length: 9 },
+  "Spain": { code: "+34", length: 9 },
+  "Italy": { code: "+39", length: [9, 10] }
+};
+
 const inputBase = "w-full h-[50px] rounded-lg border px-4 text-[15px] text-ink placeholder-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/40 transition-all duration-150";
 const selectArrow = `url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%235B6472' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`;
 
@@ -140,8 +170,50 @@ export default function BrochureForm() {
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = "Please enter a valid email address.";
     if (!form.phone.trim()) {
       e.phone = "Phone number is required.";
-    } else if (!isValidPhoneNumber(form.phone)) {
-      e.phone = "Please enter a valid phone number with correct digits for the country.";
+    } else {
+      // Normalize number (remove spaces, dashes, parens, keep digits and +)
+      const digitsOnly = form.phone.replace(/[^\d+]/g, "");
+      const selectedCountry = form.country.trim();
+      const spec = COUNTRY_PHONE_SPECS[selectedCountry];
+      
+      if (spec) {
+        let nationalNumber = digitsOnly;
+        // Strip country code if present
+        if (digitsOnly.startsWith(spec.code)) {
+          nationalNumber = digitsOnly.substring(spec.code.length);
+        } else if (digitsOnly.startsWith("+")) {
+          // If phone starts with another country code (e.g. user selected different flag in the dialer)
+          const matchedCode = Object.values(COUNTRY_PHONE_SPECS)
+            .map(s => s.code)
+            .find(code => digitsOnly.startsWith(code));
+          if (matchedCode) {
+            nationalNumber = digitsOnly.substring(matchedCode.length);
+          }
+        }
+        
+        // Strip leading zero if present (common local prefix)
+        if (nationalNumber.startsWith("0")) {
+          nationalNumber = nationalNumber.substring(1);
+        }
+
+        const len = nationalNumber.length;
+        const expectedLengths = Array.isArray(spec.length) ? spec.length : [spec.length];
+        const maxExpected = Math.max(...expectedLengths);
+        const minExpected = Math.min(...expectedLengths);
+
+        if (len > maxExpected) {
+          e.phone = `Maximum digit count allowed for ${selectedCountry} ${maxExpected} digits.`;
+        } else if (len < minExpected) {
+          e.phone = `Minimum digit count allowed for ${selectedCountry} ${minExpected} digits.`;
+        } else if (!isValidPhoneNumber(form.phone)) {
+          e.phone = "Please enter a valid phone number with correct digits for the country.";
+        }
+      } else {
+        // Fallback for non-mapped countries using general library validation
+        if (!isValidPhoneNumber(form.phone)) {
+          e.phone = "Please enter a valid phone number with correct digits for the country.";
+        }
+      }
     }
     if (!form.venueStatus) e.venueStatus = "Please select a venue status.";
     if (form.venueStatus === "other" && !form.venueStatusOther.trim()) e.venueStatusOther = "Please specify details or location.";
@@ -429,21 +501,43 @@ export default function BrochureForm() {
             </div>
 
             <button type="submit" disabled={submitting} aria-busy={submitting}
-              className="btn-glass-accent w-full h-[54px] text-white font-semibold text-[16px] rounded-lg flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent mt-2">
+              className="relative w-full h-[54px] text-white font-semibold text-[16px] rounded-lg flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent mt-2 overflow-hidden shadow-lg select-none bg-gradient-to-r from-[#1D6CEF] via-[#2f74e6] to-[#1D6CEF] hover:brightness-105 active:scale-[0.98] transition-all duration-150">
+              
+              {/* Halftone pattern overlay denser on left and right flanks (white dots) */}
+              <div 
+                className="absolute inset-0 opacity-40 pointer-events-none"
+                style={{
+                  backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.7) 1.5px, transparent 2px)',
+                  backgroundSize: '6px 6px',
+                  WebkitMaskImage: 'linear-gradient(to right, black 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.05) 65%, black 100%)',
+                  maskImage: 'linear-gradient(to right, black 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.05) 65%, black 100%)',
+                }}
+              />
+
               {submitting ? (
-                <>
+                <div className="flex items-center gap-2 relative z-10">
                   <svg className="animate-spin" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
                     <circle cx="9" cy="9" r="7" stroke="currentColor" strokeOpacity="0.3" strokeWidth="2" />
                     <path d="M9 2a7 7 0 017 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                   </svg>
                   Sending…
-                </>
+                </div>
               ) : (
-                <>Send me the brochure
+                <motion.div 
+                  className="flex items-center justify-center gap-2 relative z-10"
+                  animate={{ scale: [1, 1, 1.05, 1, 1] }}
+                  transition={{
+                    times: [0, 0.14, 0.20, 0.26, 1.0],
+                    duration: 3.5,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  Send me the brochure
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                     <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                </>
+                </motion.div>
               )}
             </button>
             {/* <p className="text-[12px] text-ink-faint text-center mt-3">No spam. Brochure + follow-up from the FOG team only.</p> */}

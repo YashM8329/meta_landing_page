@@ -7,8 +7,8 @@ import Typewriter from "./Typewriter";
 const steps = [
   {
     n: "1",
-    label: "Two cameras",
-    sublabel: "record gameplay",
+    label: "Automatic Capture",
+    sublabel: "Dual cameras record the action",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 lg:w-7 lg:h-7">
         <path d="M23 7l-7 5 7 5V7z" />
@@ -18,8 +18,8 @@ const steps = [
   },
   {
     n: "2",
-    label: "Scan the QR",
-    sublabel: "after gameplay",
+    label: "Instant QR Delivery",
+    sublabel: "Players scan post-game",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 lg:w-7 lg:h-7">
         <rect x="3" y="3" width="6" height="6" rx="1" />
@@ -32,8 +32,8 @@ const steps = [
   },
   {
     n: "3",
-    label: "Download & share",
-    sublabel: "on social media",
+    label: "Geo-Branded Sharing",
+    sublabel: "Watermarked video goes viral",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 lg:w-7 lg:h-7">
         <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
@@ -74,18 +74,18 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
       className="min-h-0 lg:py-16 relative flex flex-col justify-center pt-8 pb-7 overflow-hidden"
       aria-label="Moments AI"
     >
-      <div className="max-w-[1440px] mx-auto w-full px-6">
+      <div className="max-w-[1440px] mx-auto w-full px-0">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           {/* Left Column: Title, Subtitle, and Horizontal Steps */}
           <div className="lg:col-span-7 flex flex-col justify-center">
             <motion.div {...rise()} className="mb-2 text-left">
               <h2 className="text-[clamp(32px,7vw,48px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-ink mb-0">
-                Moments{" "}
-                <Typewriter words={["Videos", "Photos"]} className="text-accent" />
+                Organic{" "}
+                <Typewriter words={["Acquisition", "Marketing", "Footfall"]} className="text-accent" />
               </h2>
-              {/* <p className="text-[17px] font-semibold text-ink-soft tracking-tight">
-                Relive. Share. Repeat.
-              </p> */}
+              <p className="text-[16px] sm:text-[18px] font-medium text-ink-soft tracking-tight mt-3 max-w-[580px]">
+                Turn player social reach into free marketing. Shared videos act as geo-branded ads driving new footfall to your FEC.
+              </p>
             </motion.div>
 
             {/* Horizontal Timeline Steps */}
@@ -151,8 +151,8 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
 
                 {/* Bottom Title Overlay */}
                 <div className="absolute bottom-6 left-5 right-5 text-white z-10">
-                  <p className="text-[10px] font-bold tracking-widest uppercase text-white/70 mb-1">Instant Share</p>
-                  <h3 className="text-[15px] font-black leading-tight drop-shadow-sm">Your Gameplay, Auto-Delivered</h3>
+                  <p className="text-[10px] font-bold tracking-widest uppercase text-white/70 mb-1">Organic Lead Gen</p>
+                  <h3 className="text-[15px] font-black leading-tight drop-shadow-sm">Watermarked Video, Auto-Shared</h3>
                 </div>
               </div>
 
