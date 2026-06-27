@@ -74,7 +74,7 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
       className="min-h-0 lg:py-16 relative flex flex-col justify-center pt-8 pb-7 overflow-hidden"
       aria-label="Moments AI"
     >
-      <div className="max-w-[1440px] mx-auto w-full px-0">
+      <div className="max-w-[1440px] mx-auto w-full px-6 lg:px-0">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           {/* Left Column: Title, Subtitle, and Horizontal Steps */}
           <div className="lg:col-span-7 flex flex-col justify-center">

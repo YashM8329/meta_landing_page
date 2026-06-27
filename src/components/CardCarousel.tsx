@@ -221,7 +221,7 @@ export default function CardCarousel({ cards }: { cards: CarouselCard[] }) {
         {trackCards.map((card, i) => (
           <div
             key={card.label + "-" + i}
-            className="rounded-[12px] overflow-hidden relative shadow-[0_16px_40px_rgba(10,14,26,0.2)] shrink-0 w-[240px] md:w-[280px]"
+            className="rounded-[12px] overflow-hidden relative shrink-0 w-[240px] md:w-[280px]"
             style={{ aspectRatio: "3/4", background: card.gradient }}
             aria-label={card.label}
           >
@@ -232,7 +232,7 @@ export default function CardCarousel({ cards }: { cards: CarouselCard[] }) {
         {trackCards.map((card, i) => (
           <div
             key={card.label + "-dup-" + i}
-            className="rounded-[12px] overflow-hidden relative shadow-[0_16px_40px_rgba(10,14,26,0.2)] shrink-0 w-[240px] md:w-[280px]"
+            className="rounded-[12px] overflow-hidden relative shrink-0 w-[240px] md:w-[280px]"
             style={{ aspectRatio: "3/4", background: card.gradient }}
             aria-hidden="true"
           >
