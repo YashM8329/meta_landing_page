@@ -81,7 +81,7 @@ export default function CaseStudy() {
               entertainment center.
             </motion.p>
             <motion.p {...rise(0.06)} className="text-[22px] lg:text-[26px] font-extrabold tracking-[-0.02em] text-accent leading-tight mb-5 lg:mb-8">
-              #1 of 88+ games every single week.
+              #1 game every single week.
             </motion.p>
 
             {/* Summary stats */}
