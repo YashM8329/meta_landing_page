@@ -56,7 +56,7 @@ export default function HeroSection() {
           >
             FOG Technologies
           </motion.p>
-
+ 
           <motion.h1
             variants={item}
             className="mb-6 relative z-10 flex justify-start w-full"
@@ -70,17 +70,24 @@ export default function HeroSection() {
               className="w-[624px] h-auto object-contain -ml-4"
             />
           </motion.h1>
-
+ 
           <motion.div
             variants={item}
-            className="flex flex-col text-[68px] font-black tracking-tight leading-[1.02] uppercase mb-8 text-white w-full text-left"
+            className="flex flex-col text-[68px] font-black tracking-tight leading-[1.02] uppercase mb-6 text-white w-full text-left"
           >
-            <span>ATTRACT.</span>
-            <span>MAXIMUM</span>
-            <span>REVENUE.</span>
+            <span>SCALING FEC</span>
+            <span>ARCADE REVENUE</span>
+            <span>TO NEW HEIGHTS.</span>
             <span className="text-[#000000]">ZERO STAFF.</span>
           </motion.div>
 
+          <motion.p
+            variants={item}
+            className="text-[15px] sm:text-[17px] font-medium text-white/60 leading-relaxed mb-8 max-w-[500px]"
+          >
+            We are a premium active-attraction provider, a Trusted FOG Technologies Brand, driving over $100M+ in gameplay revenue for global venues.
+          </motion.p>
+ 
           {/* CTA row — desktop only */}
           <motion.div variants={item} className="flex items-center gap-3">
             <a
@@ -102,13 +109,13 @@ export default function HeroSection() {
               </svg>
             </button>
           </motion.div>
-
+ 
           {/* Stats row — desktop only */}
           <motion.div variants={item} className="flex items-center gap-4 mt-10 border-t border-white/10 pt-8 w-full">
             {[
-              { value: "100+", label: "Locations" },
-              { value: "10+", label: "Countries" },
-              { value: "3 months", label: "ROI" },
+              { value: "100+", label: "Active Venues" },
+              { value: "10+", label: "Global Reach" },
+              { value: "3 months", label: "Average Payback" },
             ].map(({ value, label }) => (
               <div 
                 key={label}
@@ -162,7 +169,7 @@ export default function HeroSection() {
           >
             FOG Technologies
           </motion.p>
-
+ 
           <motion.h1
             variants={item}
             className="mb-6 relative z-10 flex justify-start w-full"
@@ -176,18 +183,24 @@ export default function HeroSection() {
               className="w-[364px] sm:w-[468px] h-auto object-contain -ml-2"
             />
           </motion.h1>
-
+ 
           <motion.div
             variants={item}
-            className="flex flex-col text-[38px] sm:text-[56px] font-black tracking-tight leading-[1.02] uppercase mb-6 text-white w-full text-left"
+            className="flex flex-col text-[38px] sm:text-[56px] font-black tracking-tight leading-[1.02] uppercase mb-4 text-white w-full text-left"
           >
-            <span>ATTRACT.</span>
-            <span>MAXIMUM REVENUE.</span>
-            <span></span>
+            <span>SCALING FEC</span>
+            <span>ARCADE REVENUE.</span>
             <span className="text-[#000000]">ZERO STAFF.</span>
           </motion.div>
-        </motion.div>
 
+          <motion.p
+            variants={item}
+            className="text-[14px] sm:text-[16px] font-medium text-white/60 leading-relaxed mb-6 text-left"
+          >
+            We are a premium active-attraction provider, a Trusted FOG Technologies Brand, driving over $100M+ in gameplay revenue for global venues.
+          </motion.p>
+        </motion.div>
+ 
         {/* Hero Image Area with play button */}
         <motion.div
           variants={container}
@@ -210,7 +223,7 @@ export default function HeroSection() {
                 className="w-full h-auto drop-shadow-[0_30px_60px_rgba(0,0,0,0.5)] scale-105 sm:scale-110 relative -top-3"
               />
             </motion.div>
-
+ 
             {/* Play Button Overlay for Mobile only */}
             <button
               onClick={() => setIsOpen(true)}
@@ -232,7 +245,7 @@ export default function HeroSection() {
               </svg>
             </button>
           </motion.div>
-
+ 
           {/* Mobile-only Stats Grid matching mockup */}
           <motion.div 
             variants={item}
@@ -241,30 +254,30 @@ export default function HeroSection() {
             {/* Row 1: Venues (col-3), Countries (col-3), ROI (col-6) */}
             <div className="col-span-3 bg-white rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">100+</p>
-              <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Venues</p>
+              <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Active Venues</p>
             </div>
-
+ 
             <div className="col-span-3 bg-white rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">10+</p>
-              <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Countries</p>
+              <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Global Reach</p>
             </div>
-
+ 
             <div className="col-span-6 bg-white rounded-xl py-2 px-3.5 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[18px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">3 months</p>
-              <p className="text-[10px] sm:text-[10px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">ROI</p>
+              <p className="text-[10px] sm:text-[10px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Average Payback</p>
             </div>
-
+ 
             {/* Row 2: Gameplay (col-6), Players (col-3), Age (col-3) */}
             <div className="col-span-6 bg-white rounded-xl py-2 px-3.5 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[18px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">3-6 Min</p>
-              <p className="text-[10px] sm:text-[10px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Gameplay</p>
+              <p className="text-[10px] sm:text-[10px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Average Session Length</p>
             </div>
-
+ 
             <div className="col-span-3 bg-white rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">1-6</p>
               <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Players</p>
             </div>
-
+ 
             <div className="col-span-3 bg-white rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">4+</p>
               <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Age</p>
