@@ -55,12 +55,12 @@ export default function ROICalculator() {
         >
           {/* <p className="text-[13px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-1">Revenue calculator</p> */}
           <h2 className="text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">
-            Calculate Revenue &amp; ROI
+            Revenue &amp; ROI
           </h2>
           {/* Currency indicator — shows when non-USD */}
           {code !== "USD" && (
             <p className="text-[13px] text-ink-faint mt-1">
-              Showing in <span className="font-semibold text-ink-soft">{code}</span>{countryName ? <> based on your location in <span className="font-semibold text-ink-soft">{countryName}</span></> : ""} · approximate conversion
+              Showing in <span className="font-semibold text-ink-soft">{code}</span>{countryName ? <> based on your location in <span className="font-semibold text-ink-soft">{countryName}</span></> : ""}
             </p>
           )}
         </motion.div>

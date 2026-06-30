@@ -69,10 +69,11 @@ export default function KeyFeaturesSection({ cards }: { cards: CarouselCard[] })
         >
           Key Features
         </motion.h2>
+      </div>
 
-        <div className="w-full">
-          <CardCarousel cards={cards} />
-        </div>
+      <div className="w-full">
+        <CardCarousel cards={cards} />
+      </div>
 
         {/* Specs Grid */}
         {/* <motion.div 
@@ -101,7 +102,6 @@ export default function KeyFeaturesSection({ cards }: { cards: CarouselCard[] })
             {/* </div> */}
           {/* ))} */}
         {/* </motion.div> */}
-      </div>
     </section>
   );
 }

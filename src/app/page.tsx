@@ -54,7 +54,7 @@ export default function Home() {
         {/* <VideoSection /> */}
         <KeyFeaturesSection cards={featureCards} />
         <MomentsSection cards={momentsCards} />
-        <InstagramCarousel items={venueReels} title="100+ Locations Worldwide" sectionId="locations" />
+        <InstagramCarousel items={venueReels} title="100+ Venues Worldwide" sectionId="locations" />
         <ProofSection />
         <ROICalculator />
         <CaseStudy />

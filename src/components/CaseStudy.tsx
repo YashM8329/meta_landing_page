@@ -62,7 +62,7 @@ export default function CaseStudy() {
           {/* <p className="text-[13px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-1">Case study</p> */}
           <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
             <h2 className="text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">
-              Texas FEC Chain Case Study
+              Case Study <br/> Texas FEC Chain 
             </h2>
             {/* {code !== "USD" && (
               <p className="text-[13px] text-ink-faint mt-1">

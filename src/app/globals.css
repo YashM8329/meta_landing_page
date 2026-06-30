@@ -308,7 +308,8 @@ html.lenis body {
   display: flex;
   flex-shrink: 0;
   gap: 24px;
-  padding-right: 24px;
+  padding-left: max(1.5rem, calc((100vw - 1440px) / 2));
+  padding-right: max(1.5rem, calc((100vw - 1440px) / 2));
   overflow-x: auto;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;

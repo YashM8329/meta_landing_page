@@ -52,10 +52,8 @@ function CardContent({ card }: { card: CarouselCard }) {
       <div
         className="absolute top-0 left-0 right-0 pointer-events-none"
         style={{
-          height: card.image ? "50%" : "50%",
-          background: card.image
-            ? "linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.15) 60%, transparent 100%)"
-            : "linear-gradient(to bottom, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.3) 55%, transparent 100%)",
+          height: "70%",
+          background: "linear-gradient(to bottom, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 30%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%)",
         }}
       />
 
@@ -93,6 +91,19 @@ export default function CardCarousel({ cards }: { cards: CarouselCard[] }) {
     let timeoutId: NodeJS.Timeout;
     let animationFrameId: number;
     let lastTimestamp = 0;
+    let isInView = false;
+    let hasScrolled = false;
+
+    // Use IntersectionObserver to start scroll animation only when user lands on the section
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isInView = entry.isIntersecting;
+      },
+      { 
+        threshold: 0.60
+      }
+    );
+    observer.observe(container);
 
     // Calculate width of one full set of cards (including gaps)
     const getTrackWidth = () => {
@@ -116,9 +127,13 @@ export default function CardCarousel({ cards }: { cards: CarouselCard[] }) {
     // Infinite scroll wrapping logic
     const handleScroll = () => {
       const scrollLeft = container.scrollLeft;
+      if (scrollLeft > 50) {
+        hasScrolled = true;
+      }
+
       if (scrollLeft >= trackWidth) {
         container.scrollLeft = scrollLeft - trackWidth;
-      } else if (scrollLeft <= 0) {
+      } else if (scrollLeft <= 0 && hasScrolled) {
         container.scrollLeft = scrollLeft + trackWidth;
       }
     };
@@ -189,7 +204,7 @@ export default function CardCarousel({ cards }: { cards: CarouselCard[] }) {
       const delta = timestamp - lastTimestamp;
       lastTimestamp = timestamp;
 
-      if (!isPaused && !isDown) {
+      if (!isPaused && !isDown && isInView) {
         // Increment scroll position smoothly (speed = 0.04px per millisecond)
         container.scrollLeft += 0.04 * delta;
       }
@@ -212,6 +227,7 @@ export default function CardCarousel({ cards }: { cards: CarouselCard[] }) {
       container.removeEventListener("mousemove", handleMouseMove);
       cancelAnimationFrame(animationFrameId);
       clearTimeout(timeoutId);
+      observer.disconnect();
     };
   }, [trackCards.length, cards.length]);
 

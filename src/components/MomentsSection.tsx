@@ -80,8 +80,8 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
           <div className="lg:col-span-7 flex flex-col justify-center">
             <motion.div {...rise()} className="mb-2 text-left">
               <h2 className="text-[clamp(32px,7vw,48px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-ink mb-0">
-                Organic{" "}
-                <Typewriter words={["Acquisition", "Marketing", "Footfall"]} className="text-accent" />
+                Moments{" "}
+                <Typewriter words={["Photos", "Videos"]} className="text-accent" />
               </h2>
               <p className="text-[16px] sm:text-[18px] font-medium text-ink-soft tracking-tight mt-3 max-w-[580px]">
                 Turn player social reach into free marketing. Shared videos act as geo-branded ads driving new footfall to your FEC.
