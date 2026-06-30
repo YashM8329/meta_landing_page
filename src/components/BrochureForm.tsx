@@ -277,7 +277,7 @@ export default function BrochureForm() {
 
   return (
     <section id="brochure-form" className="min-h-0 lg:py-12 relative flex flex-col justify-center pt-6 pb-8 overflow-hidden" aria-label="Request brochure form">
-      <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0 lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center">
+      <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0 lg:grid lg:grid-cols-2 lg:gap-16 lg:items-start">
         {/* Left column: context */}
         <div className="hidden lg:flex flex-col">
           {/* <p className="text-[13px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-2">Get the full picture</p> */}
@@ -321,7 +321,7 @@ export default function BrochureForm() {
               </div>
 
               <div className="mb-4">
-                <label htmlFor="field-email" className="block text-[13px] font-semibold text-ink mb-1.5">Work email <span className="text-accent">*</span></label>
+                <label htmlFor="field-email" className="block text-[13px] font-semibold text-ink mb-1.5">Email <span className="text-accent">*</span></label>
                 <input id="field-email" type="email" inputMode="email" autoComplete="email" value={form.email} onChange={(e) => set("email", e.target.value)}
                   aria-invalid={!!errors.email} aria-describedby={errors.email ? "err-email" : undefined} placeholder="jane@venue.com"
                   className={`${inputBase} ${errors.email ? "border-red-400 bg-red-50" : "border-line bg-white"}`} />
@@ -406,7 +406,7 @@ export default function BrochureForm() {
               </select>
               {errors.venueStatus && <p id="err-venueStatus" role="alert" className="text-[12px] text-red-500 mt-1 font-medium">{errors.venueStatus}</p>}
               {form.venueStatus === "other" && (
-              <div id="venue-other-container" className="mb-4 bg-accent/5 border border-accent/15 rounded-[12px] p-4">
+              <div id="venue-other-container" className="mb-4 bg-accent/5 border border-accent/15 rounded-[12px] p-4 mt-4">
                 <label htmlFor="field-venueStatusOther" className="block text-[13px] font-semibold text-ink mb-1.5">Please specify/Search venue location <span className="text-accent">*</span></label>
                 <div className="relative">
                   <input
@@ -453,7 +453,7 @@ export default function BrochureForm() {
             )}
 
             {form.venueStatus === "existing" && (
-              <div id="venue-location-container" className="mb-4 bg-accent/5 border border-accent/15 rounded-[12px] p-4">
+              <div id="venue-location-container" className="mb-4 bg-accent/5 border border-accent/15 rounded-[12px] p-4 mt-3">
                 <label htmlFor="field-venueLocation" className="block text-[13px] font-semibold text-ink mb-1.5">Venue location <span className="text-accent">*</span></label>
                 <div className="relative">
                   <input
