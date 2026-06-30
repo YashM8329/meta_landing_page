@@ -4,11 +4,81 @@ import { useCallback, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useCurrency } from "@/lib/useCurrency";
 
-/* Defaults + assumptions: 4,500 players/month, $4/play, $65k install, 25 sqm. */
+/* Defaults + assumptions: 4,500 players/month, $65k install, 25 sqm. */
 const DEFAULT_PLAYERS = 4500;
-const DEFAULT_PRICE = 4;
 const INSTALL_COST_USD = 65_000;
 const FOOTPRINT_SQM = 25;
+
+interface SliderConfig {
+  defaultPrice: number;
+  minPrice: number;
+  maxPrice: number;
+  stepPrice: number;
+}
+
+const SLIDER_CONFIGS: Record<string, SliderConfig> = {
+  USD: { defaultPrice: 4.5, minPrice: 3.0, maxPrice: 6.0, stepPrice: 0.5 },
+  GBP: { defaultPrice: 3.5, minPrice: 2.0, maxPrice: 5.0, stepPrice: 0.5 },
+  EUR: { defaultPrice: 4.5, minPrice: 3.0, maxPrice: 6.0, stepPrice: 0.5 },
+  INR: { defaultPrice: 250, minPrice: 100, maxPrice: 500, stepPrice: 50 },
+  IDR: { defaultPrice: 64000, minPrice: 30000, maxPrice: 100000, stepPrice: 500 },
+  VND: { defaultPrice: 50000, minPrice: 25000, maxPrice: 100000, stepPrice: 500 },
+  PHP: { defaultPrice: 100, minPrice: 50, maxPrice: 300, stepPrice: 50 },
+  SGD: { defaultPrice: 6.0, minPrice: 4.0, maxPrice: 10.0, stepPrice: 0.5 },
+  AUD: { defaultPrice: 6.0, minPrice: 4.0, maxPrice: 10.0, stepPrice: 0.5 },
+  ZAR: { defaultPrice: 30, minPrice: 15, maxPrice: 60, stepPrice: 5 },
+};
+
+const AVAILABLE_COUNTRIES = [
+  { country: "United States", code: "USD", symbol: "$", rate: 1 },
+  { country: "United Kingdom", code: "GBP", symbol: "£", rate: 0.79 },
+  { country: "Europe", code: "EUR", symbol: "€", rate: 0.92 },
+  { country: "India", code: "INR", symbol: "₹", rate: 83 },
+  { country: "Indonesia", code: "IDR", symbol: "Rp", rate: 16400 },
+  { country: "Vietnam", code: "VND", symbol: "₫", rate: 25400 },
+  { country: "Philippines", code: "PHP", symbol: "₱", rate: 58 },
+  { country: "Singapore", code: "SGD", symbol: "S$", rate: 1.35 },
+  { country: "Australia", code: "AUD", symbol: "A$", rate: 1.53 },
+  { country: "Canada", code: "CAD", symbol: "C$", rate: 1.36 },
+  { country: "New Zealand", code: "NZD", symbol: "NZ$", rate: 1.63 },
+  { country: "United Arab Emirates", code: "AED", symbol: "AED ", rate: 3.67 },
+  { country: "South Africa", code: "ZAR", symbol: "R", rate: 18.5 },
+  { country: "Japan", code: "JPY", symbol: "¥", rate: 149 },
+  { country: "South Korea", code: "KRW", symbol: "₩", rate: 1330 },
+  { country: "Malaysia", code: "MYR", symbol: "RM ", rate: 4.47 },
+  { country: "Thailand", code: "THB", symbol: "฿", rate: 35 },
+  { country: "Saudi Arabia", code: "SAR", symbol: "SAR ", rate: 3.75 },
+  { country: "Qatar", code: "QAR", symbol: "QR ", rate: 3.64 },
+];
+
+function getSliderConfig(code: string, rate: number): SliderConfig {
+  if (SLIDER_CONFIGS[code]) {
+    return SLIDER_CONFIGS[code];
+  }
+  const isLowIncome = ["INR", "IDR", "VND", "PHP", "THB", "MYR", "ZAR"].includes(code);
+  const defaultUsd = isLowIncome ? 2.5 : 4.5;
+  const localDefault = Math.round(defaultUsd * rate);
+  
+  let step = 0.5;
+  let min = Math.round(1.5 * rate);
+  let max = Math.round(6.0 * rate);
+  
+  if (localDefault >= 1000) {
+    step = 500;
+    const cleanDefault = Math.round(localDefault / 500) * 500;
+    const cleanMin = Math.round((defaultUsd * 0.6 * rate) / 500) * 500;
+    const cleanMax = Math.round((defaultUsd * 1.5 * rate) / 500) * 500;
+    return { defaultPrice: cleanDefault, minPrice: cleanMin, maxPrice: cleanMax, stepPrice: step };
+  } else if (localDefault >= 100) {
+    step = 50;
+    const cleanDefault = Math.round(localDefault / 50) * 50;
+    const cleanMin = Math.round((defaultUsd * 0.6 * rate) / 50) * 50;
+    const cleanMax = Math.round((defaultUsd * 1.5 * rate) / 50) * 50;
+    return { defaultPrice: cleanDefault, minPrice: cleanMin, maxPrice: cleanMax, stepPrice: step };
+  }
+  
+  return { defaultPrice: localDefault, minPrice: min, maxPrice: max, stepPrice: step };
+}
 
 function formatMoney(usd: number, symbol: string, rate: number): string {
   const v = Math.round(usd * rate);
@@ -21,18 +91,49 @@ function formatMoney(usd: number, symbol: string, rate: number): string {
 
 export default function ROICalculator() {
   const [players, setPlayers] = useState(DEFAULT_PLAYERS);
-  const [price, setPrice] = useState(DEFAULT_PRICE);
   const reduce = useReducedMotion();
   const { symbol, rate, code, countryName } = useCurrency();
 
-  const monthlyUsd = players * price;
-  const installLocal = formatMoney(INSTALL_COST_USD, symbol, rate);
+  const [selectedCode, setSelectedCode] = useState<string>("");
+  const activeCode = selectedCode || code || "USD";
+
+  const hasAutoCodeInList = AVAILABLE_COUNTRIES.some((c) => c.code === code);
+  const dropdownOptions = [...AVAILABLE_COUNTRIES];
+  if (code && code !== "USD" && !hasAutoCodeInList) {
+    dropdownOptions.push({
+      country: countryName || code,
+      code: code,
+      symbol: symbol,
+      rate: rate,
+    });
+  }
+
+  const activeCurrency = dropdownOptions.find((c) => c.code === activeCode) || {
+    country: countryName || "United States",
+    code: code || "USD",
+    symbol: symbol || "$",
+    rate: rate || 1,
+  };
+
+  const config = getSliderConfig(activeCurrency.code, activeCurrency.rate);
+
+  const [price, setPrice] = useState(config.defaultPrice);
+  const [lastCode, setLastCode] = useState("");
+
+  if (activeCurrency.code !== lastCode) {
+    setLastCode(activeCurrency.code);
+    setPrice(config.defaultPrice);
+  }
+
+  const priceInUsd = price / activeCurrency.rate;
+  const monthlyUsd = players * priceInUsd;
+  const installLocal = formatMoney(INSTALL_COST_USD, activeCurrency.symbol, activeCurrency.rate);
   const paybackMonths = monthlyUsd > 0 ? INSTALL_COST_USD / monthlyUsd : 0;
 
   const metrics = [
-    { label: "Revenue / month",       value: formatMoney(monthlyUsd, symbol, rate) },
-    { label: "7-year revenue",         value: formatMoney(monthlyUsd * 84, symbol, rate) },
-    { label: "Revenue / sqm / month", value: formatMoney(monthlyUsd / FOOTPRINT_SQM, symbol, rate) },
+    { label: "Revenue / month",       value: formatMoney(monthlyUsd, activeCurrency.symbol, activeCurrency.rate) },
+    { label: "7-year revenue",         value: formatMoney(monthlyUsd * 84, activeCurrency.symbol, activeCurrency.rate) },
+    { label: "Revenue / sqm / month", value: formatMoney(monthlyUsd / FOOTPRINT_SQM, activeCurrency.symbol, activeCurrency.rate) },
     { label: "Payback period",         value: `${Math.round(paybackMonths)} months` },
   ];
 
@@ -57,12 +158,25 @@ export default function ROICalculator() {
           <h2 className="text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">
             Revenue &amp; ROI
           </h2>
-          {/* Currency indicator — shows when non-USD */}
-          {code !== "USD" && (
-            <p className="text-[13px] text-ink-faint mt-1">
-              Showing in <span className="font-semibold text-ink-soft">{code}</span>{countryName ? <> based on your location in <span className="font-semibold text-ink-soft">{countryName}</span></> : ""}
-            </p>
-          )}
+          {/* Currency indicator dropdown */}
+          <p className="text-[13px] text-ink-faint mt-2 flex flex-wrap items-center gap-1.5 select-none">
+            <span>Showing in </span>
+            <span className="font-bold text-ink-soft bg-[#0a0e1a]/5 px-1.5 py-0.5 rounded text-[12px]">
+              {activeCurrency.code} ({activeCurrency.symbol.trim()})
+            </span>
+            <span>based on location:</span>
+            <select
+              value={activeCode}
+              onChange={(e) => setSelectedCode(e.target.value)}
+              className="bg-transparent text-accent font-semibold hover:text-accent/80 outline-none cursor-pointer border-b border-dashed border-accent/40 pb-0.5"
+            >
+              {dropdownOptions.map((c) => (
+                <option key={c.code} value={c.code} className="text-ink">
+                  {c.country}
+                </option>
+              ))}
+            </select>
+          </p>
         </motion.div>
 
         {/* Desktop: 2-col layout — sliders left, metrics right */}
@@ -135,11 +249,11 @@ export default function ROICalculator() {
                 <div
                   className="absolute top-0 -translate-x-1/2 bg-accent text-white px-3 py-1 rounded-[6px] text-[13px] font-bold shadow-sm pointer-events-none"
                   style={{
-                    left: `calc(${((price - 3) / (6 - 3)) * 100}% - ${(((price - 3) / (6 - 3)) * 100 / 100) * 18}px + 9px)`,
+                    left: `calc(${((price - config.minPrice) / (config.maxPrice - config.minPrice)) * 100}% - ${(((price - config.minPrice) / (config.maxPrice - config.minPrice)) * 100 / 100) * 18}px + 9px)`,
                   }}
                 >
-                  {symbol}{(price * rate).toLocaleString(undefined, {
-                    minimumFractionDigits: (price * rate) % 1 === 0 ? 0 : 2,
+                  {activeCurrency.symbol}{price.toLocaleString(undefined, {
+                    minimumFractionDigits: price % 1 === 0 ? 0 : 2,
                     maximumFractionDigits: 2
                   })}
                   {/* Arrow */}
@@ -148,14 +262,14 @@ export default function ROICalculator() {
                 <input
                   id="slider-price"
                   type="range"
-                  min={3}
-                  max={6}
-                  step={0.5}
+                  min={config.minPrice}
+                  max={config.maxPrice}
+                  step={config.stepPrice}
                   value={price}
                   onChange={onPrice}
-                  aria-valuetext={`${symbol}${price * rate} per play`}
+                  aria-valuetext={`${activeCurrency.symbol}${price} per play`}
                   style={{
-                    background: `linear-gradient(to right, var(--color-accent) 0%, var(--color-accent) ${((price - 3) / (6 - 3)) * 100}%, var(--color-line) ${((price - 3) / (6 - 3)) * 100}%, var(--color-line) 100%)`,
+                    background: `linear-gradient(to right, var(--color-accent) 0%, var(--color-accent) ${((price - config.minPrice) / (config.maxPrice - config.minPrice)) * 100}%, var(--color-line) ${((price - config.minPrice) / (config.maxPrice - config.minPrice)) * 100}%, var(--color-line) 100%)`,
                   }}
                   className="w-full h-1.5 rounded-full appearance-none cursor-pointer outline-none
                              [&::-webkit-slider-runnable-track]:bg-transparent

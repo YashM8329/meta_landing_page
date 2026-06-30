@@ -287,7 +287,7 @@ export default function BrochureForm() {
           {/* <p className="text-[16px] text-ink-soft leading-relaxed mb-8 max-w-[400px]">
             Get detailed specs, revenue data, and case studies.
           </p> */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-9 mt-3">
             {[
               { icon: "📊", text: "Revenue data from 100+ real installations" },
               { icon: "📐", text: "Full technical specs and floor plan requirements" },

@@ -29,6 +29,9 @@ const CURRENCIES: Record<string, CurrencyInfo> = {
   THB: { symbol: "฿",   code: "THB", rate: 35     },
   SAR: { symbol: "SAR ", code: "SAR", rate: 3.75  },
   QAR: { symbol: "QR ", code: "QAR", rate: 3.64   },
+  IDR: { symbol: "Rp",   code: "IDR", rate: 16400  },
+  VND: { symbol: "₫",    code: "VND", rate: 25400  },
+  PHP: { symbol: "₱",    code: "PHP", rate: 58     },
 };
 
 export function useCurrency(): CurrencyInfo {
