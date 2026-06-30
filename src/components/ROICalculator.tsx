@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useCurrency } from "@/lib/useCurrency";
+import MobileBrochureCTA from "./MobileBrochureCTA";
 
 /* Defaults + assumptions: 4,500 players/month, $65k install, 25 sqm. */
 const DEFAULT_PLAYERS = 4500;
@@ -319,6 +320,7 @@ export default function ROICalculator() {
           </div>
         </div>
       </div>
+      <MobileBrochureCTA />
     </section>
   );
 }

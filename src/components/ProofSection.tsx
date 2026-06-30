@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import MobileBrochureCTA from "./MobileBrochureCTA";
 
 
 interface Testimonial {
@@ -215,6 +216,7 @@ export default function ProofSection() {
           ))}
         </motion.div>
       </div>
+      <MobileBrochureCTA />
     </section>
   );
 }

@@ -144,9 +144,9 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
               <span className="font-semibold text-[13px] tracking-tight truncate max-w-[90px] md:max-w-[110px]">
                 {account || "hypergrid.ai"}
               </span>
-              <button className="text-[10px] font-bold border border-white/40 px-2.5 py-0.5 rounded-full hover:bg-white/10 transition-colors shrink-0">
+              {/* <button className="text-[10px] font-bold border border-white/40 px-2.5 py-0.5 rounded-full hover:bg-white/10 transition-colors shrink-0">
                 Follow
-              </button>
+              </button> */}
             </div>
 
             {/* Game Zone Name (styled like location badge) */}
@@ -159,9 +159,9 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
             </div>
 
             {/* Caption */}
-            <p className="text-[11.5px] text-white/90 leading-snug line-clamp-2 drop-shadow-sm font-medium">
+            {/* <p className="text-[11.5px] text-white/90 leading-snug line-clamp-2 drop-shadow-sm font-medium">
               {caption}
-            </p>
+            </p> */}
           </div>
 
           {/* Bottom Right: Action bar (Likes, Comments, Share, Music Vinyl) */}

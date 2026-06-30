@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import InstagramEmbed from "./InstagramEmbed";
+import MobileBrochureCTA from "./MobileBrochureCTA";
 
 export interface ReelItem {
   videoSrc: string;
@@ -204,6 +205,7 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
           </div>
         </div>
       </div>
+      <MobileBrochureCTA />
     </section>
   );
 }

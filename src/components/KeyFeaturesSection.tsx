@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import CardCarousel, { CarouselCard } from "./CardCarousel";
+import MobileBrochureCTA from "./MobileBrochureCTA";
 
 const specs = [
   {
@@ -74,6 +75,8 @@ export default function KeyFeaturesSection({ cards }: { cards: CarouselCard[] })
       <div className="w-full">
         <CardCarousel cards={cards} />
       </div>
+
+      <MobileBrochureCTA />
 
         {/* Specs Grid */}
         {/* <motion.div 

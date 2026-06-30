@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import MobileBrochureCTA from "./MobileBrochureCTA";
 
 /* S2 — Full gameplay video (9:16), full-height section.
    Tap the video to toggle mute/unmute (Instagram-style). */
@@ -130,6 +131,7 @@ export default function VideoSection() {
           </AnimatePresence>
         </motion.div>
       </div>
+      <MobileBrochureCTA />
     </section>
   );
 }
