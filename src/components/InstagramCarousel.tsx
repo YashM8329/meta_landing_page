@@ -9,6 +9,7 @@ export interface ReelItem {
   caption: string;
   likes?: string;
   comments?: string;
+  gameZone?: string;
 }
 
 interface Props {
@@ -185,19 +186,19 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
             {/* Left duplicate set for seamless scroll left */}
             {trackItems.map((item, i) => (
               <div key={item.videoSrc + "-left-" + i} className="shrink-0 w-[260px] md:w-[300px]" aria-hidden="true">
-                <InstagramEmbed videoSrc={item.videoSrc} account={item.account} caption={item.caption} likes={item.likes} comments={item.comments} />
+                <InstagramEmbed videoSrc={item.videoSrc} account={item.account} caption={item.caption} likes={item.likes} comments={item.comments} gameZone={item.gameZone} />
               </div>
             ))}
             {/* Original set */}
             {trackItems.map((item, i) => (
               <div key={item.videoSrc + "-" + i} className="shrink-0 w-[260px] md:w-[300px]">
-                <InstagramEmbed videoSrc={item.videoSrc} account={item.account} caption={item.caption} likes={item.likes} comments={item.comments} />
+                <InstagramEmbed videoSrc={item.videoSrc} account={item.account} caption={item.caption} likes={item.likes} comments={item.comments} gameZone={item.gameZone} />
               </div>
             ))}
             {/* Right duplicate set for seamless scroll right */}
             {trackItems.map((item, i) => (
               <div key={item.videoSrc + "-right-" + i} className="shrink-0 w-[260px] md:w-[300px]" aria-hidden="true">
-                <InstagramEmbed videoSrc={item.videoSrc} account={item.account} caption={item.caption} likes={item.likes} comments={item.comments} />
+                <InstagramEmbed videoSrc={item.videoSrc} account={item.account} caption={item.caption} likes={item.likes} comments={item.comments} gameZone={item.gameZone} />
               </div>
             ))}
           </div>

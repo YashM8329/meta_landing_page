@@ -8,9 +8,10 @@ interface Props {
   caption: string;
   likes?: string;
   comments?: string;
+  gameZone?: string;
 }
 
-export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.2K", comments = "84" }: Props) {
+export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.2K", comments = "84", gameZone }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isMuted, setIsMuted] = useState(true);
@@ -126,11 +127,43 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
       <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/50 to-transparent pointer-events-none z-10" />
 
       {/* Bottom vignetting/gradient */}
-      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/60 to-transparent pointer-events-none z-10" />
+      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/70 to-transparent pointer-events-none z-10" />
 
       {/* Instagram Reels Template UI Overlay */}
       <div className="absolute inset-0 flex flex-col justify-end p-4 z-15 pointer-events-none">
-        <div className="flex items-end justify-end w-full">
+        <div className="flex items-end justify-between w-full gap-4">
+          {/* Bottom Left: Account Info, Location Tag & Caption */}
+          <div className="flex flex-col gap-2 text-white max-w-[70%] pb-2 pointer-events-auto text-left">
+            {/* Account Info (Avatar + Name + Follow Button) */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 flex-shrink-0 flex items-center justify-center p-[1.5px]">
+                <div className="w-full h-full rounded-full bg-slate-950 flex items-center justify-center text-[9px] font-bold text-white uppercase">
+                  {account ? account.slice(0, 2) : "HG"}
+                </div>
+              </div>
+              <span className="font-semibold text-[13px] tracking-tight truncate max-w-[90px] md:max-w-[110px]">
+                {account || "hypergrid.ai"}
+              </span>
+              <button className="text-[10px] font-bold border border-white/40 px-2.5 py-0.5 rounded-full hover:bg-white/10 transition-colors shrink-0">
+                Follow
+              </button>
+            </div>
+
+            {/* Game Zone Name (styled like location badge) */}
+            <div className="flex items-center gap-1 text-[11px] font-semibold text-white/90 bg-white/15 px-2 py-0.5 rounded-[4px] w-fit backdrop-blur-sm border border-white/10">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-accent-light">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              <span className="truncate max-w-[120px] md:max-w-[150px]">{gameZone || "FOG Arena"}</span>
+            </div>
+
+            {/* Caption */}
+            <p className="text-[11.5px] text-white/90 leading-snug line-clamp-2 drop-shadow-sm font-medium">
+              {caption}
+            </p>
+          </div>
+
           {/* Bottom Right: Action bar (Likes, Comments, Share, Music Vinyl) */}
           <div className="flex flex-col items-center gap-4 text-white pb-2 pointer-events-auto">
             {/* Like */}

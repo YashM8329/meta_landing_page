@@ -7,7 +7,7 @@ import Typewriter from "./Typewriter";
 const steps = [
   {
     n: "1",
-    label: "Automatic Capture",
+    label: "Camera recording",
     sublabel: "Dual cameras record the action",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 lg:w-7 lg:h-7">
@@ -32,7 +32,7 @@ const steps = [
   },
   {
     n: "3",
-    label: "Geo-Branded Sharing",
+    label: "Downloadable reels",
     sublabel: "Watermarked video goes viral",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 lg:w-7 lg:h-7">
@@ -104,9 +104,9 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
                     <p className="text-[13px] lg:text-[16px] font-bold text-ink leading-tight">
                       {s.label}
                     </p>
-                    <p className="text-[12px] lg:text-[14px] font-medium text-ink-soft leading-normal mt-0.5">
+                    {/* <p className="text-[12px] lg:text-[14px] font-medium text-ink-soft leading-normal mt-0.5">
                       {s.sublabel}
-                    </p>
+                    </p> */}
                   </div>
 
                   {/* Flow Arrow (skip for final card) */}
@@ -149,10 +149,16 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
                 {/* Vignette bottom-glow */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
 
-                {/* Bottom Title Overlay */}
-                <div className="absolute bottom-6 left-5 right-5 text-white z-10">
-                  <p className="text-[10px] font-bold tracking-widest uppercase text-white/70 mb-1">Organic Lead Gen</p>
-                  <h3 className="text-[15px] font-black leading-tight drop-shadow-sm">Watermarked Video, Auto-Shared</h3>
+                {/* Glassmorphic Download & Share Button Overlay */}
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center px-4 z-20">
+                  <button className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-[#1D6CEF] to-[#2f74e6] text-white py-3 rounded-full text-[15px] font-extrabold tracking-wide shadow-[0_8px_24px_rgba(29,108,239,0.4)] border border-white/20">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="animate-bounce">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    <span>Download & Share</span>
+                  </button>
                 </div>
               </div>
 
