@@ -78,20 +78,25 @@ function TestimonialCardInner({ t, className = "" }: { t: Testimonial; className
           <span className="text-white/90 font-extrabold text-[64px] tracking-tight">{t.initials}</span>
         </div>
       )}
+      
+      {/* Top right/left logo (transparent background) */}
+      <div className={`absolute top-4 ${
+        t.name === testimonials[2].name 
+          ? "left-4" 
+          : "right-4"
+      } z-20 flex items-center shrink-0`}>
+        <div className="relative h-[30px] w-[103px]">
+          <Image src={t.logo} alt={t.logoAlt} fill sizes="100px" className="object-contain" />
+        </div>
+      </div>
+
       <div
         className="absolute inset-0 pointer-events-none"
         style={{ background: "linear-gradient(to top, rgba(5,8,16,0.97) 0%, rgba(5,8,16,0.93) 32%, rgba(5,8,16,0.6) 56%, rgba(5,8,16,0.15) 76%, transparent 92%)" }}
       />
       <div className="absolute bottom-0 left-0 right-0 pt-4 pb-4 px-4 lg:pt-5 lg:pb-5 lg:px-5 h-[190px] lg:h-[220px] flex flex-col justify-start">
         <div className="mb-3">
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-white font-bold text-[17px] lg:text-[32px] leading-tight">{t.name}</p>
-            <span className="bg-white rounded-md h-9 px-2.5 flex items-center shrink-0">
-              <span className="relative h-5 w-[82px]">
-                <Image src={t.logo} alt={t.logoAlt} fill sizes="100px" className="object-contain" />
-              </span>
-            </span>
-          </div>
+          <p className="text-white font-bold text-[17px] lg:text-[32px] leading-tight">{t.name}</p>
           <p className="text-white/75 text-[12.5px] lg:text-[17px] mt-0.5">{t.title}</p>
         </div>
         <p className="text-white text-[15px] lg:text-[20px] leading-snug">&ldquo;{t.quote}&rdquo;</p>
