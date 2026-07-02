@@ -76,6 +76,7 @@ export default function BrochureForm() {
   const [countryInputValue, setCountryInputValue] = useState("");
   const [countryOptions, setCountryOptions] = useState<string[]>([]);
   const [sessionToken, setSessionToken] = useState("");
+  const [hasSelected, setHasSelected] = useState(false);
 
   useEffect(() => {
     async function detectLocation() {
@@ -114,8 +115,8 @@ export default function BrochureForm() {
       return;
     }
 
-    // Skip autocomplete fetch if the input value exactly matches the currently selected venue status other or location
-    if (query === form.venueLocation || query === form.venueStatusOther) {
+    // Skip autocomplete fetch if a suggestion was already selected
+    if (hasSelected) {
       setVenueOptions([]);
       return;
     }
@@ -151,8 +152,7 @@ export default function BrochureForm() {
       return;
     }
 
-    // Skip autocomplete fetch if the input value exactly matches the currently selected venue status other or location
-    if (venueInputValue === form.venueLocation || venueInputValue === form.venueStatusOther) {
+    if (hasSelected) {
       setVenueOptions([]);
       return;
     }
@@ -172,7 +172,7 @@ export default function BrochureForm() {
       fetchSuggestions(venueInputValue, token);
     }, 400); // 400ms debounce
     return () => clearTimeout(timer);
-  }, [venueInputValue, sessionToken]);
+  }, [venueInputValue, sessionToken, hasSelected]);
 
   useEffect(() => {
     if (!countryInputValue || countryInputValue.length < 1) {
@@ -454,6 +454,7 @@ export default function BrochureForm() {
                     onChange={(e) => {
                       set("venueStatusOther", e.target.value);
                       setVenueInputValue(e.target.value);
+                      setHasSelected(false);
                     }}
                     onFocus={() => {
                       fetchSuggestions(venueInputValue);
@@ -482,6 +483,7 @@ export default function BrochureForm() {
                             setVenueInputValue(opt.value);
                             setVenueOptions([]);
                             setSessionToken("");
+                            setHasSelected(true);
                           }}
                           className="px-4 py-2.5 hover:bg-accent/10 cursor-pointer flex items-center gap-2.5 text-[14px]"
                         >
@@ -527,6 +529,7 @@ export default function BrochureForm() {
                     onChange={(e) => {
                       set("venueLocation", e.target.value);
                       setVenueInputValue(e.target.value);
+                      setHasSelected(false);
                     }}
                     onFocus={() => {
                       fetchSuggestions(venueInputValue);
@@ -555,6 +558,7 @@ export default function BrochureForm() {
                             setVenueInputValue(opt.value);
                             setVenueOptions([]);
                             setSessionToken("");
+                            setHasSelected(true);
                           }}
                           className="px-4 py-2.5 hover:bg-accent/10 cursor-pointer flex items-center gap-2.5 text-[14px]"
                         >
