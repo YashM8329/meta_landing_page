@@ -75,6 +75,7 @@ export default function BrochureForm() {
   const [isVenueLoading, setIsVenueLoading] = useState(false);
   const [countryInputValue, setCountryInputValue] = useState("");
   const [countryOptions, setCountryOptions] = useState<string[]>([]);
+  const [sessionToken, setSessionToken] = useState("");
 
   useEffect(() => {
     async function detectLocation() {
@@ -111,21 +112,26 @@ export default function BrochureForm() {
       setVenueOptions([]);
       return;
     }
+
+    // Generate session token if it doesn't exist yet
+    let token = sessionToken;
+    if (!token) {
+      if (typeof window !== "undefined" && window.crypto && window.crypto.randomUUID) {
+        token = window.crypto.randomUUID();
+      } else {
+        token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      }
+      setSessionToken(token);
+    }
+
     const timer = setTimeout(async () => {
       setIsVenueLoading(true);
       try {
-        const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(venueInputValue)}&format=json&addressdetails=1&limit=10`;
-        const res = await fetch(url, {
-          headers: {
-            "User-Agent": "HyperGrid-Venue-Locator/1.0"
-          }
-        });
+        const url = `/api/places-autocomplete?input=${encodeURIComponent(venueInputValue)}&sessiontoken=${encodeURIComponent(token)}`;
+        const res = await fetch(url);
         if (res.ok) {
           const data = await res.json();
-          setVenueOptions(data.map((item: any) => ({
-            label: item.display_name,
-            value: item.display_name
-          })));
+          setVenueOptions(data);
         }
       } catch (err) {
         // fail silently
@@ -134,7 +140,7 @@ export default function BrochureForm() {
       }
     }, 400); // 400ms debounce
     return () => clearTimeout(timer);
-  }, [venueInputValue]);
+  }, [venueInputValue, sessionToken]);
 
   useEffect(() => {
     if (!countryInputValue || countryInputValue.length < 1) {
@@ -202,16 +208,16 @@ export default function BrochureForm() {
         const minExpected = Math.min(...expectedLengths);
 
         if (len > maxExpected) {
-          e.phone = `Maximum digit count allowed for ${selectedCountry} ${maxExpected} digits.`;
+          e.phone = `Invalid Phone number`;
         } else if (len < minExpected) {
-          e.phone = `Minimum digit count allowed for ${selectedCountry} ${minExpected} digits.`;
+          e.phone = `Invalid Phone number`;
         } else if (!isValidPhoneNumber(form.phone)) {
-          e.phone = "Please enter a valid phone number with correct digits for the country.";
+          e.phone = "Invalid Phone number";
         }
       } else {
         // Fallback for non-mapped countries using general library validation
         if (!isValidPhoneNumber(form.phone)) {
-          e.phone = "Please enter a valid phone number with correct digits for the country.";
+          e.phone = "Invalid Phone number";
         }
       }
     }
@@ -439,6 +445,7 @@ export default function BrochureForm() {
                           onClick={() => {
                             set("venueStatusOther", opt.value);
                             setVenueOptions([]);
+                            setSessionToken("");
                           }}
                           className="px-4 py-2 hover:bg-accent/10 cursor-pointer text-[14px] text-ink border-b border-line last:border-none"
                         >
@@ -486,6 +493,7 @@ export default function BrochureForm() {
                           onClick={() => {
                             set("venueLocation", opt.value);
                             setVenueOptions([]);
+                            setSessionToken("");
                           }}
                           className="px-4 py-2 hover:bg-accent/10 cursor-pointer text-[14px] text-ink border-b border-line last:border-none"
                         >
