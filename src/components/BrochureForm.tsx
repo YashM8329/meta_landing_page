@@ -107,8 +107,52 @@ export default function BrochureForm() {
     detectLocation();
   }, []);
 
+  // Autocomplete fetch logic
+  const fetchSuggestions = async (query: string, tokenToUse?: string) => {
+    if (!query || query.length < 2) {
+      setVenueOptions([]);
+      return;
+    }
+
+    // Skip autocomplete fetch if the input value exactly matches the currently selected venue status other or location
+    if (query === form.venueLocation || query === form.venueStatusOther) {
+      setVenueOptions([]);
+      return;
+    }
+
+    let token = tokenToUse || sessionToken;
+    if (!token) {
+      if (typeof window !== "undefined" && window.crypto && window.crypto.randomUUID) {
+        token = window.crypto.randomUUID();
+      } else {
+        token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      }
+      setSessionToken(token);
+    }
+
+    setIsVenueLoading(true);
+    try {
+      const url = `/api/places-autocomplete?input=${encodeURIComponent(query)}&sessiontoken=${encodeURIComponent(token)}`;
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        setVenueOptions(data);
+      }
+    } catch (err) {
+      // fail silently
+    } finally {
+      setIsVenueLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!venueInputValue || venueInputValue.length < 2) {
+      setVenueOptions([]);
+      return;
+    }
+
+    // Skip autocomplete fetch if the input value exactly matches the currently selected venue status other or location
+    if (venueInputValue === form.venueLocation || venueInputValue === form.venueStatusOther) {
       setVenueOptions([]);
       return;
     }
@@ -124,20 +168,8 @@ export default function BrochureForm() {
       setSessionToken(token);
     }
 
-    const timer = setTimeout(async () => {
-      setIsVenueLoading(true);
-      try {
-        const url = `/api/places-autocomplete?input=${encodeURIComponent(venueInputValue)}&sessiontoken=${encodeURIComponent(token)}`;
-        const res = await fetch(url);
-        if (res.ok) {
-          const data = await res.json();
-          setVenueOptions(data);
-        }
-      } catch (err) {
-        // fail silently
-      } finally {
-        setIsVenueLoading(false);
-      }
+    const timer = setTimeout(() => {
+      fetchSuggestions(venueInputValue, token);
     }, 400); // 400ms debounce
     return () => clearTimeout(timer);
   }, [venueInputValue, sessionToken]);
@@ -423,6 +455,9 @@ export default function BrochureForm() {
                       set("venueStatusOther", e.target.value);
                       setVenueInputValue(e.target.value);
                     }}
+                    onFocus={() => {
+                      fetchSuggestions(venueInputValue);
+                    }}
                     onBlur={() => {
                       setTimeout(() => setVenueOptions([]), 200);
                     }}
@@ -444,6 +479,7 @@ export default function BrochureForm() {
                           key={idx}
                           onClick={() => {
                             set("venueStatusOther", opt.value);
+                            setVenueInputValue(opt.value);
                             setVenueOptions([]);
                             setSessionToken("");
                           }}
@@ -492,6 +528,9 @@ export default function BrochureForm() {
                       set("venueLocation", e.target.value);
                       setVenueInputValue(e.target.value);
                     }}
+                    onFocus={() => {
+                      fetchSuggestions(venueInputValue);
+                    }}
                     onBlur={() => {
                       setTimeout(() => setVenueOptions([]), 200);
                     }}
@@ -513,6 +552,7 @@ export default function BrochureForm() {
                           key={idx}
                           onClick={() => {
                             set("venueLocation", opt.value);
+                            setVenueInputValue(opt.value);
                             setVenueOptions([]);
                             setSessionToken("");
                           }}
