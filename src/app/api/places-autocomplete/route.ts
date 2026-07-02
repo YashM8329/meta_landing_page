@@ -17,13 +17,48 @@ export async function GET(request: Request) {
       console.warn("GOOGLE_MAPS_API_KEY is not defined. Falling back to mock data for testing.");
       
       const mockVenues = [
-        { label: "Lucky Strike Bowling, New York, NY, USA", value: "Lucky Strike Bowling, New York, NY, USA" },
-        { label: "Bowlero Chelsea Piers, New York, NY, USA", value: "Bowlero Chelsea Piers, New York, NY, USA" },
-        { label: "Brooklyn Bowl, Brooklyn, NY, USA", value: "Brooklyn Bowl, Brooklyn, NY, USA" },
-        { label: "Apex Entertainment, Marlborough, MA, USA", value: "Apex Entertainment, Marlborough, MA, USA" },
-        { label: "Super Bowl FEC, Houston, TX, USA", value: "Super Bowl FEC, Houston, TX, USA" },
-        { label: "Main Event Entertainment, Austin, TX, USA", value: "Main Event Entertainment, Austin, TX, USA" },
-        { label: "Dave & Buster's, Dallas, TX, USA", value: "Dave & Buster's, Dallas, TX, USA" }
+        { 
+          label: "Lucky Strike Bowling, New York, NY, USA", 
+          value: "Lucky Strike Bowling, New York, NY, USA",
+          mainText: "Lucky Strike Bowling",
+          secondaryText: "New York, NY, USA"
+        },
+        { 
+          label: "Bowlero Chelsea Piers, New York, NY, USA", 
+          value: "Bowlero Chelsea Piers, New York, NY, USA",
+          mainText: "Bowlero Chelsea Piers",
+          secondaryText: "New York, NY, USA"
+        },
+        { 
+          label: "Brooklyn Bowl, Brooklyn, NY, USA", 
+          value: "Brooklyn Bowl, Brooklyn, NY, USA",
+          mainText: "Brooklyn Bowl",
+          secondaryText: "Brooklyn, NY, USA"
+        },
+        { 
+          label: "Apex Entertainment, Marlborough, MA, USA", 
+          value: "Apex Entertainment, Marlborough, MA, USA",
+          mainText: "Apex Entertainment",
+          secondaryText: "Marlborough, MA, USA"
+        },
+        { 
+          label: "Super Bowl FEC, Houston, TX, USA", 
+          value: "Super Bowl FEC, Houston, TX, USA",
+          mainText: "Super Bowl FEC",
+          secondaryText: "Houston, TX, USA"
+        },
+        { 
+          label: "Main Event Entertainment, Austin, TX, USA", 
+          value: "Main Event Entertainment, Austin, TX, USA",
+          mainText: "Main Event Entertainment",
+          secondaryText: "Austin, TX, USA"
+        },
+        { 
+          label: "Dave & Buster's, Dallas, TX, USA", 
+          value: "Dave & Buster's, Dallas, TX, USA",
+          mainText: "Dave & Buster's",
+          secondaryText: "Dallas, TX, USA"
+        }
       ];
 
       // Filter mock venues based on input
@@ -63,9 +98,13 @@ export async function GET(request: Request) {
       .filter((item: any) => item.placePrediction?.text?.text)
       .map((item: any) => {
         const text = item.placePrediction.text.text;
+        const mainText = item.placePrediction.structuredFormat?.mainText?.text || text;
+        const secondaryText = item.placePrediction.structuredFormat?.secondaryText?.text || "";
         return {
           label: text,
           value: text,
+          mainText,
+          secondaryText,
         };
       });
 
