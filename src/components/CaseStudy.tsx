@@ -76,10 +76,10 @@ export default function CaseStudy() {
         <div className="lg:grid lg:grid-cols-2 lg:gap-12 lg:items-start">
           {/* Left column: context + summary */}
           <div>
-            <motion.p {...rise(0.04)} className="text-[15px] text-ink-soft leading-relaxed mb-3">
+            {/* <motion.p {...rise(0.04)} className="text-[15px] text-ink-soft leading-relaxed mb-3">
               Tracked over <span className="font-semibold text-ink">7 straight weeks</span> at a top Texas family
               entertainment center.
-            </motion.p>
+            </motion.p> */}
             <motion.p {...rise(0.06)} className="text-[22px] lg:text-[26px] font-extrabold tracking-[-0.02em] text-accent leading-tight mb-5 lg:mb-8">
               #1 game every single week.
             </motion.p>
