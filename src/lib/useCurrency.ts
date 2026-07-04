@@ -98,7 +98,8 @@ export function setGlobalLocation(info: Partial<CurrencyInfo>) {
     const code = info.countryCode.toUpperCase();
     const currencyCode = COUNTRY_TO_CURRENCY[code] || "USD";
     const cur = CURRENCIES[currencyCode] || { symbol: "$", rate: 1 };
-    const name = en[code as keyof typeof en] || info.countryName || "United States";
+    let name = en[code as keyof typeof en] || info.countryName || "United States";
+    if (name === "United Arab Emirates") name = "UAE";
     
     updated = {
       symbol: cur.symbol,
@@ -111,7 +112,8 @@ export function setGlobalLocation(info: Partial<CurrencyInfo>) {
     const currencyCode = info.code.toUpperCase();
     const countryCode = CURRENCY_TO_COUNTRY[currencyCode] || "US";
     const cur = CURRENCIES[currencyCode] || { symbol: "$", rate: 1 };
-    const name = en[countryCode as keyof typeof en] || "United States";
+    let name = en[countryCode as keyof typeof en] || "United States";
+    if (name === "United Arab Emirates") name = "UAE";
     
     updated = {
       symbol: cur.symbol,
@@ -121,10 +123,10 @@ export function setGlobalLocation(info: Partial<CurrencyInfo>) {
       countryCode: countryCode,
     };
   } else if (info.countryName) {
-    const name = info.countryName.trim();
-    // find key in en
+    let name = info.countryName.trim();
+    if (name === "United Arab Emirates") name = "UAE";
     const normalizedName = name.toLowerCase();
-    const foundCode = Object.entries(en).find(([_, val]) => val.toLowerCase() === normalizedName)?.[0];
+    const foundCode = Object.entries(en).find(([_, val]) => val.toLowerCase() === normalizedName || (val === "United Arab Emirates" && normalizedName === "uae"))?.[0];
     if (foundCode) {
       const currencyCode = COUNTRY_TO_CURRENCY[foundCode] || "USD";
       const cur = CURRENCIES[currencyCode] || { symbol: "$", rate: 1 };

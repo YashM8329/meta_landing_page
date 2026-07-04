@@ -99,19 +99,16 @@ const CHAINS_DATA: ChainData[] = [
     shortName: "UK",
     subtitle: "Consistently outperforming expectations.",
     pricePerPlayUsd: 6,
-    revenuePerMonthUsd: 28500,
+    revenuePerMonthUsd: 14100,
     paybackMonths: 4,
-    avgPlays: 1250,
-    avgRevenueUsd: 6500,
+    avgPlays: 542,
+    avgRevenueUsd: 3252,
     roiSummary: "2.5x",
     weeksData: [
-      { label: "Week 1", revUsd: 5200, plays: 866 },
-      { label: "Week 2", revUsd: 6800, plays: 1133 },
-      { label: "Week 3", revUsd: 6300, plays: 1050 },
-      { label: "Week 4", revUsd: 8100, plays: 1350 },
-      { label: "Week 5", revUsd: 4900, plays: 816 },
-      { label: "Week 6", revUsd: 6000, plays: 1000 },
-      { label: "Week 7", revUsd: 6200, plays: 1033 },
+      { label: "Week 1", revUsd: 3528, plays: 588 },
+      { label: "Week 2", revUsd: 3474, plays: 579 },
+      { label: "Week 3", revUsd: 2838, plays: 473 },
+      { label: "Week 4", revUsd: 3168, plays: 528 },
     ],
   },
   {
@@ -119,20 +116,20 @@ const CHAINS_DATA: ChainData[] = [
     name: "New york FEC Chain",
     shortName: "New york",
     subtitle: "High density traffic, record payback.",
-    pricePerPlayUsd: 7,
-    revenuePerMonthUsd: 32000,
+    pricePerPlayUsd: 5,
+    revenuePerMonthUsd: 28500,
     paybackMonths: 2,
     avgPlays: 1420,
-    avgRevenueUsd: 7650,
+    avgRevenueUsd: 7000,
     roiSummary: "4x",
     weeksData: [
-      { label: "Week 1", revUsd: 6100, plays: 871 },
-      { label: "Week 2", revUsd: 7500, plays: 1071 },
-      { label: "Week 3", revUsd: 7200, plays: 1028 },
-      { label: "Week 4", revUsd: 9500, plays: 1357 },
-      { label: "Week 5", revUsd: 5800, plays: 828 },
-      { label: "Week 6", revUsd: 7100, plays: 1014 },
-      { label: "Week 7", revUsd: 7400, plays: 1057 },
+      { label: "Week 1", revUsd: 2830, plays: 566 },
+      { label: "Week 2", revUsd: 6875, plays: 1375 },
+      { label: "Week 3", revUsd: 8765, plays: 1753 },
+      { label: "Week 4", revUsd: 5750, plays: 1150 },
+      { label: "Week 5", revUsd: 6575, plays: 1315 },
+      { label: "Week 6", revUsd: 7245, plays: 1449 },
+      { label: "Week 7", revUsd: 8005, plays: 1601 },
     ],
   },
 ];
@@ -160,11 +157,19 @@ export default function CaseStudy() {
 
   const formatWeekRev = (usd: number): string => {
     const v = Math.round(usd * rate);
+    if (v >= 1_000_000) {
+      const millions = Number((v / 1_000_000).toFixed(1));
+      return `${symbol}${millions}M`;
+    }
     return `${symbol}${v.toLocaleString()}`;
   };
 
   const formatAvgRev = (usd: number): string => {
     const v = Math.round(usd * rate);
+    if (v >= 1_000_000) {
+      const millions = Number((v / 1_000_000).toFixed(1));
+      return `${symbol}${millions}M`;
+    }
     return `${symbol}${v.toLocaleString()}`;
   };
 

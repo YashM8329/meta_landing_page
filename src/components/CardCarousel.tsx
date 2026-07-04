@@ -33,7 +33,11 @@ function CardContent({ card }: { card: CarouselCard }) {
           {/* Re-apply the card gradient as a tint so colours stay on-brand */}
           <div
             className="absolute inset-0"
-            style={{ background: card.gradient, mixBlendMode: "multiply", opacity: 0.20 }}
+            style={{
+              background: card.gradient,
+              mixBlendMode: "multiply",
+              opacity: (card.label.toLowerCase() === "unattended" || card.label.toLowerCase() === "turnkey") ? 0.10 : 0.20
+            }}
           />
         </>
       )}

@@ -31,13 +31,12 @@ interface FieldError {
   venueLocation?: string;
 }
 
-const COUNTRIES = Object.values(en).sort();
+const COUNTRIES = Object.values(en).map(c => c === "United Arab Emirates" ? "UAE" : c).sort();
 
 const COUNTRY_PHONE_SPECS: Record<string, { code: string; length: number | number[] }> = {
   "United States": { code: "+1", length: 10 },
   "Canada": { code: "+1", length: 10 },
   "India": { code: "+91", length: 10 },
-  "United Arab Emirates": { code: "+971", length: 9 },
   "UAE": { code: "+971", length: 9 },
   "United Kingdom": { code: "+44", length: [10, 11] },
   "Australia": { code: "+61", length: 9 },
@@ -83,7 +82,7 @@ export default function BrochureForm() {
 
   useEffect(() => {
     if (countryName) {
-      const displayCountry = countryName === "United Arab Emirates" ? "UAE" : countryName;
+      const displayCountry = (countryName === "United Arab Emirates" || countryName === "UAE") ? "UAE" : countryName;
       setForm((prev) => ({
         ...prev,
         country: displayCountry,
