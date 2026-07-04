@@ -36,9 +36,24 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
     if (!container || items.length === 0) return;
 
     let isPaused = false;
-    let timeoutId: NodeJS.Timeout;
+    let userInteracted = false;
+    let isInView = true;
     let animationFrameId: number;
     let lastTimestamp = 0;
+
+    // Use IntersectionObserver to track viewport status
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isInView = entry.isIntersecting;
+        if (!entry.isIntersecting) {
+          // Scrolled out of view: reset user interaction so it auto-scrolls next time it is seen
+          userInteracted = false;
+          isPaused = false;
+        }
+      },
+      { threshold: 0.05 }
+    );
+    observer.observe(container);
 
     // Calculate width of one full set of items (including gaps)
     const getTrackWidth = () => {
@@ -75,24 +90,17 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
     };
     container.addEventListener("scroll", handleScroll);
 
-    // Pause on user interaction and resume after 3 seconds of idleness
-    const pauseAndResetTimeout = () => {
-      isPaused = true;
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        isPaused = false;
-      }, 3000);
-    };
-
     let isDown = false;
     let startX = 0;
     let scrollLeftStart = 0;
 
     const handleTouchStart = () => {
-      pauseAndResetTimeout();
+      userInteracted = true;
+      isPaused = true;
     };
 
     const handleMouseDown = (e: MouseEvent) => {
+      userInteracted = true;
       isPaused = true;
       isDown = true;
       startX = e.pageX - container.offsetLeft;
@@ -101,13 +109,13 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
     };
 
     const handleMouseEnter = () => {
+      userInteracted = true;
       isPaused = true;
     };
 
     const handleMouseLeave = () => {
       isDown = false;
       container.style.cursor = "grab";
-      isPaused = false;
     };
 
     const handleMouseUp = () => {
@@ -124,8 +132,6 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
     };
 
     container.addEventListener("touchstart", handleTouchStart, { passive: true });
-    container.addEventListener("touchmove", pauseAndResetTimeout, { passive: true });
-    container.addEventListener("wheel", pauseAndResetTimeout, { passive: true });
     container.addEventListener("mousedown", handleMouseDown);
     container.addEventListener("mouseenter", handleMouseEnter);
     container.addEventListener("mouseleave", handleMouseLeave);
@@ -140,7 +146,7 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
       const delta = timestamp - lastTimestamp;
       lastTimestamp = timestamp;
 
-      if (!isPaused && !isDown) {
+      if (!isPaused && !isDown && isInView && !userInteracted) {
         // Increment scroll position smoothly (speed = 0.04px per millisecond)
         container.scrollLeft += 0.04 * delta;
       }
@@ -154,15 +160,13 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
       window.removeEventListener("resize", handleResize);
       container.removeEventListener("scroll", handleScroll);
       container.removeEventListener("touchstart", handleTouchStart);
-      container.removeEventListener("touchmove", pauseAndResetTimeout);
-      container.removeEventListener("wheel", pauseAndResetTimeout);
       container.removeEventListener("mousedown", handleMouseDown);
       container.removeEventListener("mouseenter", handleMouseEnter);
       container.removeEventListener("mouseleave", handleMouseLeave);
       container.removeEventListener("mouseup", handleMouseUp);
       container.removeEventListener("mousemove", handleMouseMove);
       cancelAnimationFrame(animationFrameId);
-      clearTimeout(timeoutId);
+      observer.disconnect();
     };
   }, [trackItems.length, items.length]);
 
