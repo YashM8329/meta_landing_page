@@ -1,12 +1,12 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useCurrency } from "@/lib/useCurrency";
 import MobileBrochureCTA from "./MobileBrochureCTA";
 
 /* Defaults + assumptions: 4,500 players/month, $65k install, 25 sqm. */
-const DEFAULT_PLAYERS = 4500;
+const DEFAULT_PLAYERS = 4000;
 const INSTALL_COST_USD = 65_000;
 const FOOTPRINT_SQM = 25;
 
@@ -19,8 +19,8 @@ interface SliderConfig {
 
 const SLIDER_CONFIGS: Record<string, SliderConfig> = {
   USD: { defaultPrice: 4.5, minPrice: 3.0, maxPrice: 6.0, stepPrice: 0.5 },
-  GBP: { defaultPrice: 3.5, minPrice: 2.0, maxPrice: 5.0, stepPrice: 0.5 },
-  EUR: { defaultPrice: 4.5, minPrice: 3.0, maxPrice: 6.0, stepPrice: 0.5 },
+  GBP: { defaultPrice: 3.0, minPrice: 2.0, maxPrice: 5.0, stepPrice: 0.5 },
+  EUR: { defaultPrice: 4.0, minPrice: 3.0, maxPrice: 6.0, stepPrice: 0.5 },
   INR: { defaultPrice: 250, minPrice: 100, maxPrice: 500, stepPrice: 50 },
   IDR: { defaultPrice: 64000, minPrice: 30000, maxPrice: 100000, stepPrice: 500 },
   VND: { defaultPrice: 50000, minPrice: 25000, maxPrice: 100000, stepPrice: 500 },
@@ -42,7 +42,7 @@ const AVAILABLE_COUNTRIES = [
   { country: "Australia", code: "AUD", symbol: "A$", rate: 1.53 },
   { country: "Canada", code: "CAD", symbol: "C$", rate: 1.36 },
   { country: "New Zealand", code: "NZD", symbol: "NZ$", rate: 1.63 },
-  { country: "United Arab Emirates", code: "AED", symbol: "AED ", rate: 3.67 },
+  { country: "UAE", code: "AED", symbol: "AED ", rate: 3.67 },
   { country: "South Africa", code: "ZAR", symbol: "R", rate: 18.5 },
   { country: "Japan", code: "JPY", symbol: "¥", rate: 149 },
   { country: "South Korea", code: "KRW", symbol: "₩", rate: 1330 },
@@ -93,14 +93,25 @@ function formatMoney(usd: number, symbol: string, rate: number): string {
 export default function ROICalculator() {
   const [players, setPlayers] = useState(DEFAULT_PLAYERS);
   const reduce = useReducedMotion();
-  const { symbol, rate, code, countryName } = useCurrency();
+  const { symbol, rate, code, countryName, setLocation } = useCurrency();
 
   const [selectedCode, setSelectedCode] = useState<string>("");
   const activeCode = selectedCode || code || "USD";
 
-  const hasAutoCodeInList = AVAILABLE_COUNTRIES.some((c) => c.code === code);
-  const dropdownOptions = [...AVAILABLE_COUNTRIES];
-  if (code && code !== "USD" && !hasAutoCodeInList) {
+  useEffect(() => {
+    if (code) {
+      setSelectedCode(code);
+    }
+  }, [code]);
+
+  const dropdownOptions = AVAILABLE_COUNTRIES.map((c) => {
+    if (c.code === code && countryName && c.code !== "USD") {
+      return { ...c, country: countryName };
+    }
+    return c;
+  });
+
+  if (code && code !== "USD" && !AVAILABLE_COUNTRIES.some((c) => c.code === code)) {
     dropdownOptions.push({
       country: countryName || code,
       code: code,
@@ -111,7 +122,7 @@ export default function ROICalculator() {
 
   const activeCurrency = dropdownOptions.find((c) => c.code === activeCode) || {
     country: countryName || "United States",
-    code: code || "USD",
+    code: activeCode,
     symbol: symbol || "$",
     rate: rate || 1,
   };
@@ -168,7 +179,11 @@ export default function ROICalculator() {
             <span>based on location:</span>
             <select
               value={activeCode}
-              onChange={(e) => setSelectedCode(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSelectedCode(val);
+                setLocation({ code: val });
+              }}
               className="bg-transparent text-accent font-semibold hover:text-accent/80 outline-none cursor-pointer border-b border-dashed border-accent/40 pb-0.5"
             >
               {dropdownOptions.map((c) => (
@@ -212,9 +227,11 @@ export default function ROICalculator() {
                   step={500}
                   value={players}
                   onChange={onPlayers}
+                  onWheel={(e) => e.currentTarget.blur()}
                   aria-valuetext={`${players} players per month`}
                   style={{
                     background: `linear-gradient(to right, var(--color-accent) 0%, var(--color-accent) ${((players - 2500) / (10000 - 2500)) * 100}%, var(--color-line) ${((players - 2500) / (10000 - 2500)) * 100}%, var(--color-line) 100%)`,
+                    touchAction: "pan-y",
                   }}
                   className="w-full h-1.5 rounded-full appearance-none cursor-pointer outline-none
                              [&::-webkit-slider-runnable-track]:bg-transparent
@@ -268,9 +285,11 @@ export default function ROICalculator() {
                   step={config.stepPrice}
                   value={price}
                   onChange={onPrice}
+                  onWheel={(e) => e.currentTarget.blur()}
                   aria-valuetext={`${activeCurrency.symbol}${price} per play`}
                   style={{
                     background: `linear-gradient(to right, var(--color-accent) 0%, var(--color-accent) ${((price - config.minPrice) / (config.maxPrice - config.minPrice)) * 100}%, var(--color-line) ${((price - config.minPrice) / (config.maxPrice - config.minPrice)) * 100}%, var(--color-line) 100%)`,
+                    touchAction: "pan-y",
                   }}
                   className="w-full h-1.5 rounded-full appearance-none cursor-pointer outline-none
                              [&::-webkit-slider-runnable-track]:bg-transparent

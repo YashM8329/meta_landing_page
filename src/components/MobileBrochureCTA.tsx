@@ -1,5 +1,7 @@
 "use client";
 
+import { motion } from "framer-motion";
+
 export default function MobileBrochureCTA() {
   const handleClick = () => {
     const el = document.getElementById("brochure-form");
@@ -24,12 +26,21 @@ export default function MobileBrochureCTA() {
             maskImage: 'linear-gradient(to right, black 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.05) 65%, black 100%)',
           }}
         />
-        <span className="relative z-10 flex items-center gap-2">
-          Request the brochure
+        <motion.span 
+          className="relative z-10 flex items-center justify-center gap-2"
+          animate={{ scale: [1, 1, 1.05, 1, 1] }}
+          transition={{
+            times: [0, 0.14, 0.20, 0.26, 1.0],
+            duration: 3.5,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        >
+          Request brochure
           <svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-        </span>
+        </motion.span>
       </button>
     </div>
   );

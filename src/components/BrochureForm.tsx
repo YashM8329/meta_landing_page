@@ -6,6 +6,7 @@ import PhoneInput, { Country } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { isValidPhoneNumber } from "libphonenumber-js";
 import en from "react-phone-number-input/locale/en";
+import { useCurrency } from "@/lib/useCurrency";
 
 type VenueStatus = "" | "existing" | "new" | "other";
 type AreaSize = "" | "small" | "large";
@@ -78,35 +79,20 @@ export default function BrochureForm() {
   const [sessionToken, setSessionToken] = useState("");
   const [hasSelected, setHasSelected] = useState(false);
 
+  const { countryName, countryCode, setLocation } = useCurrency();
+
   useEffect(() => {
-    async function detectLocation() {
-      try {
-        const res = await fetch("https://ipapi.co/json/");
-        if (!res.ok) return;
-        const data = await res.json();
-        let detectedCountry = "";
-        if (data.country_name) {
-          if (data.country_name === "United Arab Emirates") {
-            detectedCountry = "UAE";
-          } else if (COUNTRIES.includes(data.country_name)) {
-            detectedCountry = data.country_name;
-          }
-        }
-
-        if (data.country) {
-          setDefaultCountry(data.country as Country);
-        }
-
-        setForm((prev) => ({
-          ...prev,
-          country: prev.country || detectedCountry,
-        }));
-      } catch (err) {
-        // Geolocation lookup failed or was blocked by an adblocker (fails silently)
-      }
+    if (countryName) {
+      const displayCountry = countryName === "United Arab Emirates" ? "UAE" : countryName;
+      setForm((prev) => ({
+        ...prev,
+        country: displayCountry,
+      }));
     }
-    detectLocation();
-  }, []);
+    if (countryCode) {
+      setDefaultCountry(countryCode as Country);
+    }
+  }, [countryName, countryCode]);
 
   // Autocomplete fetch logic
   const fetchSuggestions = async (query: string, tokenToUse?: string) => {
@@ -195,6 +181,64 @@ export default function BrochureForm() {
       }, 100);
     }
   }, [form.venueStatus]);
+
+  const validateEmailField = (emailVal: string) => {
+    if (!emailVal.trim()) {
+      setErrors((prev) => ({ ...prev, email: "Email address is required." }));
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+      setErrors((prev) => ({ ...prev, email: "Please enter a valid email address." }));
+    } else {
+      setErrors((prev) => ({ ...prev, email: undefined }));
+    }
+  };
+
+  const validatePhoneField = (phoneVal: string) => {
+    if (!phoneVal.trim()) {
+      setErrors((prev) => ({ ...prev, phone: "Phone number is required." }));
+      return;
+    }
+    const digitsOnly = phoneVal.replace(/[^\d+]/g, "");
+    const selectedCountry = form.country.trim();
+    const spec = COUNTRY_PHONE_SPECS[selectedCountry];
+    
+    let isInvalid = false;
+    if (spec) {
+      let nationalNumber = digitsOnly;
+      if (digitsOnly.startsWith(spec.code)) {
+        nationalNumber = digitsOnly.substring(spec.code.length);
+      } else if (digitsOnly.startsWith("+")) {
+        const matchedCode = Object.values(COUNTRY_PHONE_SPECS)
+          .map(s => s.code)
+          .find(code => digitsOnly.startsWith(code));
+        if (matchedCode) {
+          nationalNumber = digitsOnly.substring(matchedCode.length);
+        }
+      }
+      
+      if (nationalNumber.startsWith("0")) {
+        nationalNumber = nationalNumber.substring(1);
+      }
+
+      const len = nationalNumber.length;
+      const expectedLengths = Array.isArray(spec.length) ? spec.length : [spec.length];
+      const maxExpected = Math.max(...expectedLengths);
+      const minExpected = Math.min(...expectedLengths);
+
+      if (len > maxExpected || len < minExpected || !isValidPhoneNumber(phoneVal)) {
+        isInvalid = true;
+      }
+    } else {
+      if (!isValidPhoneNumber(phoneVal)) {
+        isInvalid = true;
+      }
+    }
+
+    if (isInvalid) {
+      setErrors((prev) => ({ ...prev, phone: "Invalid Phone number" }));
+    } else {
+      setErrors((prev) => ({ ...prev, phone: undefined }));
+    }
+  };
 
   const set = (field: keyof FormState, value: string) => {
     setForm((p) => ({ ...p, [field]: value }));
@@ -320,7 +364,7 @@ export default function BrochureForm() {
         <div className="hidden lg:flex flex-col">
           {/* <p className="text-[13px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-2">Get the full picture</p> */}
           <h2 className="text-[48px] leading-[0.95] font-extrabold tracking-[-0.03em] text-ink mb-6">
-            Request the Brochure
+            Request Brochure
           </h2>
           {/* <p className="text-[16px] text-ink-soft leading-relaxed mb-8 max-w-[400px]">
             Get detailed specs, revenue data, and case studies.
@@ -344,7 +388,7 @@ export default function BrochureForm() {
           {/* Mobile header */}
           <div className="lg:hidden mb-7">
             {/* <p className="text-[13px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-1">Get the full picture</p> */}
-            <h2 className="text-[clamp(30px,8.5vw,42px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">Request the Brochure</h2>
+            <h2 className="text-[clamp(30px,8.5vw,42px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">Request Brochure</h2>
           </div>
 
           <form onSubmit={handleSubmit} noValidate aria-label="Brochure request">
@@ -358,9 +402,10 @@ export default function BrochureForm() {
                 {errors.fullName && <p id="err-fullName" role="alert" className="text-[12px] text-red-500 mt-1 font-medium">{errors.fullName}</p>}
               </div>
 
-              <div className="mb-4">
+               <div className="mb-4">
                 <label htmlFor="field-email" className="block text-[13px] font-semibold text-ink mb-1.5">Email <span className="text-accent">*</span></label>
                 <input id="field-email" type="email" inputMode="email" autoComplete="email" value={form.email} onChange={(e) => set("email", e.target.value)}
+                  onBlur={() => validateEmailField(form.email)}
                   aria-invalid={!!errors.email} aria-describedby={errors.email ? "err-email" : undefined} placeholder="jane@venue.com"
                   className={`${inputBase} ${errors.email ? "border-red-400 bg-red-50" : "border-line bg-white"}`} />
                 {errors.email && <p id="err-email" role="alert" className="text-[12px] text-red-500 mt-1 font-medium">{errors.email}</p>}
@@ -375,7 +420,14 @@ export default function BrochureForm() {
                   placeholder="Enter phone number"
                   value={form.phone}
                   onChange={(val) => set("phone", val || "")}
+                  onBlur={() => validatePhoneField(form.phone)}
                   defaultCountry={defaultCountry}
+                  country={defaultCountry}
+                  onCountryChange={(c) => {
+                    if (c && c !== defaultCountry) {
+                      setLocation({ countryCode: c });
+                    }
+                  }}
                   className={errors.phone ? "PhoneInput--error" : ""}
                   numberInputProps={{
                     id: "field-phone",
@@ -399,6 +451,9 @@ export default function BrochureForm() {
                     }}
                     onBlur={() => {
                       setTimeout(() => setCountryOptions([]), 200);
+                      if (form.country) {
+                        setLocation({ countryName: form.country });
+                      }
                     }}
                     placeholder="Search or enter country…"
                     className={`${inputBase} ${errors.country ? "border-red-400 bg-red-50" : "border-line bg-white"}`}
@@ -411,6 +466,7 @@ export default function BrochureForm() {
                           onClick={() => {
                             set("country", c);
                             setCountryOptions([]);
+                            setLocation({ countryName: c });
                           }}
                           className="px-4 py-2 hover:bg-accent/10 cursor-pointer text-[14px] text-ink border-b border-line last:border-none"
                         >
@@ -445,7 +501,7 @@ export default function BrochureForm() {
               {errors.venueStatus && <p id="err-venueStatus" role="alert" className="text-[12px] text-red-500 mt-1 font-medium">{errors.venueStatus}</p>}
               {form.venueStatus === "other" && (
               <div id="venue-other-container" className="mb-4 bg-accent/5 border border-accent/15 rounded-[12px] p-4 mt-4">
-                <label htmlFor="field-venueStatusOther" className="block text-[13px] font-semibold text-ink mb-1.5">Please specify/Search venue location <span className="text-accent">*</span></label>
+                <label htmlFor="field-venueStatusOther" className="block text-[13px] font-semibold text-ink mb-1.5">Enter your venue location <span className="text-accent">*</span></label>
                 <div className="relative">
                   <input
                     id="field-venueStatusOther"
@@ -462,7 +518,7 @@ export default function BrochureForm() {
                     onBlur={() => {
                       setTimeout(() => setVenueOptions([]), 200);
                     }}
-                    placeholder="Type/Search details or FEC venue location…"
+                    placeholder="Search or enter address…"
                     className={`${inputBase} ${errors.venueStatusOther ? "border-red-400 bg-red-50" : "border-line bg-white"}`}
                   />
                   {isVenueLoading && (
@@ -537,7 +593,7 @@ export default function BrochureForm() {
                     onBlur={() => {
                       setTimeout(() => setVenueOptions([]), 200);
                     }}
-                    placeholder="Search or enter FEC venue name or address…"
+                    placeholder="Search Venue Location.."
                     className={`${inputBase} ${errors.venueLocation ? "border-red-400 bg-red-50" : "border-line bg-white"}`}
                   />
                   {isVenueLoading && (
@@ -627,7 +683,7 @@ export default function BrochureForm() {
                     ease: "easeInOut"
                   }}
                 >
-                  Send me the brochure
+                  Request brochure
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                     <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>

@@ -19,16 +19,27 @@ export default function StickyFooterCTA() {
           className="btn-glass-accent flex items-center justify-center gap-2 text-white font-semibold text-[16px] h-[54px] rounded-lg w-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           aria-label="Request brochure — scroll to form"
         >
-          Request Brochure
-          <svg width="17" height="17" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path
-              d="M8 3L13 8L8 13M3 8H13"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <motion.span
+            className="flex items-center justify-center gap-2"
+            animate={{ scale: [1, 1, 1.05, 1, 1] }}
+            transition={{
+              times: [0, 0.14, 0.20, 0.26, 1.0],
+              duration: 3.5,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          >
+            Request Brochure
+            <svg width="17" height="17" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path
+                d="M8 3L13 8L8 13M3 8H13"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </motion.span>
         </a>
       </motion.div>
     </div>

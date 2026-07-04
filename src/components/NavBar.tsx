@@ -100,12 +100,21 @@ export default function NavBar() {
                 maskImage: 'linear-gradient(to right, black 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.05) 65%, black 100%)',
               }}
             />
-            <div className="flex items-center justify-center gap-1.5 relative z-10">
+            <motion.div 
+              className="flex items-center justify-center gap-1.5 relative z-10"
+              animate={{ scale: [1, 1, 1.05, 1, 1] }}
+              transition={{
+                times: [0, 0.14, 0.20, 0.26, 1.0],
+                duration: 3.5,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
               Get Brochure
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-            </div>
+            </motion.div>
           </a>
         </div>
       </div>

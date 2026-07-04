@@ -34,13 +34,13 @@ const momentsCards: CarouselCard[] = [
 
 /* S5 — Locations: international reels (provided by business) */
 const venueReels: ReelItem[] = [
-  { videoSrc: "/video/social_media/1.mp4", account: "hypergrid.ai", caption: "The crowd reaction says it all! Watch players step onto the LED floor and start moving. ⚡🔥 #activegaming #hypergrid", likes: "2.4K", comments: "112", gameZone: "Timezone, Mumbai" },
+  { videoSrc: "/video/social_media/1.mp4", account: "Timezone Newzealand", caption: "The crowd reaction says it all! Watch players step onto the LED floor and start moving. ⚡🔥 #activegaming #hypergrid", likes: "2.4K", comments: "112", gameZone: "Timezone, Mumbai" },
   { videoSrc: "/video/social_media/2.mp4", account: "hypergrid.ai", caption: "Zero staff, infinite fun! The first fully unattended multiplayer LED arena. #arcade #futureofplay", likes: "1.8K", comments: "94", gameZone: "Fun City, Dubai" },
-  { videoSrc: "/video/social_media/3.mp4", account: "hypergrid.ai", caption: "Gameplay footage from our new level! Replayability is off the charts. 🎮👾 #indiegamedev #gamers", likes: "986", comments: "47", gameZone: "Main Event, Austin" },
-  { videoSrc: "/video/social_media/4.mp4", account: "hypergrid.ai", caption: "Installed in under 2 days. Request a brochure to bring this to your venue today. 📍🚀 #amusementpark #fec", likes: "3.2K", comments: "156", gameZone: "Timezone, Singapore" },
-  { videoSrc: "/video/social_media/5.mp4", account: "hypergrid.ai", caption: "Automatically auto-edited clips direct to player phones! Pure marketing power. 📱✨ #socialmedia #viral", likes: "4.1K", comments: "210", gameZone: "ASI Arena, Bangalore" },
-  { videoSrc: "/video/social_media/6.mp4", account: "hypergrid.ai", caption: "1-6 players, all age groups. The perfect attraction for family entertainment centers! 👨‍👩‍👧‍👦🎮 #familyfun", likes: "1.5K", comments: "72", gameZone: "Play DXB, Dubai" },
-  { videoSrc: "/video/social_media/8.mp4", account: "hypergrid.ai", caption: "Another packed weekend! Watch our game grid attract massive queues. 📈💰 #operatorgoals #amusements", likes: "2.7K", comments: "89", gameZone: "Timezone, Sydney" },
+  { videoSrc: "/video/social_media/3.mp4", account: "Surfurs Paradise", caption: "Gameplay footage from our new level! Replayability is off the charts. 🎮👾 #indiegamedev #gamers", likes: "986", comments: "47", gameZone: "Main Event, Austin" },
+  { videoSrc: "/video/social_media/4.mp4", account: "Infinity Park", caption: "Installed in under 2 days. Request a brochure to bring this to your venue today. 📍🚀 #amusementpark #fec", likes: "3.2K", comments: "156", gameZone: "Reuniam Island" },
+  { videoSrc: "/video/social_media/5.mp4", account: "Timezone Aurstralia", caption: "Automatically auto-edited clips direct to player phones! Pure marketing power. 📱✨ #socialmedia #viral", likes: "4.1K", comments: "210", gameZone: "ASI Arena, Bangalore" },
+  { videoSrc: "/video/social_media/6.mp4", account: "Timezone Singapore", caption: "1-6 players, all age groups. The perfect attraction for family entertainment centers! 👨‍👩‍👧‍👦🎮 #familyfun", likes: "1.5K", comments: "72", gameZone: "Orchard Exc" },
+  { videoSrc: "/video/social_media/8.mp4", account: "The Zone Dubai", caption: "Another packed weekend! Watch our game grid attract massive queues. 📈💰 #operatorgoals #amusements", likes: "2.7K", comments: "89", gameZone: "Timezone, Sydney" },
 ];
 
 export default function Home() {

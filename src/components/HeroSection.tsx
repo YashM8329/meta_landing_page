@@ -88,16 +88,26 @@ export default function HeroSection() {
             We are a premium active-attraction provider, a Trusted FOG Technologies Brand, driving over $100M+ in gameplay revenue for global venues.
           </motion.p>
  
-          {/* CTA row — desktop only */}
           <motion.div variants={item} className="flex items-center gap-3">
             <a
               href="#brochure-form"
               className="btn-glass-accent text-white font-semibold text-[15px] px-7 py-3.5 rounded-lg flex items-center gap-2"
             >
-              Request Brochure
-              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <motion.span
+                className="flex items-center justify-center gap-2"
+                animate={{ scale: [1, 1, 1.05, 1, 1] }}
+                transition={{
+                  times: [0, 0.14, 0.20, 0.26, 1.0],
+                  duration: 3.5,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              >
+                Request Brochure
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </motion.span>
             </a>
             <button
               onClick={() => setIsOpen(true)}
