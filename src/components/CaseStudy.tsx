@@ -199,7 +199,7 @@ export default function CaseStudy() {
         <motion.div {...rise()} className="mb-6">
           {/* <p className="text-[11px] font-extrabold tracking-[0.2em] text-accent uppercase mb-2">Case Studies</p> */}
           <h2 className="text-[clamp(32px,5.5vw,48px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-ink mb-3">
-            Proven Performance. <br className="md:hidden" /> Across Locations.
+            Proven Performance <br className="md:hidden" /> Across Locations
           </h2>
           <p className="text-[15px] sm:text-[16px] text-ink-soft font-medium leading-relaxed max-w-[450px]">
             Explore real-world results from top-performing FECs.

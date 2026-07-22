@@ -85,7 +85,7 @@ export default function HeroSection() {
             variants={item}
             className="text-[15px] sm:text-[17px] font-medium text-white/60 leading-relaxed mb-8 max-w-[500px]"
           >
-            We are a premium active-attraction provider, a Trusted FOG Technologies Brand, driving over $100M+ in gameplay revenue for global venues.
+            A must-have <strong>high revenue and footfall driving attraction</strong> for every entertainment venue operator. Pays back in 6 months.
           </motion.p>
  
           <motion.div variants={item} className="flex items-center gap-3">
@@ -199,15 +199,15 @@ export default function HeroSection() {
             className="flex flex-col text-[38px] sm:text-[56px] font-black tracking-tight leading-[1.02] uppercase mb-4 text-white w-full text-left"
           >
             <span>SCALING FEC</span>
-            <span>ARCADE REVENUE.</span>
-            <span className="text-[#000000]">ZERO STAFF.</span>
+            <span>ARCADE REVENUE</span>
+            <span className="text-[#000000]">ZERO STAFF</span>
           </motion.div>
 
           <motion.p
             variants={item}
-            className="text-[14px] sm:text-[16px] font-medium text-white/60 leading-relaxed mb-6 text-left"
+            className="text-[14px] sm:text-[16px] font-medium text-white/100 leading-relaxed mb-6 text-left"
           >
-            We are a premium active-attraction provider, a Trusted FOG Technologies Brand, driving over $100M+ in gameplay revenue for global venues.
+            A must-have <strong>high revenue and footfall driving attraction</strong> for every entertainment venue operator. Pays back in 6 months.
           </motion.p>
         </motion.div>
  
@@ -273,7 +273,7 @@ export default function HeroSection() {
             </div>
  
             <div className="col-span-6 bg-white rounded-xl py-2 px-3.5 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
-              <p className="text-[26px] sm:text-[18px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">3 months</p>
+              <p className="text-[26px] sm:text-[18px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">6 months</p>
               <p className="text-[10px] sm:text-[10px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Average Payback</p>
             </div>
  
