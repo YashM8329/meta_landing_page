@@ -16,7 +16,7 @@ export default function StickyFooterCTA() {
       >
         <a
           href="#brochure-form"
-          className="btn-glass-accent flex items-center justify-center gap-2 text-white font-semibold text-[16px] h-[54px] rounded-lg w-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          className="btn-glass-accent flex items-center justify-center gap-2 text-white font-semibold text-[18px] h-[54px] rounded-lg w-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           aria-label="Request brochure — scroll to form"
         >
           <motion.span

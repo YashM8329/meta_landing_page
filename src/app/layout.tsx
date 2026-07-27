@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Urbanist } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
+import LogRocketInit from "@/components/LogRocketInit";
 
 /* Inter — kept only for the /demo font comparison page */
 const inter = Inter({
@@ -43,6 +44,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${urbanist.variable} ${mugen.variable}`}>
       <body className="min-h-dvh bg-white text-ink antialiased overflow-x-hidden font-sans">
+        <LogRocketInit />
         {children}
       </body>
     </html>

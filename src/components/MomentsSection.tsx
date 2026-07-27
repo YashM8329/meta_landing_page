@@ -43,7 +43,7 @@ const steps = [
   },
   {
     n: "2",
-    label: "Instant QR",
+    label: "Scan QR & Post game",
     desc: "Players scan to get their video instantly",
     icon: (
       <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-14 h-14 md:w-20 md:h-20 object-contain text-accent">

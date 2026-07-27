@@ -98,17 +98,17 @@ const CHAINS_DATA: ChainData[] = [
     name: "UK FEC Chain",
     shortName: "UK",
     subtitle: "Consistently outperforming expectations.",
-    pricePerPlayUsd: 6,
-    revenuePerMonthUsd: 14100,
+    pricePerPlayUsd: 3.8,
+    revenuePerMonthUsd: 12230,
     paybackMonths: 4,
-    avgPlays: 542,
-    avgRevenueUsd: 3252,
+    avgPlays: 743,
+    avgRevenueUsd: 2824,
     roiSummary: "2.5x",
     weeksData: [
-      { label: "Week 1", revUsd: 3528, plays: 588 },
-      { label: "Week 2", revUsd: 3474, plays: 579 },
-      { label: "Week 3", revUsd: 2838, plays: 473 },
-      { label: "Week 4", revUsd: 3168, plays: 528 },
+      { label: "Week 1", revUsd: 2964, plays: 780 },
+      { label: "Week 2", revUsd: 2869, plays: 755 },
+      { label: "Week 3", revUsd: 2603, plays: 685 },
+      { label: "Week 4", revUsd: 2861, plays: 753 },
     ],
   },
   {
@@ -117,19 +117,18 @@ const CHAINS_DATA: ChainData[] = [
     shortName: "New york",
     subtitle: "High density traffic, record payback.",
     pricePerPlayUsd: 5,
-    revenuePerMonthUsd: 28500,
+    revenuePerMonthUsd: 33230,
     paybackMonths: 2,
-    avgPlays: 1420,
-    avgRevenueUsd: 7000,
+    avgPlays: 1535,
+    avgRevenueUsd: 7674,
     roiSummary: "4x",
     weeksData: [
-      { label: "Week 1", revUsd: 2830, plays: 566 },
-      { label: "Week 2", revUsd: 6875, plays: 1375 },
-      { label: "Week 3", revUsd: 8765, plays: 1753 },
-      { label: "Week 4", revUsd: 5750, plays: 1150 },
-      { label: "Week 5", revUsd: 6575, plays: 1315 },
-      { label: "Week 6", revUsd: 7245, plays: 1449 },
-      { label: "Week 7", revUsd: 8005, plays: 1601 },
+      { label: "Week 1", revUsd: 9705, plays: 1941 },
+      { label: "Week 2", revUsd: 8765, plays: 1753 },
+      { label: "Week 3", revUsd: 5750, plays: 1150 },
+      { label: "Week 4", revUsd: 6575, plays: 1315 },
+      { label: "Week 5", revUsd: 7245, plays: 1449 },
+      { label: "Week 6", revUsd: 8005, plays: 1601 },
     ],
   },
 ];
@@ -202,7 +201,7 @@ export default function CaseStudy() {
             Proven Performance <br className="md:hidden" /> Across Locations
           </h2>
           <p className="text-[15px] sm:text-[16px] text-ink-soft font-medium leading-relaxed max-w-[450px]">
-            Explore real-world results from top-performing FECs.
+            Real world results from venues.
           </p>
         </motion.div>
 

@@ -91,7 +91,7 @@ export default function HeroSection() {
           <motion.div variants={item} className="flex items-center gap-3">
             <a
               href="#brochure-form"
-              className="btn-glass-accent text-white font-semibold text-[15px] px-7 py-3.5 rounded-lg flex items-center gap-2"
+              className="btn-glass-accent text-white font-semibold text-[16px] px-7 py-3.5 rounded-lg flex items-center gap-2"
             >
               <motion.span
                 className="flex items-center justify-center gap-2"
@@ -194,20 +194,20 @@ export default function HeroSection() {
             />
           </motion.h1>
  
-          <motion.div
+          {/* <motion.div
             variants={item}
             className="flex flex-col text-[38px] sm:text-[56px] font-black tracking-tight leading-[1.02] uppercase mb-4 text-white w-full text-left"
           >
             <span>SCALING FEC</span>
             <span>ARCADE REVENUE</span>
             <span className="text-[#000000]">ZERO STAFF</span>
-          </motion.div>
+          </motion.div> */}
 
           <motion.p
             variants={item}
-            className="text-[14px] sm:text-[16px] font-medium text-white/100 leading-relaxed mb-6 text-left"
+            className="text-[20px] sm:text-[18px] font-medium text-white/100 leading-relaxed mb-6 text-left"
           >
-            A must-have <strong>high revenue and footfall driving attraction</strong> for every entertainment venue operator. Pays back in 6 months.
+            <strong>High revenue and footfall driving attraction</strong> for every entertainment venue operator. <br />Pays back in <strong>6 months. </strong>
           </motion.p>
         </motion.div>
  
@@ -264,12 +264,12 @@ export default function HeroSection() {
             {/* Row 1: Venues (col-3), Countries (col-3), ROI (col-6) */}
             <div className="col-span-3 bg-white rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">100+</p>
-              <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Active Venues</p>
+              <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Venues</p>
             </div>
  
             <div className="col-span-3 bg-white rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
-              <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">10+</p>
-              <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Global Reach</p>
+              <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">15+</p>
+              <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Countries</p>
             </div>
  
             <div className="col-span-6 bg-white rounded-xl py-2 px-3.5 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
@@ -279,7 +279,7 @@ export default function HeroSection() {
  
             {/* Row 2: Gameplay (col-6), Players (col-3), Age (col-3) */}
             <div className="col-span-6 bg-white rounded-xl py-2 px-3.5 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
-              <p className="text-[26px] sm:text-[18px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">5 Minutes</p>
+              <p className="text-[26px] sm:text-[18px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">5 minutes</p>
               <p className="text-[10px] sm:text-[10px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Gameplay</p>
             </div>
  

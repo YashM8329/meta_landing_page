@@ -176,7 +176,7 @@ export default function ROICalculator() {
             <span className="font-bold text-ink-soft bg-[#0a0e1a]/5 px-1.5 py-0.5 rounded text-[12px]">
               {activeCurrency.code} ({activeCurrency.symbol.trim()})
             </span>
-            <span>based on location:</span>
+            <span>based on</span>
             <select
               value={activeCode}
               onChange={(e) => {

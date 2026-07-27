@@ -650,7 +650,7 @@ export default function BrochureForm() {
             </div>
 
             <button type="submit" disabled={submitting} aria-busy={submitting}
-              className="relative w-full h-[54px] text-white font-semibold text-[16px] rounded-lg flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent mt-2 overflow-hidden shadow-lg select-none bg-gradient-to-r from-[#1D6CEF] via-[#2f74e6] to-[#1D6CEF] hover:brightness-105 active:scale-[0.98] transition-all duration-150">
+              className="relative w-full h-[54px] text-white font-semibold text-[18px] rounded-lg flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent mt-2 overflow-hidden shadow-lg select-none bg-gradient-to-r from-[#1D6CEF] via-[#2f74e6] to-[#1D6CEF] hover:brightness-105 active:scale-[0.98] transition-all duration-150">
               
               {/* Halftone pattern overlay denser on left and right flanks (white dots) */}
               <div 
@@ -682,7 +682,7 @@ export default function BrochureForm() {
                     ease: "easeInOut"
                   }}
                 >
-                  Request brochure
+                  Request Brochure
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                     <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
