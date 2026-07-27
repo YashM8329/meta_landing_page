@@ -1,12 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion, type Variants } from "framer-motion";
 
 export default function HeroSection() {
   const reduce = useReducedMotion();
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const lenis = (window as any).lenis;
+      if (isOpen) {
+        if (lenis) lenis.stop();
+        document.body.style.overflow = "hidden";
+      } else {
+        if (lenis) lenis.start();
+        document.body.style.overflow = "";
+      }
+    }
+    return () => {
+      if (typeof window !== "undefined") {
+        const lenis = (window as any).lenis;
+        if (lenis) lenis.start();
+        document.body.style.overflow = "";
+      }
+    };
+  }, [isOpen]);
 
   const container: Variants = {
     hidden: {},

@@ -39,7 +39,7 @@ const testimonials: Testimonial[] = [
     quote: "It naturally draws a wide mix of guests, from families to teens, and creates a social, competitive energy that keeps people playing.",
     name: "Prakash Vivekanand",
     title: "Managing Director, ASI",
-    logo: "/logos/7-ASI.png",
+    logo: "/logos/9-ASI.png",
     logoAlt: "ASI",
     photo: "/testimonials/prakash-vivekanand.jpg",
     initials: "PV",
@@ -82,12 +82,22 @@ function TestimonialCardInner({ t, className = "" }: { t: Testimonial; className
       
       {/* Top right/left logo (transparent background) */}
       <div className={`absolute top-4 ${
-        t.name === testimonials[2].name 
+        t.logoAlt === "ASI" 
           ? "left-4" 
           : "right-4"
       } z-20 flex items-center shrink-0`}>
-        <div className="relative h-[30px] w-[103px]">
-          <Image src={t.logo} alt={t.logoAlt} fill sizes="100px" className="object-contain" />
+        <div className={`relative ${
+          t.logoAlt === "ASI" 
+            ? "h-[60px] w-[206px] -mt-3.5" 
+            : "h-[30px] w-[103px]"
+        }`}>
+          <Image 
+            src={t.logo} 
+            alt={t.logoAlt} 
+            fill 
+            sizes="300px" 
+            className={`object-contain ${t.logoAlt === "ASI" ? "object-left" : "object-right"}`} 
+          />
         </div>
       </div>
 

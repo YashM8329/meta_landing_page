@@ -42,7 +42,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${urbanist.variable} ${mugen.variable}`}>
+    <html lang="en" className={`${inter.variable} ${urbanist.variable} ${mugen.variable}`} suppressHydrationWarning>
       <body className="min-h-dvh bg-white text-ink antialiased overflow-x-hidden font-sans">
         <LogRocketInit />
         {children}

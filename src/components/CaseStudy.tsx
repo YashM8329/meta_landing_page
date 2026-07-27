@@ -358,7 +358,7 @@ export default function CaseStudy() {
               {/* View Full Report Button */}
               <a
                 href="#brochure-form"
-                className="relative w-full h-[52px] text-white font-bold text-[15px] rounded-xl flex items-center justify-center gap-2 overflow-hidden shadow-lg bg-gradient-to-r from-[#1D6CEF] via-[#2f74e6] to-[#1D6CEF] active:scale-[0.98] transition-all duration-150 border border-white/10 select-none cursor-pointer"
+                className="relative w-full h-[52px] text-white font-bold text-[18px] rounded-xl flex items-center justify-center gap-2 overflow-hidden shadow-lg bg-gradient-to-r from-[#1D6CEF] via-[#2f74e6] to-[#1D6CEF] active:scale-[0.98] transition-all duration-150 border border-white/10 select-none cursor-pointer"
               >
                 {/* Halftone pattern overlay */}
                 <div 

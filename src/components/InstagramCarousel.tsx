@@ -127,7 +127,7 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
       if (!isDown) return;
       e.preventDefault();
       const x = e.pageX - container.offsetLeft;
-      const walk = (x - startX) * 1.5; // scroll speed multiplier
+      const walk = (x - startX) * 0.8; // scroll speed multiplier
       container.scrollLeft = scrollLeftStart - walk;
     };
 
