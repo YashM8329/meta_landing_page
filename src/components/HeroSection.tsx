@@ -76,7 +76,7 @@ export default function HeroSection() {
           >
             FOG Technologies
           </motion.p>
- 
+
           <motion.h1
             variants={item}
             className="mb-6 relative z-10 flex justify-start w-full"
@@ -90,7 +90,7 @@ export default function HeroSection() {
               className="w-[624px] h-auto object-contain -ml-4"
             />
           </motion.h1>
- 
+
           <motion.div
             variants={item}
             className="flex flex-col text-[68px] font-black tracking-tight leading-[1.02] uppercase mb-6 text-white w-full text-left"
@@ -107,7 +107,7 @@ export default function HeroSection() {
           >
             A must-have <strong>high revenue and footfall driving attraction</strong> for every entertainment venue operator. Pays back in 6 months.
           </motion.p>
- 
+
           <motion.div variants={item} className="flex items-center gap-3">
             <a
               href="#brochure-form"
@@ -139,7 +139,7 @@ export default function HeroSection() {
               </svg>
             </button>
           </motion.div>
- 
+
           {/* Stats row — desktop only */}
           <motion.div variants={item} className="flex items-center gap-4 mt-10 border-t border-white/10 pt-8 w-full">
             {[
@@ -147,7 +147,7 @@ export default function HeroSection() {
               { value: "15+", label: "Countries" },
               { value: "3 months", label: "Fastest ROI" },
             ].map(({ value, label }) => (
-              <div 
+              <div
                 key={label}
                 className="bg-white rounded-2xl py-3 px-5 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 min-w-[140px]"
               >
@@ -199,7 +199,7 @@ export default function HeroSection() {
           >
             FOG Technologies
           </motion.p>
- 
+
           <motion.h1
             variants={item}
             className="mb-6 relative z-10 flex justify-start w-full"
@@ -213,7 +213,7 @@ export default function HeroSection() {
               className="w-[364px] sm:w-[468px] h-auto object-contain -ml-2"
             />
           </motion.h1>
- 
+
           {/* <motion.div
             variants={item}
             className="flex flex-col text-[38px] sm:text-[56px] font-black tracking-tight leading-[1.02] uppercase mb-4 text-white w-full text-left"
@@ -225,12 +225,12 @@ export default function HeroSection() {
 
           <motion.p
             variants={item}
-            className="text-[20px] sm:text-[18px] font-medium text-white/100 leading-relaxed mb-6 text-left"
+            className="text-[20px] sm:text-[18px] font-medium text-white/100 leading-snug mb-6 text-left"
           >
-            <strong>High revenue and footfall driving attraction</strong> for every entertainment venue operator. <br />Pays back in <strong>6 months. </strong>
+            <strong>High revenue and footfall driving attraction</strong> for every entertainment venue operator. Pay back in <strong>6 months. </strong>
           </motion.p>
         </motion.div>
- 
+
         {/* Hero Image Area with play button */}
         <motion.div
           variants={container}
@@ -253,7 +253,7 @@ export default function HeroSection() {
                 className="w-full h-auto drop-shadow-[0_30px_60px_rgba(0,0,0,0.5)] scale-105 sm:scale-110 relative -top-3"
               />
             </motion.div>
- 
+
             {/* Play Button Overlay for Mobile only */}
             <button
               onClick={() => setIsOpen(true)}
@@ -275,9 +275,9 @@ export default function HeroSection() {
               </svg>
             </button>
           </motion.div>
- 
+
           {/* Mobile-only Stats Grid matching mockup */}
-          <motion.div 
+          <motion.div
             variants={item}
             className="grid grid-cols-12 gap-2 mt-4 w-full"
           >
@@ -286,28 +286,28 @@ export default function HeroSection() {
               <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">100+</p>
               <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Venues</p>
             </div>
- 
+
             <div className="col-span-3 bg-white rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">15+</p>
               <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Countries</p>
             </div>
- 
+
             <div className="col-span-6 bg-white rounded-xl py-2 px-3.5 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[18px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">6 months</p>
               <p className="text-[10px] sm:text-[10px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Average Payback</p>
             </div>
- 
+
             {/* Row 2: Gameplay (col-6), Players (col-3), Age (col-3) */}
             <div className="col-span-6 bg-white rounded-xl py-2 px-3.5 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[18px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">5 minutes</p>
               <p className="text-[10px] sm:text-[10px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Gameplay</p>
             </div>
- 
+
             <div className="col-span-3 bg-white rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">1-6</p>
               <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Players</p>
             </div>
- 
+
             <div className="col-span-3 bg-white rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">4+</p>
               <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Age</p>
