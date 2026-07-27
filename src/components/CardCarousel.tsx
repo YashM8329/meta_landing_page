@@ -187,7 +187,7 @@ export default function CardCarousel({ cards }: { cards: CarouselCard[] }) {
       if (!isDown) return;
       e.preventDefault();
       const x = e.pageX - container.offsetLeft;
-      const walk = (x - startX) * 0.8; // scroll speed multiplier
+      const walk = (x - startX) * 0.5; // scroll speed multiplier
       container.scrollLeft = scrollLeftStart - walk;
     };
 
