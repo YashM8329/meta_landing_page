@@ -171,8 +171,8 @@ export default function ROICalculator() {
             Revenue &amp; ROI
           </h2>
           {/* Currency indicator dropdown */}
-          <p className="text-[13px] text-ink-faint mt-2 flex flex-wrap items-center gap-1.5 select-none">
-            <span>Showing in </span>
+          <p className="text-[15px] text-ink-faint mt-2 flex flex-wrap items-center gap-1.5 select-none">
+            <span>Showing</span>
             <span className="font-bold text-ink-soft bg-[#0a0e1a]/5 px-1.5 py-0.5 rounded text-[12px]">
               {activeCurrency.code} ({activeCurrency.symbol.trim()})
             </span>

@@ -113,8 +113,8 @@ const CHAINS_DATA: ChainData[] = [
   },
   {
     id: "new-york",
-    name: "New york FEC Chain",
-    shortName: "New york",
+    name: "New York FEC Chain",
+    shortName: "New York",
     subtitle: "High density traffic, record payback.",
     pricePerPlayUsd: 5,
     revenuePerMonthUsd: 33230,

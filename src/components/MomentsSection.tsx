@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Typewriter from "./Typewriter";
 import MobileBrochureCTA from "./MobileBrochureCTA";
 
@@ -43,7 +43,7 @@ const steps = [
   },
   {
     n: "2",
-    label: "Scan QR & Post game",
+    label: "Scan QR post game",
     desc: "Players scan to get their video instantly",
     icon: (
       <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-14 h-14 md:w-20 md:h-20 object-contain text-accent">
@@ -96,19 +96,78 @@ const steps = [
 export default function MomentsSection({ cards }: { cards?: any } = {}) {
   const reduce = useReducedMotion();
   const videoRef = useRef<HTMLVideoElement>(null);
+  const phoneRef = useRef<HTMLDivElement>(null);
+  const toastTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [hasBeenSeen, setHasBeenSeen] = useState(false);
+  const [isMuted, setIsMuted] = useState(true); // Muted by default until phone frame is seen
+  const [showSoundToast, setShowSoundToast] = useState(false);
 
   // Prevent hydration mismatch from browser extensions that inject around <video> tags.
-  // Video src is set directly in JSX once mounted — no IntersectionObserver delay.
   useEffect(() => { setMounted(true); }, []);
 
-  // Start playback as soon as the video element is in the DOM
+  // Detect when user sees the phone overlay for the first time
+  useEffect(() => {
+    if (!mounted || hasBeenSeen) return;
+    const el = phoneRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting) {
+          setHasBeenSeen(true);
+          setIsMuted(false); // Unmute audio for the first time when phone overlay becomes visible
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.25 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [mounted, hasBeenSeen]);
+
+  // Handle playback & audio control based on isMuted state
   useEffect(() => {
     if (!mounted) return;
     const v = videoRef.current;
     if (!v) return;
-    v.play().catch(() => {});
-  }, [mounted]);
+
+    v.muted = isMuted;
+    const promise = v.play();
+    if (promise !== undefined) {
+      promise.catch(() => {
+        // If browser autoplay policy delays unmuted audio until user interaction,
+        // listen for user gesture to play audio
+        if (!isMuted) {
+          const handleGesture = () => {
+            if (videoRef.current && !videoRef.current.muted) {
+              videoRef.current.play().catch(() => {});
+            }
+            window.removeEventListener("pointerdown", handleGesture);
+            window.removeEventListener("touchstart", handleGesture);
+          };
+          window.addEventListener("pointerdown", handleGesture, { once: true });
+          window.addEventListener("touchstart", handleGesture, { once: true });
+        }
+      });
+    }
+  }, [mounted, isMuted]);
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      const nextMuted = !isMuted;
+      videoRef.current.muted = nextMuted;
+      setIsMuted(nextMuted);
+
+      setShowSoundToast(true);
+      if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
+      toastTimeoutRef.current = setTimeout(() => {
+        setShowSoundToast(false);
+      }, 1000);
+    }
+  };
 
   const rise = (delay = 0) => ({
     initial: { opacity: 0, y: reduce ? 0 : 20 },
@@ -135,7 +194,9 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
               <p className="text-[16px] sm:text-[18px] font-medium text-ink-soft tracking-tight mt-3 max-w-[580px]">
                 Turn player social reach into free marketing.
               </p>
-            </motion.div>            {/* Horizontal Timeline Steps (Responsive across Mobile and Desktop) */}
+            </motion.div>
+
+            {/* Horizontal Timeline Steps (Responsive across Mobile and Desktop) */}
             <motion.div 
               {...rise(0.05)} 
               className="flex items-start justify-between w-full mt-4 md:mt-12 gap-0 md:gap-0"
@@ -149,7 +210,7 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
                     </div>
                     {/* Card container */}
                     <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-36 md:h-36 rounded-xl md:rounded-2xl bg-white border border-line flex items-center justify-center shadow-[0_8px_30px_rgba(10,14,26,0.03)] hover:shadow-lg transition-shadow duration-300 mb-2 md:mb-4">
-                      {/* Scaled icons on mobile (2x visual boost vs previous scale-0.7) */}
+                      {/* Scaled icons on mobile */}
                       <div className="scale-[1.3] md:scale-100 flex items-center justify-center">
                         {s.icon}
                       </div>
@@ -158,14 +219,9 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
                     <p className="text-[16px] sm:text-[13px] md:text-[16px] font-extrabold text-ink leading-tight text-center">
                       {s.label}
                     </p>
-                    {/* Accent divider line */}
-                    {/* <div className="w-5 md:w-6 h-0.5 bg-[#1D6CEF] mx-auto mt-2 mb-2.5 md:mb-3 rounded-full" /> */}
-                    {/* Description */}
-                    {/* <p className="text-[9.5px] sm:text-[11.5px] md:text-[13px] font-semibold text-ink-soft leading-normal max-w-[85px] sm:max-w-[120px] md:max-w-[170px] mx-auto">
-                      {s.desc}
-                    </p> */}
                   </div>
-                         {/* Dotted Arrow (centered on mobile, padded on desktop) */}
+
+                  {/* Dotted Arrow */}
                   {idx < steps.length - 1 && (
                     <div className="flex text-[#1D6CEF] items-center justify-center h-20 sm:h-24 md:h-36 px-0.5 md:px-1 flex-shrink-0 md:pt-10">
                       <svg width="40" height="14" viewBox="0 0 40 14" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-6 sm:w-8 md:w-12 h-auto">
@@ -177,12 +233,10 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
                 </div>
               ))}
             </motion.div>
-        
-            {/* Connecting U-line under the steps (visible on both mobile and desktop) */}
+
+            {/* Connecting U-line under the steps */}
             <div className="relative w-full h-12 mt-2">
-              {/* U-shaped connection path */}
               <div className="absolute top-0 left-[16.6%] right-[16.6%] h-6 border-b-2 border-x-2 border-[#1D6CEF]/30 rounded-b-2xl" />
-              {/* Animated Central Arrow Circle pointing down to the preview phone frame */}
               <motion.div 
                 animate={{ y: [-4, 4, -4] }}
                 transition={{
@@ -202,21 +256,25 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
           {/* Right Column: Video in Classic Phone Frame mockup */}
           <div className="lg:col-span-5 flex justify-center w-full">
             <motion.div
+              ref={phoneRef}
               {...rise(0.12)}
               className="relative mx-auto w-full max-w-[310px] sm:max-w-[325px] aspect-[9/18.5] rounded-[40px] bg-black pt-[44px] pb-[54px] px-[12px] ring-1 ring-white/10"
             >
               {/* Top Speaker Slot */}
               <div className="absolute top-[20px] left-1/2 -translate-x-1/2 w-16 h-1.5 bg-zinc-850 rounded-full" />
 
-              {/* Inner Screen Viewport (Rectangular/Sharp corners) */}
-              <div className="relative w-full h-full bg-slate-900 overflow-hidden border border-zinc-900/60">
+              {/* Inner Screen Viewport - Instagram Style click to toggle mute */}
+              <div 
+                className="relative w-full h-full bg-slate-900 overflow-hidden border border-zinc-900/60 cursor-pointer group select-none"
+                onClick={toggleMute}
+              >
                 {mounted && (
                   <video
                     ref={videoRef}
                     className="absolute inset-0 w-full h-full object-cover"
                     src="/video/moments-reel.mp4"
                     autoPlay
-                    muted
+                    muted={isMuted}
                     loop
                     playsInline
                   />
@@ -225,9 +283,41 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
                 {/* Vignette bottom-glow */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
 
+                {/* Animated Center Toast overlay on mute/unmute */}
+                <AnimatePresence>
+                  {showSoundToast && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.6 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ duration: 0.18, ease: "easeOut" }}
+                      className="absolute inset-0 m-auto w-14 h-14 rounded-full bg-black/75 backdrop-blur-md border border-white/20 flex items-center justify-center text-white z-30 pointer-events-none shadow-2xl"
+                    >
+                      {isMuted ? (
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M11 5L6 9H2V15H6L11 19V5Z" fill="currentColor" fillOpacity="0.2" />
+                          <line x1="23" y1="9" x2="17" y2="15" />
+                          <line x1="17" y1="9" x2="23" y2="15" />
+                        </svg>
+                      ) : (
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M11 5L6 9H2V15H6L11 19V5Z" fill="currentColor" fillOpacity="0.2" />
+                          <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                          <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                        </svg>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 {/* Glassmorphic Download & Share Button Overlay */}
                 <div className="absolute bottom-4 left-0 right-0 flex justify-center px-4 z-20">
-                  <button className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-[#1D6CEF] to-[#2f74e6] text-white py-3 rounded-full text-[15px] font-extrabold tracking-wide shadow-[0_8px_24px_rgba(29,108,239,0.4)] border border-white/20">
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                    className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-[#1D6CEF] to-[#2f74e6] text-white py-3 rounded-full text-[15px] font-extrabold tracking-wide shadow-[0_8px_24px_rgba(29,108,239,0.4)] border border-white/20"
+                  >
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="animate-bounce">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                       <polyline points="7 10 12 15 17 10" />
