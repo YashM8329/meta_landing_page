@@ -93,10 +93,21 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
     let isDown = false;
     let startX = 0;
     let scrollLeftStart = 0;
+    let idleTimer: ReturnType<typeof setTimeout> | null = null;
+
+    // After 4s of inactivity, resume autoplay
+    const scheduleAutoplayResume = () => {
+      if (idleTimer) clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => {
+        userInteracted = false;
+        isPaused = false;
+      }, 4000);
+    };
 
     const handleTouchStart = () => {
       userInteracted = true;
       isPaused = true;
+      scheduleAutoplayResume();
     };
 
     const handleMouseDown = (e: MouseEvent) => {
@@ -106,11 +117,13 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
       startX = e.pageX - container.offsetLeft;
       scrollLeftStart = container.scrollLeft;
       container.style.cursor = "grabbing";
+      scheduleAutoplayResume();
     };
 
     const handleMouseEnter = () => {
       userInteracted = true;
       isPaused = true;
+      scheduleAutoplayResume();
     };
 
     const handleMouseLeave = () => {
@@ -157,6 +170,7 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
     animationFrameId = requestAnimationFrame(animate);
 
     return () => {
+      if (idleTimer) clearTimeout(idleTimer);
       window.removeEventListener("resize", handleResize);
       container.removeEventListener("scroll", handleScroll);
       container.removeEventListener("touchstart", handleTouchStart);
