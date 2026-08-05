@@ -3,8 +3,10 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion, type Variants } from "framer-motion";
+import { useTranslation } from "@/lib/useTranslation";
 
 export default function HeroSection() {
+  const { t } = useTranslation();
   const reduce = useReducedMotion();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -74,7 +76,7 @@ export default function HeroSection() {
             variants={item}
             className="text-[13px] font-semibold tracking-[0.26em] text-white/55 uppercase mb-0"
           >
-            FOG Technologies
+            {t.hero.eyebrow}
           </motion.p>
 
           <motion.h1
@@ -95,18 +97,17 @@ export default function HeroSection() {
             variants={item}
             className="flex flex-col text-[68px] font-black tracking-tight leading-[1.02] uppercase mb-6 text-white w-full text-left"
           >
-            <span>SCALING FEC</span>
-            <span>ARCADE REVENUE</span>
-            <span>TO NEW HEIGHTS.</span>
-            <span className="text-[#000000]">ZERO STAFF.</span>
+            <span>{t.hero.heading1}</span>
+            <span>{t.hero.heading2}</span>
+            <span>{t.hero.heading3}</span>
+            <span className="text-[#000000]">{t.hero.heading4}</span>
           </motion.div>
 
           <motion.p
             variants={item}
             className="text-[15px] sm:text-[17px] font-medium text-white/60 leading-relaxed mb-8 max-w-[500px]"
-          >
-            A must-have <strong>high revenue and footfall driving attraction</strong> for every entertainment venue operator. Pays back in 6 months.
-          </motion.p>
+            dangerouslySetInnerHTML={{ __html: t.hero.description }}
+          />
 
           <motion.div variants={item} className="flex items-center gap-3">
             <a
@@ -123,7 +124,7 @@ export default function HeroSection() {
                   ease: "easeInOut"
                 }}
               >
-                Request Brochure
+                {t.hero.requestBrochure}
                 <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -133,7 +134,7 @@ export default function HeroSection() {
               onClick={() => setIsOpen(true)}
               className="btn-glass-light text-ink font-semibold text-[15px] px-6 py-3.5 rounded-lg flex items-center gap-2 cursor-pointer"
             >
-              Watch Video
+              {t.hero.watchVideo}
               <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M6 4L12 8L6 12V4Z" fill="currentColor" />
               </svg>
@@ -143,9 +144,9 @@ export default function HeroSection() {
           {/* Stats row — desktop only */}
           <motion.div variants={item} className="flex items-center gap-4 mt-10 border-t border-white/10 pt-8 w-full">
             {[
-              { value: "150+", label: "Venues" },
-              { value: "15+", label: "Countries" },
-              { value: "3 months", label: "Fastest ROI" },
+              { value: "150+", label: t.hero.stats.venues },
+              { value: "15+", label: t.hero.stats.countries },
+              { value: "3 months", label: t.hero.stats.fastestROI },
             ].map(({ value, label }) => (
               <div
                 key={label}
@@ -197,7 +198,7 @@ export default function HeroSection() {
             variants={item}
             className="text-[13px] font-semibold tracking-[0.26em] text-white/55 uppercase mb-0"
           >
-            FOG Technologies
+            {t.hero.eyebrow}
           </motion.p>
 
           <motion.h1
@@ -226,9 +227,8 @@ export default function HeroSection() {
           <motion.p
             variants={item}
             className="text-[20px] sm:text-[18px] font-medium text-white/100 leading-snug mb-6 text-left"
-          >
-            <strong>High revenue and footfall driving attraction</strong> for every entertainment venue operator. Pay back in <strong>6 months. </strong>
-          </motion.p>
+            dangerouslySetInnerHTML={{ __html: t.hero.mobileDescription }}
+          />
         </motion.div>
 
         {/* Hero Image Area with play button */}
@@ -258,7 +258,7 @@ export default function HeroSection() {
             <button
               onClick={() => setIsOpen(true)}
               className="absolute bottom-[12%] left-[0%] z-20 flex items-center justify-center w-11 h-11 sm:w-16 sm:h-16 rounded-full bg-white/20 backdrop-blur-md border border-white/50 text-white shadow-[0_0_30px_rgba(29,108,239,0.6)] hover:scale-110 active:scale-95 transition-all duration-300 group cursor-pointer"
-              aria-label="Play gameplay video"
+              aria-label={t.hero.playVideo}
             >
               <div className="absolute inset-0 rounded-full border-2 border-white/40 animate-ping opacity-85 pointer-events-none" style={{ animationDuration: '2s' }} />
               <div className="absolute inset-0 rounded-full border border-[#1D6CEF]/50 animate-ping opacity-60 pointer-events-none" style={{ animationDuration: '2s', animationDelay: '0.6s' }} />
@@ -284,33 +284,33 @@ export default function HeroSection() {
             {/* Row 1: Venues (col-3), Countries (col-3), ROI (col-6) */}
             <div className="col-span-3 bg-white rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">100+</p>
-              <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Venues</p>
+              <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">{t.hero.stats.venues}</p>
             </div>
 
             <div className="col-span-3 bg-white rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">15+</p>
-              <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Countries</p>
+              <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">{t.hero.stats.countries}</p>
             </div>
 
             <div className="col-span-6 bg-white rounded-xl py-2 px-3.5 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[18px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">6 months</p>
-              <p className="text-[10px] sm:text-[10px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Average Payback</p>
+              <p className="text-[10px] sm:text-[10px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">{t.hero.stats.avgPayback}</p>
             </div>
 
             {/* Row 2: Gameplay (col-6), Players (col-3), Age (col-3) */}
             <div className="col-span-6 bg-white rounded-xl py-2 px-3.5 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[18px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">5 minutes</p>
-              <p className="text-[10px] sm:text-[10px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Gameplay</p>
+              <p className="text-[10px] sm:text-[10px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">{t.hero.stats.gameplay}</p>
             </div>
 
             <div className="col-span-3 bg-white rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">1-6</p>
-              <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Players</p>
+              <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">{t.hero.stats.players}</p>
             </div>
 
             <div className="col-span-3 bg-white rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">4+</p>
-              <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">Age</p>
+              <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">{t.hero.stats.age}</p>
             </div>
           </motion.div>
         </motion.div>
@@ -338,7 +338,7 @@ export default function HeroSection() {
               <button
                 onClick={() => setIsOpen(false)}
                 className="absolute top-4 right-4 z-50 flex items-center justify-center w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 border border-white/20 text-white transition-colors duration-200 cursor-pointer"
-                aria-label="Close video pop-up"
+                aria-label={t.hero.closeVideo}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18" />

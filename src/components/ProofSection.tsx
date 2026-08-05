@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import MobileBrochureCTA from "./MobileBrochureCTA";
+import { useTranslation } from "@/lib/useTranslation";
 
 
 interface Testimonial {
@@ -128,9 +129,18 @@ function MobileTestimonialCard({ t }: { t: Testimonial }) {
 }
 
 export default function ProofSection() {
+  const { t } = useTranslation();
   const trackRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const reduce = useReducedMotion();
+
+  // Merge translated quotes into the static testimonials (keep photo/logo assets)
+  const translatedTestimonials = testimonials.map((item, i) => ({
+    ...item,
+    quote: t.proof.testimonials[i]?.quote ?? item.quote,
+    name: t.proof.testimonials[i]?.name ?? item.name,
+    title: t.proof.testimonials[i]?.title ?? item.title,
+  }));
 
   const handleScroll = () => {
     const track = trackRef.current;
@@ -176,7 +186,7 @@ export default function ProofSection() {
     >
       <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0">
         <motion.h2 {...rise()} className="px-0 lg:px-0 mb-6 text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink text-left w-full">
-          Loved by operators
+          {t.proof.heading}
         </motion.h2>
 
         {/* Mobile: horizontal scroll carousel */}
@@ -188,17 +198,17 @@ export default function ProofSection() {
             role="region"
             aria-label="Testimonials"
           >
-            {testimonials.map((t) => (
-              <MobileTestimonialCard key={t.name} t={t} />
+            {translatedTestimonials.map((item) => (
+              <MobileTestimonialCard key={item.name} t={item} />
             ))}
           </div>
           <div className="flex justify-center gap-1.5 mt-3 mb-8" role="tablist">
-            {testimonials.map((t, i) => (
+            {translatedTestimonials.map((item, i) => (
               <button
-                key={t.name}
+                key={item.name}
                 role="tab"
                 aria-selected={i === activeIndex}
-                aria-label={`View testimonial from ${t.name}`}
+                aria-label={`View testimonial from ${item.name}`}
                 onClick={() => scrollTo(i)}
                 className={`h-1.5 rounded-full transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
                   i === activeIndex ? "w-6 bg-gradient-accent" : "w-1.5 bg-line"
@@ -210,8 +220,8 @@ export default function ProofSection() {
 
         {/* Desktop: 3-column grid */}
         <motion.div {...rise(0.05)} className="hidden lg:grid lg:grid-cols-3 gap-6 mb-8">
-          {testimonials.map((t) => (
-            <TestimonialCardInner key={t.name} t={t} />
+          {translatedTestimonials.map((item) => (
+            <TestimonialCardInner key={item.name} t={item} />
           ))}
         </motion.div>
 

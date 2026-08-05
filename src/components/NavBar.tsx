@@ -3,8 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useTranslation } from "@/lib/useTranslation";
 
 export default function NavBar() {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const lastScrollYRef = useRef(0);
 
@@ -72,10 +74,10 @@ export default function NavBar() {
           />
           <div className="flex items-center gap-8">
             {[
-              { href: "#features", label: "Features" },
-              { href: "#moments-ai", label: "Moments AI" },
-              { href: "#proof", label: "Testimonials" },
-              { href: "#roi", label: "ROI" },
+              { href: "#features", label: t.nav.features },
+              { href: "#moments-ai", label: t.nav.momentsAI },
+              { href: "#proof", label: t.nav.testimonials },
+              { href: "#roi", label: t.nav.roi },
             ].map(({ href, label }) => (
               <a
                 key={href}
@@ -110,7 +112,7 @@ export default function NavBar() {
                 ease: "easeInOut"
               }}
             >
-              Get Brochure
+              {t.nav.getBrochure}
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>

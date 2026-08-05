@@ -1,3 +1,5 @@
+"use client";
+
 import NavBar from "@/components/NavBar";
 import HeroSection from "@/components/HeroSection";
 import VideoSection from "@/components/VideoSection";
@@ -12,25 +14,7 @@ import { CarouselCard } from "@/components/CardCarousel";
 import StickyFooterCTA from "@/components/StickyFooterCTA";
 import SmoothScroll from "@/components/SmoothScroll";
 import Footer from "@/components/Footer";
-
-/* S3 — Key Features (7 cards). Blue-family gradients. */
-const featureCards: CarouselCard[] = [
-  { label: "Unattended", sublabel: "Zero staff required, simple UI", gradient: "linear-gradient(160deg,#0a1838 0%,#11317a 55%,#1d6cef 100%)", accentGlow: "rgba(29,108,239,0.45)", image: "/features/unmanned.png" },
-  { label: "Turnkey", sublabel: "Just need space and power", gradient: "linear-gradient(160deg,#08142e 0%,#0f2e6e 55%,#2f74e6 100%)", accentGlow: "rgba(47,116,230,0.4)", image: "/features/turnkey.png" },
-  { label: "Appealing", sublabel: "Bright, crowd-pulling design", gradient: "linear-gradient(160deg,#0a1638 0%,#143a8c 55%,#3f86f0 100%)", accentGlow: "rgba(63,134,240,0.4)", image: "/features/appealing.png" },
-  { label: "Multiplayer", sublabel: "1–6 players of any age group", gradient: "linear-gradient(160deg,#07112a 0%,#0d2c6b 55%,#1f63d8 100%)", accentGlow: "rgba(31,99,216,0.4)", image: "/features/multiplayer.png" },
-  { label: "Tutorials", sublabel: "Make the game easy to understand", gradient: "linear-gradient(160deg,#0a1838 0%,#123178 55%,#2a6ee6 100%)", accentGlow: "rgba(42,110,230,0.4)", image: "/features/tutorial.png" },
-  { label: "Repeatable", sublabel: "4+ engaging games, high replayability", gradient: "linear-gradient(160deg,#081530 0%,#0f2f72 55%,#246ae0 100%)", accentGlow: "rgba(36,106,224,0.4)", image: "/features/repeatable.png" },
-  { label: "Multilingual", sublabel: "Supports all major languages", gradient: "linear-gradient(160deg,#091633 0%,#103079 55%,#2b70e8 100%)", accentGlow: "rgba(43,112,232,0.4)", image: "/features/multilingual.png" },
-];
-
-/* S4 — Moments AI (4 cards) */
-const momentsCards: CarouselCard[] = [
-  { label: "Auto-Edited", sublabel: "Professional gameplay highlights", gradient: "linear-gradient(160deg,#08142e 0%,#0f2e6e 55%,#1d6cef 100%)", accentGlow: "rgba(29,108,239,0.5)" },
-  { label: "Geo-Branded", sublabel: "Your FEC logo and location watermarked", gradient: "linear-gradient(160deg,#0a1638 0%,#143a8c 55%,#3f86f0 100%)", accentGlow: "rgba(63,134,240,0.45)" },
-  { label: "Local Traffic", sublabel: "Every share acts as a local referral", gradient: "linear-gradient(160deg,#07112a 0%,#0d2c6b 55%,#2a6ee6 100%)", accentGlow: "rgba(42,110,230,0.45)" },
-  { label: "Zero-Cost Acquisition", sublabel: "Turn player reach into free marketing", gradient: "linear-gradient(160deg,#081530 0%,#0f2f72 55%,#246ae0 100%)", accentGlow: "rgba(36,106,224,0.45)" },
-];
+import { useTranslation } from "@/lib/useTranslation";
 
 /* S5 — Locations: international reels (provided by business) */
 const venueReels: ReelItem[] = [
@@ -44,6 +28,27 @@ const venueReels: ReelItem[] = [
 ];
 
 export default function Home() {
+  const { t } = useTranslation();
+
+  /* S3 — Key Features (7 cards). Blue-family gradients. */
+  const featureCards: CarouselCard[] = [
+    { label: t.features.cards.unattended.label, sublabel: t.features.cards.unattended.sublabel, gradient: "linear-gradient(160deg,#0a1838 0%,#11317a 55%,#1d6cef 100%)", accentGlow: "rgba(29,108,239,0.45)", image: "/features/unmanned.png" },
+    { label: t.features.cards.turnkey.label, sublabel: t.features.cards.turnkey.sublabel, gradient: "linear-gradient(160deg,#08142e 0%,#0f2e6e 55%,#2f74e6 100%)", accentGlow: "rgba(47,116,230,0.4)", image: "/features/turnkey.png" },
+    { label: t.features.cards.appealing.label, sublabel: t.features.cards.appealing.sublabel, gradient: "linear-gradient(160deg,#0a1638 0%,#143a8c 55%,#3f86f0 100%)", accentGlow: "rgba(63,134,240,0.4)", image: "/features/appealing.png" },
+    { label: t.features.cards.multiplayer.label, sublabel: t.features.cards.multiplayer.sublabel, gradient: "linear-gradient(160deg,#07112a 0%,#0d2c6b 55%,#1f63d8 100%)", accentGlow: "rgba(31,99,216,0.4)", image: "/features/multiplayer.png" },
+    { label: t.features.cards.tutorials.label, sublabel: t.features.cards.tutorials.sublabel, gradient: "linear-gradient(160deg,#0a1838 0%,#123178 55%,#2a6ee6 100%)", accentGlow: "rgba(42,110,230,0.4)", image: "/features/tutorial.png" },
+    { label: t.features.cards.repeatable.label, sublabel: t.features.cards.repeatable.sublabel, gradient: "linear-gradient(160deg,#081530 0%,#0f2f72 55%,#246ae0 100%)", accentGlow: "rgba(36,106,224,0.4)", image: "/features/repeatable.png" },
+    { label: t.features.cards.multilingual.label, sublabel: t.features.cards.multilingual.sublabel, gradient: "linear-gradient(160deg,#091633 0%,#103079 55%,#2b70e8 100%)", accentGlow: "rgba(43,112,232,0.4)", image: "/features/multilingual.png" },
+  ];
+
+  /* S4 — Moments AI (4 cards) */
+  const momentsCards: CarouselCard[] = [
+    { label: t.momentsCards.autoEdited.label, sublabel: t.momentsCards.autoEdited.sublabel, gradient: "linear-gradient(160deg,#08142e 0%,#0f2e6e 55%,#1d6cef 100%)", accentGlow: "rgba(29,108,239,0.5)" },
+    { label: t.momentsCards.geoBranded.label, sublabel: t.momentsCards.geoBranded.sublabel, gradient: "linear-gradient(160deg,#0a1638 0%,#143a8c 55%,#3f86f0 100%)", accentGlow: "rgba(63,134,240,0.45)" },
+    { label: t.momentsCards.localTraffic.label, sublabel: t.momentsCards.localTraffic.sublabel, gradient: "linear-gradient(160deg,#07112a 0%,#0d2c6b 55%,#2a6ee6 100%)", accentGlow: "rgba(42,110,230,0.45)" },
+    { label: t.momentsCards.zeroCost.label, sublabel: t.momentsCards.zeroCost.sublabel, gradient: "linear-gradient(160deg,#081530 0%,#0f2f72 55%,#246ae0 100%)", accentGlow: "rgba(36,106,224,0.45)" },
+  ];
+
   return (
     <>
       <SmoothScroll />
@@ -54,7 +59,7 @@ export default function Home() {
         {/* <VideoSection /> */}
         <KeyFeaturesSection cards={featureCards} />
         <MomentsSection cards={momentsCards} />
-        <InstagramCarousel items={venueReels} title="100+ Venues Worldwide" sectionId="locations" />
+        <InstagramCarousel items={venueReels} title={t.venues.title} sectionId="locations" />
         <ProofSection />
         <ROICalculator />
         <CaseStudy />

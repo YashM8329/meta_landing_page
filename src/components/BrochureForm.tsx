@@ -7,6 +7,7 @@ import "react-phone-number-input/style.css";
 import { isValidPhoneNumber } from "libphonenumber-js";
 import en from "react-phone-number-input/locale/en";
 import { useCurrency } from "@/lib/useCurrency";
+import { useTranslation } from "@/lib/useTranslation";
 
 type VenueStatus = "" | "existing" | "new" | "other";
 type AreaSize = "" | "small" | "large";
@@ -65,6 +66,7 @@ const selectArrow = `url("data:image/svg+xml,%3Csvg width='16' height='16' viewB
 
 
 export default function BrochureForm() {
+  const { t } = useTranslation();
   const [form, setForm] = useState<FormState>({ fullName: "", email: "", phone: "", venueStatus: "", venueStatusOther: "", venueLocation: "", plannedArea: "", country: "" });
   const [errors, setErrors] = useState<FieldError>({});
   const [submitted, setSubmitted] = useState(false);
@@ -183,9 +185,9 @@ export default function BrochureForm() {
 
   const validateEmailField = (emailVal: string) => {
     if (!emailVal.trim()) {
-      setErrors((prev) => ({ ...prev, email: "Email address is required." }));
+      setErrors((prev) => ({ ...prev, email: t.form.errors.emailRequired }));
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
-      setErrors((prev) => ({ ...prev, email: "Please enter a valid email address." }));
+      setErrors((prev) => ({ ...prev, email: t.form.errors.emailInvalid }));
     } else {
       setErrors((prev) => ({ ...prev, email: undefined }));
     }
@@ -193,7 +195,7 @@ export default function BrochureForm() {
 
   const validatePhoneField = (phoneVal: string) => {
     if (!phoneVal.trim()) {
-      setErrors((prev) => ({ ...prev, phone: "Phone number is required." }));
+      setErrors((prev) => ({ ...prev, phone: t.form.errors.phoneRequired }));
       return;
     }
     const digitsOnly = phoneVal.replace(/[^\d+]/g, "");
@@ -233,7 +235,7 @@ export default function BrochureForm() {
     }
 
     if (isInvalid) {
-      setErrors((prev) => ({ ...prev, phone: "Invalid Phone number" }));
+      setErrors((prev) => ({ ...prev, phone: t.form.errors.phoneInvalid }));
     } else {
       setErrors((prev) => ({ ...prev, phone: undefined }));
     }
@@ -246,11 +248,11 @@ export default function BrochureForm() {
 
   const validate = (): FieldError => {
     const e: FieldError = {};
-    if (!form.fullName.trim()) e.fullName = "Full name is required.";
-    if (!form.email.trim()) e.email = "Email address is required.";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = "Please enter a valid email address.";
+    if (!form.fullName.trim()) e.fullName = t.form.errors.fullNameRequired;
+    if (!form.email.trim()) e.email = t.form.errors.emailRequired;
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = t.form.errors.emailInvalid;
     if (!form.phone.trim()) {
-      e.phone = "Phone number is required.";
+      e.phone = t.form.errors.phoneRequired;
     } else {
       // Normalize number (remove spaces, dashes, parens, keep digits and +)
       const digitsOnly = form.phone.replace(/[^\d+]/g, "");
@@ -283,23 +285,23 @@ export default function BrochureForm() {
         const minExpected = Math.min(...expectedLengths);
 
         if (len > maxExpected) {
-          e.phone = `Invalid Phone number`;
+          e.phone = t.form.errors.phoneInvalid;
         } else if (len < minExpected) {
-          e.phone = `Invalid Phone number`;
+          e.phone = t.form.errors.phoneInvalid;
         } else if (!isValidPhoneNumber(form.phone)) {
-          e.phone = "Invalid Phone number";
+          e.phone = t.form.errors.phoneInvalid;
         }
       } else {
         // Fallback for non-mapped countries using general library validation
         if (!isValidPhoneNumber(form.phone)) {
-          e.phone = "Invalid Phone number";
+          e.phone = t.form.errors.phoneInvalid;
         }
       }
     }
-    if (!form.venueStatus) e.venueStatus = "Please select a venue status.";
-    if (form.venueStatus === "other" && !form.venueStatusOther.trim()) e.venueStatusOther = "Please specify details or location.";
-    if (form.venueStatus === "existing" && !form.venueLocation.trim()) e.venueLocation = "Venue location is required.";
-    if (!form.country) e.country = "Please select your country.";
+    if (!form.venueStatus) e.venueStatus = t.form.errors.venueStatusRequired;
+    if (form.venueStatus === "other" && !form.venueStatusOther.trim()) e.venueStatusOther = t.form.errors.venueStatusOtherRequired;
+    if (form.venueStatus === "existing" && !form.venueLocation.trim()) e.venueLocation = t.form.errors.venueLocationRequired;
+    if (!form.country) e.country = t.form.errors.countryRequired;
     return e;
   };
 
@@ -347,9 +349,9 @@ export default function BrochureForm() {
               <path d="M7 14L12 19L21 9" stroke="white" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
-          <h2 className="text-[28px] font-extrabold tracking-[-0.02em] text-ink mb-2">Brochure on its way!</h2>
+          <h2 className="text-[28px] font-extrabold tracking-[-0.02em] text-ink mb-2">{t.form.successHeading}</h2>
           <p className="text-[15px] text-ink-soft leading-relaxed">
-            We&apos;ll be in touch at <span className="font-semibold text-ink">{form.email}</span> soon.
+            {t.form.successMessage} <span className="font-semibold text-ink">{form.email}</span> {t.form.successSoon}
           </p>
         </div>
       </section>
@@ -363,17 +365,13 @@ export default function BrochureForm() {
         <div className="hidden lg:flex flex-col">
           {/* <p className="text-[13px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-2">Get the full picture</p> */}
           <h2 className="text-[48px] leading-[0.95] font-extrabold tracking-[-0.03em] text-ink mb-6">
-            Request Brochure
+            {t.form.heading}
           </h2>
           {/* <p className="text-[16px] text-ink-soft leading-relaxed mb-8 max-w-[400px]">
             Get detailed specs, revenue data, and case studies.
           </p> */}
           <div className="flex flex-col gap-9 mt-3">
-            {[
-              { icon: "📊", text: "Revenue data from 100+ real installations" },
-              { icon: "📐", text: "Full technical specs and floor plan requirements" },
-              { icon: "🤝", text: "Direct follow-up from the FOG Technologies team" },
-            ].map(({ icon, text }) => (
+            {(["📊", "📐", "🤝"] as const).map((icon, i) => ({ icon, text: t.form.benefits[i] })).map(({ icon, text }) => (
               <div key={text} className="flex items-center gap-3">
                 <span className="w-10 h-10 rounded-md bg-accent/10 flex items-center justify-center text-[18px] flex-shrink-0">{icon}</span>
                 <span className="text-[15px] font-medium text-ink">{text}</span>
@@ -387,25 +385,25 @@ export default function BrochureForm() {
           {/* Mobile header */}
           <div className="lg:hidden mb-7">
             {/* <p className="text-[13px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-1">Get the full picture</p> */}
-            <h2 className="text-[clamp(30px,8.5vw,42px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">Request Brochure</h2>
+            <h2 className="text-[clamp(30px,8.5vw,42px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">{t.form.heading}</h2>
           </div>
 
           <form onSubmit={handleSubmit} noValidate aria-label="Brochure request">
             {/* Name + Email as 2-col on desktop */}
             <div className="lg:grid lg:grid-cols-2 lg:gap-4">
               <div className="mb-4 lg:mb-0">
-                <label htmlFor="field-fullName" className="block text-[13px] font-semibold text-ink mb-1.5">Full name <span className="text-accent">*</span></label>
+                <label htmlFor="field-fullName" className="block text-[13px] font-semibold text-ink mb-1.5">{t.form.fields.fullName} <span className="text-accent">*</span></label>
                 <input id="field-fullName" type="text" autoComplete="name" value={form.fullName} onChange={(e) => set("fullName", e.target.value)}
-                  aria-invalid={!!errors.fullName} aria-describedby={errors.fullName ? "err-fullName" : undefined} placeholder="Jane Smith"
+                  aria-invalid={!!errors.fullName} aria-describedby={errors.fullName ? "err-fullName" : undefined} placeholder={t.form.fields.fullNamePlaceholder}
                   className={`${inputBase} ${errors.fullName ? "border-red-400 bg-red-50" : "border-line bg-white"}`} />
                 {errors.fullName && <p id="err-fullName" role="alert" className="text-[12px] text-red-500 mt-1 font-medium">{errors.fullName}</p>}
               </div>
 
                <div className="mb-4">
-                <label htmlFor="field-email" className="block text-[13px] font-semibold text-ink mb-1.5">Email <span className="text-accent">*</span></label>
+                <label htmlFor="field-email" className="block text-[13px] font-semibold text-ink mb-1.5">{t.form.fields.email} <span className="text-accent">*</span></label>
                 <input id="field-email" type="email" inputMode="email" autoComplete="email" value={form.email} onChange={(e) => set("email", e.target.value)}
                   onBlur={() => validateEmailField(form.email)}
-                  aria-invalid={!!errors.email} aria-describedby={errors.email ? "err-email" : undefined} placeholder="jane@venue.com"
+                  aria-invalid={!!errors.email} aria-describedby={errors.email ? "err-email" : undefined} placeholder={t.form.fields.emailPlaceholder}
                   className={`${inputBase} ${errors.email ? "border-red-400 bg-red-50" : "border-line bg-white"}`} />
                 {errors.email && <p id="err-email" role="alert" className="text-[12px] text-red-500 mt-1 font-medium">{errors.email}</p>}
               </div>
@@ -414,9 +412,9 @@ export default function BrochureForm() {
             {/* Phone + Country as 2-col on desktop */}
             <div className="lg:grid lg:grid-cols-2 lg:gap-4">
               <div className="mb-4">
-                <label htmlFor="field-phone" className="block text-[13px] font-semibold text-ink mb-1.5">Phone number <span className="text-accent">*</span></label>
+                <label htmlFor="field-phone" className="block text-[13px] font-semibold text-ink mb-1.5">{t.form.fields.phone} <span className="text-accent">*</span></label>
                 <PhoneInput
-                  placeholder="Enter phone number"
+                  placeholder={t.form.fields.phonePlaceholder}
                   value={form.phone}
                   onChange={(val) => set("phone", val || "")}
                   onBlur={() => validatePhoneField(form.phone)}
@@ -438,7 +436,7 @@ export default function BrochureForm() {
               </div>
 
               <div className="mb-4">
-                <label htmlFor="field-country" className="block text-[13px] font-semibold text-ink mb-1.5">Country <span className="text-accent">*</span></label>
+                <label htmlFor="field-country" className="block text-[13px] font-semibold text-ink mb-1.5">{t.form.fields.country} <span className="text-accent">*</span></label>
                 <div className="relative">
                   <input
                     id="field-country"
@@ -454,7 +452,7 @@ export default function BrochureForm() {
                         setLocation({ countryName: form.country });
                       }
                     }}
-                    placeholder="Search or enter country…"
+                    placeholder={t.form.fields.countryPlaceholder}
                     className={`${inputBase} ${errors.country ? "border-red-400 bg-red-50" : "border-line bg-white"}`}
                   />
                   {countryOptions.length > 0 && (
@@ -481,7 +479,7 @@ export default function BrochureForm() {
 
             <div className="mb-4">
               <label htmlFor="field-venueStatus" className="block text-[13px] font-semibold text-ink mb-1.5">
-                Do you operate a venue? <span className="text-accent">*</span>
+                {t.form.fields.venueStatus} <span className="text-accent">*</span>
               </label>
               <select
                 id="field-venueStatus"
@@ -492,15 +490,15 @@ export default function BrochureForm() {
                 className={`${inputBase} appearance-none bg-no-repeat bg-[right_14px_center] ${errors.venueStatus ? "border-red-400 bg-red-50" : "border-line bg-white"}`}
                 style={{ backgroundImage: selectArrow }}
               >
-                <option value="">Select an option</option>
-                <option value="existing">Yes, I have an existing venue</option>
-                <option value="new">No, I&apos;m planning a new venue</option>
-                <option value="other">Others</option>
+                <option value="">{t.form.fields.venueStatusDefault}</option>
+                <option value="existing">{t.form.fields.venueStatusExisting}</option>
+                <option value="new">{t.form.fields.venueStatusNew}</option>
+                <option value="other">{t.form.fields.venueStatusOther}</option>
               </select>
               {errors.venueStatus && <p id="err-venueStatus" role="alert" className="text-[12px] text-red-500 mt-1 font-medium">{errors.venueStatus}</p>}
               {form.venueStatus === "other" && (
               <div id="venue-other-container" className="mb-4 bg-accent/5 border border-accent/15 rounded-[12px] p-4 mt-4">
-                <label htmlFor="field-venueStatusOther" className="block text-[13px] font-semibold text-ink mb-1.5">Enter your venue location <span className="text-accent">*</span></label>
+                <label htmlFor="field-venueStatusOther" className="block text-[13px] font-semibold text-ink mb-1.5">{t.form.fields.venueLocationOther} <span className="text-accent">*</span></label>
                 <div className="relative">
                   <input
                     id="field-venueStatusOther"
@@ -517,7 +515,7 @@ export default function BrochureForm() {
                     onBlur={() => {
                       setTimeout(() => setVenueOptions([]), 200);
                     }}
-                    placeholder="Search or enter address…"
+                    placeholder={t.form.fields.venueLocationOtherPlaceholder}
                     className={`${inputBase} ${errors.venueStatusOther ? "border-red-400 bg-red-50" : "border-line bg-white"}`}
                   />
                   {isVenueLoading && (
@@ -559,8 +557,8 @@ export default function BrochureForm() {
                         </li>
                       ))}
                       <li className="flex justify-end items-center px-4 py-2 bg-gray-50 border-t border-line sticky bottom-0 select-none">
-                        <span className="text-[10px] text-ink-faint font-medium uppercase tracking-wider">Powered by</span>
-                        <img 
+                        <span className="text-[10px] text-ink-faint font-medium uppercase tracking-wider">{t.form.poweredBy}</span>
+                        <img
                           src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
                           alt="Google"
                           className="h-[12px] ml-1.5 object-contain"
@@ -575,7 +573,7 @@ export default function BrochureForm() {
 
             {form.venueStatus === "existing" && (
               <div id="venue-location-container" className="mb-4 bg-accent/5 border border-accent/15 rounded-[12px] p-4 mt-3">
-                <label htmlFor="field-venueLocation" className="block text-[13px] font-semibold text-ink mb-1.5">Venue location <span className="text-accent">*</span></label>
+                <label htmlFor="field-venueLocation" className="block text-[13px] font-semibold text-ink mb-1.5">{t.form.fields.venueLocation} <span className="text-accent">*</span></label>
                 <div className="relative">
                   <input
                     id="field-venueLocation"
@@ -592,7 +590,7 @@ export default function BrochureForm() {
                     onBlur={() => {
                       setTimeout(() => setVenueOptions([]), 200);
                     }}
-                    placeholder="Search Venue Location.."
+                    placeholder={t.form.fields.venueLocationPlaceholder}
                     className={`${inputBase} ${errors.venueLocation ? "border-red-400 bg-red-50" : "border-line bg-white"}`}
                   />
                   {isVenueLoading && (
@@ -634,8 +632,8 @@ export default function BrochureForm() {
                         </li>
                       ))}
                       <li className="flex justify-end items-center px-4 py-2 bg-gray-50 border-t border-line sticky bottom-0 select-none">
-                        <span className="text-[10px] text-ink-faint font-medium uppercase tracking-wider">Powered by</span>
-                        <img 
+                        <span className="text-[10px] text-ink-faint font-medium uppercase tracking-wider">{t.form.poweredBy}</span>
+                        <img
                           src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
                           alt="Google"
                           className="h-[12px] ml-1.5 object-contain"
@@ -669,7 +667,7 @@ export default function BrochureForm() {
                     <circle cx="9" cy="9" r="7" stroke="currentColor" strokeOpacity="0.3" strokeWidth="2" />
                     <path d="M9 2a7 7 0 017 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                   </svg>
-                  Sending…
+                  {t.form.submitting}
                 </div>
               ) : (
                 <motion.div 
@@ -682,7 +680,7 @@ export default function BrochureForm() {
                     ease: "easeInOut"
                   }}
                 >
-                  Request Brochure
+                  {t.form.submit}
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                     <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>

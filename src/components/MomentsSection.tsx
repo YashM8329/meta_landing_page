@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Typewriter from "./Typewriter";
 import MobileBrochureCTA from "./MobileBrochureCTA";
+import { useTranslation } from "@/lib/useTranslation";
 
 const steps = [
   {
@@ -94,7 +95,15 @@ const steps = [
 ];
 
 export default function MomentsSection({ cards }: { cards?: any } = {}) {
+  const { t } = useTranslation();
   const reduce = useReducedMotion();
+
+  // Merge translated labels into the icon-only steps array
+  const translatedSteps = steps.map((s, i) => ({
+    ...s,
+    label: t.moments.steps[i]?.label ?? s.label,
+    desc: t.moments.steps[i]?.desc ?? s.desc,
+  }));
   const videoRef = useRef<HTMLVideoElement>(null);
   const phoneRef = useRef<HTMLDivElement>(null);
   const toastTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -188,11 +197,11 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
           <div className="lg:col-span-7 flex flex-col justify-center">
             <motion.div {...rise()} className="mb-2 text-left">
               <h2 className="text-[clamp(32px,7vw,48px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-ink mb-0">
-                Gameplay{" "}
-                <Typewriter words={["Photos", "Videos"]} className="text-accent" />
+                {t.moments.headingPrefix}{" "}
+                <Typewriter words={t.moments.headingWords as unknown as string[]} className="text-accent" />
               </h2>
               <p className="text-[16px] sm:text-[18px] font-medium text-ink-soft tracking-tight mt-3 max-w-[580px]">
-                Turn player social reach into free marketing.
+                {t.moments.subtitle}
               </p>
             </motion.div>
 
@@ -201,7 +210,7 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
               {...rise(0.05)} 
               className="flex items-start justify-between w-full mt-4 md:mt-12 gap-0 md:gap-0"
             >
-              {steps.map((s, idx) => (
+              {translatedSteps.map((s, idx) => (
                 <div key={s.n} className="flex-1 flex items-start gap-1 md:gap-2">
                   <div className="flex flex-col items-center w-full">
                     {/* Step bubble (desktop only) */}
@@ -323,7 +332,7 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
                       <polyline points="7 10 12 15 17 10" />
                       <line x1="12" y1="15" x2="12" y2="3" />
                     </svg>
-                    <span>Download & Share</span>
+                    <span>{t.moments.downloadShare}</span>
                   </button>
                 </div>
               </div>

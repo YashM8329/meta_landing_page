@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import CardCarousel, { CarouselCard } from "./CardCarousel";
 import MobileBrochureCTA from "./MobileBrochureCTA";
+import { useTranslation } from "@/lib/useTranslation";
 
 const specs = [
   {
@@ -49,6 +50,7 @@ const specs = [
 ];
 
 export default function KeyFeaturesSection({ cards }: { cards: CarouselCard[] }) {
+  const { t } = useTranslation();
   const reduce = useReducedMotion();
   const rise = (delay = 0) => ({
     initial: { opacity: 0, y: reduce ? 0 : 20 },
@@ -61,14 +63,14 @@ export default function KeyFeaturesSection({ cards }: { cards: CarouselCard[] })
     <section
       id="features"
       className="min-h-0 lg:py-16 relative flex flex-col justify-center pt-8 pb-7 overflow-hidden"
-      aria-label="Key Features"
+      aria-label={t.features.heading}
     >
       <div className="max-w-[1440px] mx-auto w-full px-6 lg:px-0">
         <motion.h2
           {...rise()}
           className="mb-8 text-[clamp(32px,9vw,48px)] leading-[0.98] font-extrabold tracking-[-0.03em] text-ink"
         >
-          Key Features
+          {t.features.heading}
         </motion.h2>
       </div>
 
