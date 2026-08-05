@@ -24,6 +24,9 @@ const en = {
       gameplay: "Gameplay",
       players: "Players",
       age: "Age",
+      fastestROIValue: "3 months",
+      avgPaybackValue: "6 months",
+      gameplayValue: "5 minutes",
     },
     closeVideo: "Close video pop-up",
     playVideo: "Play gameplay video",
@@ -106,6 +109,14 @@ const en = {
     avgPlays: "Avg. Plays",
     avgRevenue: "Avg. Revenue",
     roiInMonths: "ROI in",
+    plays: "plays",
+    average: "Average",
+    week: "Week",
+    chainSubtitles: [
+      "#1 game every single week.",
+      "Consistently outperforming expectations.",
+      "High density traffic, record payback.",
+    ],
   },
   form: {
     heading: "Request Brochure",
@@ -156,6 +167,9 @@ const en = {
     geoBranded: { label: "Geo-Branded", sublabel: "Your FEC logo and location watermarked" },
     localTraffic: { label: "Local Traffic", sublabel: "Every share acts as a local referral" },
     zeroCost: { label: "Zero-Cost Acquisition", sublabel: "Turn player reach into free marketing" },
+  },
+  footer: {
+    manufacturedBy: "Manufactured By",
   },
 };
 

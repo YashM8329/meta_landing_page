@@ -146,7 +146,7 @@ export default function HeroSection() {
             {[
               { value: "150+", label: t.hero.stats.venues },
               { value: "15+", label: t.hero.stats.countries },
-              { value: "3 months", label: t.hero.stats.fastestROI },
+              { value: t.hero.stats.fastestROIValue, label: t.hero.stats.fastestROI },
             ].map(({ value, label }) => (
               <div
                 key={label}
@@ -293,13 +293,13 @@ export default function HeroSection() {
             </div>
 
             <div className="col-span-6 bg-white rounded-xl py-2 px-3.5 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
-              <p className="text-[26px] sm:text-[18px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">6 months</p>
+              <p className="text-[26px] sm:text-[18px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">{t.hero.stats.avgPaybackValue}</p>
               <p className="text-[10px] sm:text-[10px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">{t.hero.stats.avgPayback}</p>
             </div>
 
             {/* Row 2: Gameplay (col-6), Players (col-3), Age (col-3) */}
             <div className="col-span-6 bg-white rounded-xl py-2 px-3.5 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
-              <p className="text-[26px] sm:text-[18px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">5 minutes</p>
+              <p className="text-[26px] sm:text-[18px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">{t.hero.stats.gameplayValue}</p>
               <p className="text-[10px] sm:text-[10px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">{t.hero.stats.gameplay}</p>
             </div>
 

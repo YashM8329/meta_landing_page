@@ -26,6 +26,9 @@ const fr: Translations = {
       gameplay: "Gameplay",
       players: "Joueurs",
       age: "Âge",
+      fastestROIValue: "3 mois",
+      avgPaybackValue: "6 mois",
+      gameplayValue: "5 minutes",
     },
     closeVideo: "Fermer la vidéo",
     playVideo: "Lire la vidéo de gameplay",
@@ -108,6 +111,14 @@ const fr: Translations = {
     avgPlays: "Parties moy.",
     avgRevenue: "Revenus moy.",
     roiInMonths: "ROI en",
+    plays: "parties",
+    average: "Moyenne",
+    week: "Semaine",
+    chainSubtitles: [
+      "Jeu n°1 chaque semaine.",
+      "Dépasse constamment les attentes.",
+      "Forte affluence, retour sur investissement record.",
+    ],
   },
   form: {
     heading: "Demander la brochure",
@@ -158,6 +169,9 @@ const fr: Translations = {
     geoBranded: { label: "Géo-marqué", sublabel: "Votre logo FEC et localisation en filigrane" },
     localTraffic: { label: "Trafic local", sublabel: "Chaque partage agit comme une référence locale" },
     zeroCost: { label: "Acquisition zéro coût", sublabel: "Transformez la portée des joueurs en marketing gratuit" },
+  },
+  footer: {
+    manufacturedBy: "Fabriqué par",
   },
 };
 

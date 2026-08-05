@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useCurrency } from "@/lib/useCurrency";
+import { useTranslation } from "@/lib/useTranslation";
 
 // Lucide icon approximations
 const GamepadIcon = ({ className }: { className?: string }) => (
@@ -135,10 +136,18 @@ const CHAINS_DATA: ChainData[] = [
 
 export default function CaseStudy() {
   const reduce = useReducedMotion();
+  const { t } = useTranslation();
   const { symbol, rate } = useCurrency();
   const [activeTab, setActiveTab] = useState(0);
 
-  const activeChain = CHAINS_DATA[activeTab];
+  const activeChain = {
+    ...CHAINS_DATA[activeTab],
+    subtitle: t.caseStudy.chainSubtitles[activeTab] ?? CHAINS_DATA[activeTab].subtitle,
+    weeksData: CHAINS_DATA[activeTab].weeksData.map((w, i) => ({
+      ...w,
+      label: `${t.caseStudy.week} ${i + 1}`,
+    })),
+  };
 
   const formatPrice = (usd: number): string => {
     const v = Math.round(usd * rate);
@@ -173,9 +182,9 @@ export default function CaseStudy() {
   };
 
   const summary = [
-    { label: "Price / play", value: formatPrice(activeChain.pricePerPlayUsd) },
-    { label: "Revenue / month", value: formatMonthRev(activeChain.revenuePerMonthUsd) },
-    { label: "Payback (ROI)", value: `${activeChain.paybackMonths} months` },
+    { label: t.roi.pricePlay, value: formatPrice(activeChain.pricePerPlayUsd) },
+    { label: t.roi.revenueMonth, value: formatMonthRev(activeChain.revenuePerMonthUsd) },
+    { label: t.roi.paybackPeriod, value: `${activeChain.paybackMonths} ${t.roi.months}` },
   ];
 
   const maxWeeklyRev = Math.max(...activeChain.weeksData.map((w) => w.revUsd));
@@ -198,10 +207,12 @@ export default function CaseStudy() {
         <motion.div {...rise()} className="mb-6">
           {/* <p className="text-[11px] font-extrabold tracking-[0.2em] text-accent uppercase mb-2">Case Studies</p> */}
           <h2 className="text-[clamp(32px,5.5vw,48px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-ink mb-3">
-            Proven Performance <br className="md:hidden" /> Across Locations
+            {t.caseStudy.heading.split("\n").map((line, i) => (
+              <span key={i}>{line}{i === 0 && <><br className="md:hidden" /></>}</span>
+            ))}
           </h2>
           <p className="text-[15px] sm:text-[16px] text-ink-soft font-medium leading-relaxed max-w-[450px]">
-            Real world results from venues.
+            {t.caseStudy.subtitle}
           </p>
         </motion.div>
 
@@ -223,7 +234,7 @@ export default function CaseStudy() {
                   {chain.shortName}
                 </span>
                 <span className="text-[10px] sm:text-[11px] text-ink-soft mt-2 leading-none font-semibold">
-                  FEC Chain
+                  {t.caseStudy.fecChain}
                 </span>
               </button>
             );
@@ -259,7 +270,7 @@ export default function CaseStudy() {
                     {formatPrice(activeChain.pricePerPlayUsd)}
                   </span>
                   <span className="text-[11px] font-semibold text-ink-soft mt-1.5 leading-tight">
-                    Price / play
+                    {t.roi.pricePlay}
                   </span>
                 </div>
 
@@ -272,7 +283,7 @@ export default function CaseStudy() {
                     {formatMonthRev(activeChain.revenuePerMonthUsd)}
                   </span>
                   <span className="text-[11px] font-semibold text-ink-soft mt-1.5 leading-tight">
-                    Revenue / month
+                    {t.roi.revenueMonth}
                   </span>
                 </div>
 
@@ -282,10 +293,10 @@ export default function CaseStudy() {
                     <ClockIcon className="w-5 h-5" />
                   </div>
                   <span className="text-[17px] font-extrabold text-accent leading-none">
-                    {activeChain.paybackMonths} months
+                    {activeChain.paybackMonths} {t.roi.months}
                   </span>
                   <span className="text-[11px] font-semibold text-ink-soft mt-1.5 leading-tight">
-                    Payback (ROI)
+                    {t.roi.paybackPeriod}
                   </span>
                 </div>
               </div>
@@ -328,7 +339,7 @@ export default function CaseStudy() {
                     {activeChain.avgPlays.toLocaleString()}
                   </span>
                   <span className="text-[11px] sm:text-[12px] font-bold text-ink-soft mt-1">
-                    Avg. Plays
+                    {t.caseStudy.avgPlays}
                   </span>
                 </div>
 
@@ -339,7 +350,7 @@ export default function CaseStudy() {
                     {formatAvgRev(activeChain.avgRevenueUsd)}
                   </span>
                   <span className="text-[11px] sm:text-[12px] font-bold text-ink-soft mt-1">
-                    Avg. Revenue
+                    {t.caseStudy.avgRevenue}
                   </span>
                 </div>
 
@@ -350,7 +361,7 @@ export default function CaseStudy() {
                     {activeChain.roiSummary}
                   </span>
                   <span className="text-[11px] sm:text-[12px] font-bold text-ink-soft mt-1">
-                    ROI in {activeChain.paybackMonths} months
+                    {t.caseStudy.roiInMonths} {activeChain.paybackMonths} {t.roi.months}
                   </span>
                 </div>
               </div>
@@ -380,7 +391,7 @@ export default function CaseStudy() {
                     ease: "easeInOut"
                   }}
                 >
-                  View full report
+                  {t.caseStudy.viewReport}
                   <ExternalLinkIcon className="w-4 h-4" />
                 </motion.span>
               </a>
@@ -452,7 +463,7 @@ export default function CaseStudy() {
                   </span>
                   <div className="flex items-center gap-5">
                     <span className="text-[14px] tnum font-medium text-ink">
-                      {r.plays.toLocaleString()} <span className="text-ink-faint font-normal">plays</span>
+                      {r.plays.toLocaleString()} <span className="text-ink-faint font-normal">{t.caseStudy.plays}</span>
                     </span>
                     <span className="text-[14px] tnum text-right w-[80px] font-semibold text-ink">
                       {formattedRev}
@@ -465,11 +476,11 @@ export default function CaseStudy() {
             {/* Extra Average Row for Desktop consistency */}
             <div className="flex items-center justify-between px-4 py-3 border-t border-line bg-accent/5">
               <span className="text-[14px] font-extrabold text-ink">
-                Average
+                {t.caseStudy.average}
               </span>
               <div className="flex items-center gap-5">
                 <span className="text-[14px] tnum font-extrabold text-ink">
-                  {activeChain.avgPlays.toLocaleString()} <span className="text-ink-faint font-normal">plays</span>
+                  {activeChain.avgPlays.toLocaleString()} <span className="text-ink-faint font-normal">{t.caseStudy.plays}</span>
                 </span>
                 <span className="text-[14px] tnum text-right w-[80px] font-extrabold text-accent">
                   {formatPrice(activeChain.avgRevenueUsd)}

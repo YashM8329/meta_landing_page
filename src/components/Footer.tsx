@@ -1,8 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import { useTranslation } from "@/lib/useTranslation";
 
 export default function Footer() {
+  const { t } = useTranslation();
   return (
     <footer className="w-full hero-abyss py-16 relative overflow-hidden border-t border-white/10">
       {/* white LED grid lines + film grain matching HeroSection */}
@@ -25,7 +27,7 @@ export default function Footer() {
 
           {/* Text */}
           <span className="text-[11px] sm:text-[12px] font-bold tracking-[0.3em] text-[#D0E2FF] uppercase font-sans">
-            Manufactured By
+            {t.footer.manufacturedBy}
           </span>
 
           {/* Right glowing line */}

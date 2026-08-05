@@ -1,8 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslation } from "@/lib/useTranslation";
 
 export default function StickyFooterCTA() {
+  const { t } = useTranslation();
   return (
     <div
       className="fixed bottom-0 left-0 right-0 z-40"
@@ -29,7 +31,7 @@ export default function StickyFooterCTA() {
               ease: "easeInOut"
             }}
           >
-            Request Brochure
+            {t.form.submit}
             <svg width="17" height="17" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path
                 d="M8 3L13 8L8 13M3 8H13"

@@ -3,12 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import MobileBrochureCTA from "./MobileBrochureCTA";
+import { useTranslation } from "@/lib/useTranslation";
 
 /* S2 — Full gameplay video (9:16), full-height section.
    Tap the video to toggle mute/unmute (Instagram-style). */
 
 export default function VideoSection() {
   const reduce = useReducedMotion();
+  const { t } = useTranslation();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
   const [pulse, setPulse] = useState(0); // increments each tap to retrigger icon
@@ -84,16 +86,18 @@ export default function VideoSection() {
             {...rise(0)}
             className="text-[clamp(30px,8.5vw,48px)] leading-[1.02] font-extrabold tracking-[-0.025em] text-ink mb-4"
           >
-            World&apos;s best active<br />social attraction
+            {t.video.heading.split("\n").map((line, i) => (
+              <span key={i}>{line}{i === 0 && <br />}</span>
+            ))}
           </motion.h2>
           <motion.p {...rise(0.1)} className="hidden lg:block text-[16px] text-ink-soft leading-relaxed mb-6">
-            HyperGrid transforms any venue floor into a high-energy multiplayer arena. Guests step on, games begin — no staff required.
+            {t.video.description}
           </motion.p>
           <motion.div {...rise(0.15)} className="hidden lg:flex flex-col gap-4">
             {[
-              { icon: "⚡", text: "Fully unattended — no staff needed" },
-              { icon: "🎮", text: "1–6 players, 4+ games with high replayability" },
-              { icon: "📍", text: "100+ installations across 20+ countries" },
+              { icon: "⚡", text: t.video.bullets[0] },
+              { icon: "🎮", text: t.video.bullets[1] },
+              { icon: "📍", text: t.video.bullets[2] },
             ].map(({ icon, text }) => (
               <div key={text} className="flex items-center gap-3">
                 <span className="w-9 h-9 rounded-md bg-accent/10 flex items-center justify-center text-[16px] flex-shrink-0">{icon}</span>
@@ -123,7 +127,7 @@ export default function VideoSection() {
           <button
             type="button"
             onClick={toggleMute}
-            aria-label={muted ? "Unmute video" : "Mute video"}
+            aria-label={muted ? t.video.unmute : t.video.mute}
             className="absolute inset-0 w-full h-full cursor-pointer bg-transparent z-10"
           />
           <AnimatePresence>

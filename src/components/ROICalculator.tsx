@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useCurrency } from "@/lib/useCurrency";
 import MobileBrochureCTA from "./MobileBrochureCTA";
+import { useTranslation } from "@/lib/useTranslation";
 
 /* Defaults + assumptions: 4,500 players/month, $65k install, 25 sqm. */
 const DEFAULT_PLAYERS = 4000;
@@ -93,6 +94,7 @@ function formatMoney(usd: number, symbol: string, rate: number): string {
 export default function ROICalculator() {
   const [players, setPlayers] = useState(DEFAULT_PLAYERS);
   const reduce = useReducedMotion();
+  const { t } = useTranslation();
   const { symbol, rate, code, countryName, setLocation } = useCurrency();
 
   const [selectedCode, setSelectedCode] = useState<string>("");
@@ -143,10 +145,10 @@ export default function ROICalculator() {
   const paybackMonths = monthlyUsd > 0 ? INSTALL_COST_USD / monthlyUsd : 0;
 
   const metrics = [
-    { label: "Revenue / month",       value: formatMoney(monthlyUsd, activeCurrency.symbol, activeCurrency.rate) },
-    { label: "7-year revenue",         value: formatMoney(monthlyUsd * 84, activeCurrency.symbol, activeCurrency.rate) },
-    { label: "Revenue / sqm / month", value: formatMoney(monthlyUsd / FOOTPRINT_SQM, activeCurrency.symbol, activeCurrency.rate) },
-    { label: "Payback period",         value: `${Math.round(paybackMonths)} months` },
+    { label: t.roi.revenueMonth,       value: formatMoney(monthlyUsd, activeCurrency.symbol, activeCurrency.rate) },
+    { label: t.roi.sevenYearRevenue,   value: formatMoney(monthlyUsd * 84, activeCurrency.symbol, activeCurrency.rate) },
+    { label: t.roi.revenuePerSqm,      value: formatMoney(monthlyUsd / FOOTPRINT_SQM, activeCurrency.symbol, activeCurrency.rate) },
+    { label: t.roi.paybackPeriod,      value: `${Math.round(paybackMonths)} ${t.roi.months}` },
   ];
 
   const onPlayers = useCallback((e: React.ChangeEvent<HTMLInputElement>) => setPlayers(Number(e.target.value)), []);
@@ -168,15 +170,15 @@ export default function ROICalculator() {
         >
           {/* <p className="text-[13px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-1">Revenue calculator</p> */}
           <h2 className="text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">
-            Revenue &amp; ROI
+            {t.roi.heading}
           </h2>
           {/* Currency indicator dropdown */}
           <p className="text-[15px] text-ink-faint mt-2 flex flex-wrap items-center gap-1.5 select-none">
-            <span>Showing</span>
+            <span>{t.roi.showing}</span>
             <span className="font-bold text-ink-soft bg-[#0a0e1a]/5 px-1.5 py-0.5 rounded text-[12px]">
               {activeCurrency.code} ({activeCurrency.symbol.trim()})
             </span>
-            <span>based on</span>
+            <span>{t.roi.basedOn}</span>
             <select
               value={activeCode}
               onChange={(e) => {
@@ -199,12 +201,12 @@ export default function ROICalculator() {
         <div className="lg:grid lg:grid-cols-2 lg:gap-8">
           {/* Sliders */}
           <div className="rounded-[12px] border border-line bg-white p-5 shadow-[0_12px_36px_rgba(10,14,26,0.08)]">
-            <p className="text-[20px] font-semibold text-ink mb-5 lg:mb-6">Adjust your estimates</p>
+            <p className="text-[20px] font-semibold text-ink mb-5 lg:mb-6">{t.roi.adjustEstimates}</p>
 
             <div className="mb-8">
               <div className="flex justify-between items-center mb-0">
                 <label htmlFor="slider-players" className="text-[17px] font-semibold text-ink-soft">
-                  Players / month
+                  {t.roi.playersMonth}
                 </label>
               </div>
               <div className="relative pt-7 pb-2">
@@ -259,7 +261,7 @@ export default function ROICalculator() {
             <div className="mb-4">
               <div className="flex justify-between items-center mb-0">
                 <label htmlFor="slider-price" className="text-[17px] font-semibold text-ink-soft">
-                  Price / play
+                  {t.roi.pricePlay}
                 </label>
               </div>
               <div className="relative pt-7 pb-2">

@@ -3,20 +3,15 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import en, { type Translations } from "./translations/en";
 
-// Countries that map to each supported language
-const GERMAN_COUNTRIES = new Set(["DE", "AT", "LI"]); // Germany, Austria, Liechtenstein
-const FRENCH_COUNTRIES = new Set(["FR", "BE", "LU", "CH", "MC", "BJ", "BF", "BI", "CM", "CF", "TD", "KM", "CD", "CG", "CI", "DJ", "GQ", "GA", "GN", "HT", "MG", "ML", "MR", "MU", "NE", "RW", "SN", "SC", "TG", "VU"]);
-const ITALIAN_COUNTRIES = new Set(["IT", "SM", "VA"]);
-const SPANISH_COUNTRIES = new Set(["ES", "MX", "CO", "AR", "PE", "VE", "CL", "EC", "GT", "CU", "BO", "DO", "HN", "PY", "SV", "NI", "CR", "PA", "UY", "GQ", "PR"]);
-
 export type SupportedLocale = "en" | "de" | "fr" | "it" | "es";
 
-function getLocaleFromCountry(countryCode: string): SupportedLocale {
-  const code = countryCode.toUpperCase();
-  if (GERMAN_COUNTRIES.has(code)) return "de";
-  if (FRENCH_COUNTRIES.has(code)) return "fr";
-  if (ITALIAN_COUNTRIES.has(code)) return "it";
-  if (SPANISH_COUNTRIES.has(code)) return "es";
+// Maps a BCP 47 language tag (e.g. "de-AT", "fr-BE") to a supported locale
+function getLocaleFromBrowserTag(tag: string): SupportedLocale {
+  const primary = tag.split("-")[0].toLowerCase();
+  if (primary === "de") return "de";
+  if (primary === "fr") return "fr";
+  if (primary === "it") return "it";
+  if (primary === "es") return "es";
   return "en";
 }
 
@@ -42,26 +37,22 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocale] = useState<SupportedLocale>("en");
 
   useEffect(() => {
-    // Read the country detected by useCurrency's ipapi.co fetch.
-    // We tap into the same fetch to avoid a second network request.
-    fetch("https://ipapi.co/json/", { signal: AbortSignal.timeout(4000) })
-      .then((r) => r.json())
-      .then(async (data) => {
-        const countryCode =
-          typeof data?.country === "string" ? data.country.toUpperCase() : "US";
-        const detectedLocale = getLocaleFromCountry(countryCode);
+    // Read browser language preference — instant, no network request
+    const preferred = navigator.languages?.length
+      ? navigator.languages
+      : [navigator.language ?? "en"];
 
-        if (detectedLocale !== "en") {
-          const bundle = await loadTranslations(detectedLocale);
-          setTranslations(bundle);
-          setLocale(detectedLocale);
-          // Update the html lang attribute for accessibility & SEO
-          document.documentElement.lang = detectedLocale;
-        }
-      })
-      .catch(() => {
-        // keep English on failure
+    const detectedLocale =
+      preferred.map(getLocaleFromBrowserTag).find((l) => l !== "en") ?? "en";
+
+    if (detectedLocale !== "en") {
+      loadTranslations(detectedLocale).then((bundle) => {
+        setTranslations(bundle);
+        setLocale(detectedLocale);
+        // Update the html lang attribute for accessibility & SEO
+        document.documentElement.lang = detectedLocale;
       });
+    }
   }, []);
 
   return (
