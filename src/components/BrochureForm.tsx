@@ -310,7 +310,12 @@ export default function BrochureForm() {
     const fe = validate();
     if (Object.keys(fe).length > 0) {
       setErrors(fe);
-      document.getElementById(`field-${Object.keys(fe)[0]}`)?.focus();
+      const firstErrorEl = document.getElementById(`field-${Object.keys(fe)[0]}`);
+      if (firstErrorEl) {
+        firstErrorEl.scrollIntoView({ behavior: "smooth", block: "center" });
+        // Delay focus slightly so scroll completes before keyboard appears on iOS
+        setTimeout(() => firstErrorEl.focus(), 300);
+      }
       return;
     }
     setSubmitting(true);
