@@ -105,37 +105,13 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
     desc: t.moments.steps[i]?.desc ?? s.desc,
   }));
   const videoRef = useRef<HTMLVideoElement>(null);
-  const phoneRef = useRef<HTMLDivElement>(null);
   const toastTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [mounted, setMounted] = useState(false);
-  const [hasBeenSeen, setHasBeenSeen] = useState(false);
-  const [isMuted, setIsMuted] = useState(true); // Muted by default until phone frame is seen
+  const [isMuted, setIsMuted] = useState(true);
   const [showSoundToast, setShowSoundToast] = useState(false);
 
   // Prevent hydration mismatch from browser extensions that inject around <video> tags.
   useEffect(() => { setMounted(true); }, []);
-
-  // Detect when user sees the phone overlay for the first time
-  useEffect(() => {
-    if (!mounted || hasBeenSeen) return;
-    const el = phoneRef.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        if (entry.isIntersecting) {
-          setHasBeenSeen(true);
-          setIsMuted(false); // Unmute audio for the first time when phone overlay becomes visible
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.25 }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [mounted, hasBeenSeen]);
 
   // Handle playback & audio control based on isMuted state
   useEffect(() => {
@@ -265,7 +241,6 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
           {/* Right Column: Video in Classic Phone Frame mockup */}
           <div className="lg:col-span-5 flex justify-center w-full">
             <motion.div
-              ref={phoneRef}
               {...rise(0.12)}
               className="relative mx-auto w-full max-w-[310px] sm:max-w-[325px] aspect-[9/18.5] rounded-[40px] bg-black pt-[44px] pb-[54px] px-[12px] ring-1 ring-white/10"
             >
@@ -291,6 +266,26 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
                 
                 {/* Vignette bottom-glow */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+
+                {/* Mute Circle just above download & share button, right aligned */}
+                <AnimatePresence>
+                  {isMuted && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute bottom-20 right-4 z-20 w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border border-white/25 text-white flex items-center justify-center shadow-lg pointer-events-none"
+                      title="Muted"
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M11 5L6 9H2V15H6L11 19V5Z" fill="currentColor" fillOpacity="0.3" />
+                        <line x1="23" y1="9" x2="17" y2="15" />
+                        <line x1="17" y1="9" x2="23" y2="15" />
+                      </svg>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 {/* Animated Center Toast overlay on mute/unmute */}
                 <AnimatePresence>
