@@ -71,6 +71,7 @@ export default function BrochureForm() {
   const [errors, setErrors] = useState<FieldError>({});
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
   const [defaultCountry, setDefaultCountry] = useState<Country | undefined>(undefined);
   const [venueInputValue, setVenueInputValue] = useState("");
   const [venueOptions, setVenueOptions] = useState<{ label: string; value: string; mainText?: string; secondaryText?: string }[]>([]);
@@ -319,6 +320,7 @@ export default function BrochureForm() {
       return;
     }
     setSubmitting(true);
+    setServerError(null);
     try {
       const response = await fetch("/api/send-email", {
         method: "POST",
@@ -336,10 +338,7 @@ export default function BrochureForm() {
 
       setSubmitted(true);
     } catch (err: any) {
-      setErrors((p) => ({
-        ...p,
-        email: err.message || "Something went wrong. Please try again later."
-      }));
+      setServerError("Something went wrong. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -651,6 +650,12 @@ export default function BrochureForm() {
               </div>
             )}
             </div>
+
+            {serverError && (
+              <p role="alert" className="text-[13px] text-red-500 font-medium bg-red-50 border border-red-200 rounded-lg px-4 py-3 mb-3">
+                {serverError}
+              </p>
+            )}
 
             <button type="submit" disabled={submitting} aria-busy={submitting}
               className="relative w-full h-[54px] text-white font-semibold text-[18px] rounded-lg flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent mt-2 overflow-hidden shadow-lg select-none bg-gradient-to-r from-[#1D6CEF] via-[#2f74e6] to-[#1D6CEF] hover:brightness-105 active:scale-[0.98] transition-all duration-150">
