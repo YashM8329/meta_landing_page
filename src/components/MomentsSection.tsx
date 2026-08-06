@@ -318,21 +318,16 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
                   )}
                 </AnimatePresence>
 
-                {/* Glassmorphic Download & Share Button Overlay */}
-                <div className="absolute bottom-4 left-0 right-0 flex justify-center px-4 z-20">
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                    className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-[#1D6CEF] to-[#2f74e6] text-white py-3 rounded-full text-[15px] font-extrabold tracking-wide shadow-[0_8px_24px_rgba(29,108,239,0.4)] border border-white/20"
-                  >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="animate-bounce">
+                {/* In-video UI chip — reads as part of the video content, not a page button */}
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center px-4 z-20 pointer-events-none select-none">
+                  <div className="w-full flex items-center justify-center gap-2.5 bg-white/15 backdrop-blur-md text-white py-3 rounded-full text-[15px] font-extrabold tracking-wide border border-white/20 opacity-80">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                       <polyline points="7 10 12 15 17 10" />
                       <line x1="12" y1="15" x2="12" y2="3" />
                     </svg>
                     <span>{t.moments.downloadShare}</span>
-                  </button>
+                  </div>
                 </div>
               </div>
 
