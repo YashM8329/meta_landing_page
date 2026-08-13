@@ -164,10 +164,10 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
   return (
     <section
       id="moments-ai"
-      className="min-h-0 lg:py-16 relative flex flex-col justify-center pt-8 pb-7 overflow-hidden"
+      className="min-h-0 lg:py-10 relative flex flex-col justify-center pt-8 pb-7 overflow-hidden"
       aria-label="Moments AI"
     >
-      <div className="max-w-[1440px] mx-auto w-full px-6 lg:px-0">
+      <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
           {/* Left Column: Title, Subtitle, and Horizontal Steps */}
           <div className="lg:col-span-7 flex flex-col justify-center">
@@ -176,7 +176,7 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
                 {t.moments.headingPrefix}{" "}
                 <Typewriter words={t.moments.headingWords as unknown as string[]} className="text-accent" />
               </h2>
-              <p className="text-[16px] sm:text-[18px] font-medium text-ink-soft tracking-tight mt-3 max-w-[580px]">
+              <p className="text-[16px] sm:text-[18px] lg:text-[26px] font-medium text-ink-soft tracking-tight mt-3 max-w-[700px]">
                 {t.moments.subtitle}
               </p>
             </motion.div>
@@ -190,7 +190,7 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
                 <div key={s.n} className="flex-1 flex items-start gap-1 md:gap-2">
                   <div className="flex flex-col items-center w-full">
                     {/* Step bubble (desktop only) */}
-                    <div className="hidden md:flex w-6 h-6 rounded-full bg-[#1D6CEF] items-center justify-center text-white text-[11px] font-extrabold mb-3.5 shadow-sm">
+                    <div className="hidden md:flex w-6 h-6 lg:w-9 lg:h-9 rounded-full bg-[#1D6CEF] items-center justify-center text-white text-[11px] lg:text-[16px] font-extrabold mb-3.5 shadow-sm">
                       {s.n}
                     </div>
                     {/* Card container */}
@@ -201,7 +201,7 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
                       </div>
                     </div>
                     {/* Label */}
-                    <p className="text-[16px] sm:text-[13px] md:text-[16px] font-extrabold text-ink leading-tight text-center">
+                    <p className="text-[16px] sm:text-[13px] md:text-[16px] lg:text-[24px] font-extrabold text-ink leading-tight text-center">
                       {s.label}
                     </p>
                   </div>
@@ -219,8 +219,8 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
               ))}
             </motion.div>
 
-            {/* Connecting U-line under the steps */}
-            <div className="relative w-full h-12 mt-2">
+            {/* Connecting U-line under the steps (mobile view only) */}
+            <div className="relative w-full h-12 mt-2 lg:hidden">
               <div className="absolute top-0 left-[16.6%] right-[16.6%] h-6 border-b-2 border-x-2 border-[#1D6CEF]/30 rounded-b-2xl" />
               <motion.div 
                 animate={{ y: [-4, 4, -4] }}

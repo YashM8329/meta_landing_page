@@ -199,7 +199,7 @@ export default function CaseStudy() {
   return (
     <section
       id="case-study"
-      className="min-h-0 lg:py-12 relative flex flex-col justify-center pt-6 pb-7 overflow-hidden animate-fade-up"
+      className="min-h-0 lg:py-10 relative flex flex-col justify-center pt-6 pb-7 overflow-hidden animate-fade-up"
       aria-label="FEC Case Studies"
     >
       <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0">
@@ -211,7 +211,7 @@ export default function CaseStudy() {
               <span key={i}>{line}{i === 0 && <><br className="md:hidden" /></>}</span>
             ))}
           </h2>
-          <p className="text-[15px] sm:text-[16px] text-ink-soft font-medium leading-relaxed max-w-[450px]">
+          <p className="text-[15px] sm:text-[16px] lg:text-[24px] text-ink-soft font-medium leading-relaxed max-w-[550px]">
             {t.caseStudy.subtitle}
           </p>
         </motion.div>
@@ -230,10 +230,10 @@ export default function CaseStudy() {
                     : "border-line bg-white/50 hover:bg-white text-ink-soft"
                 }`}
               >
-                <span className={`text-[16px] sm:text-[20px] font-extrabold leading-none transition-colors duration-200 ${isActive ? "text-accent" : "text-ink"}`}>
+                <span className={`text-[16px] sm:text-[20px] lg:text-[28px] font-extrabold leading-none transition-colors duration-200 ${isActive ? "text-accent" : "text-ink"}`}>
                   {chain.shortName}
                 </span>
-                <span className="text-[10px] sm:text-[11px] text-ink-soft mt-2 leading-none font-semibold">
+                <span className="text-[10px] sm:text-[11px] lg:text-[16px] text-ink-soft mt-2 leading-none font-semibold">
                   {t.caseStudy.fecChain}
                 </span>
               </button>
@@ -242,7 +242,7 @@ export default function CaseStudy() {
         </motion.div>
 
         {/* Mobile View Card Container */}
-        <div className="block lg:hidden">
+        <div className="block md:hidden">
           <motion.div
             key={`mobile-card-${activeTab}`}
             initial={{ opacity: 0, scale: 0.98 }}
@@ -414,14 +414,14 @@ export default function CaseStudy() {
         </div>
 
         {/* Desktop: 2-col layout — context left, table right */}
-        <div className="hidden lg:grid lg:grid-cols-2 lg:gap-12 lg:items-start">
+        <div className="hidden md:grid md:grid-cols-2 md:gap-8 lg:gap-16 md:items-start">
           {/* Left column: context + summary */}
           <div>
             <motion.p
               key={`desktop-sub-${activeTab}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-[22px] lg:text-[26px] font-extrabold tracking-[-0.02em] text-accent leading-tight mb-5 lg:mb-8"
+              className="text-[22px] lg:text-[34px] font-extrabold tracking-[-0.02em] text-accent leading-tight mb-5 lg:mb-8"
             >
               {activeChain.subtitle}
             </motion.p>
@@ -433,10 +433,10 @@ export default function CaseStudy() {
                   key={s.label}
                   className="flex items-center justify-between rounded-[12px] border border-line bg-white px-5 py-4"
                 >
-                  <span className="text-[15px] sm:text-[20px] font-semibold text-ink-soft">
+                  <span className="text-[15px] sm:text-[20px] lg:text-[26px] font-semibold text-ink-soft">
                     {s.label}
                   </span>
-                  <span className="text-[22px] sm:text-[28px] lg:text-[32px] font-extrabold text-accent tnum leading-none">
+                  <span className="text-[22px] sm:text-[28px] lg:text-[38px] xl:text-[42px] font-extrabold text-accent tnum leading-none">
                     {s.value}
                   </span>
                 </div>
@@ -447,25 +447,25 @@ export default function CaseStudy() {
           {/* Right column: week-on-week table */}
           <motion.div
             {...rise(0.08)}
-            className="mt-5 lg:mt-0 rounded-[12px] border border-line bg-white overflow-hidden shadow-[0_10px_30px_rgba(10,14,26,0.06)]"
+            className="mt-5 lg:mt-[66px] rounded-[12px] border border-line bg-white overflow-hidden shadow-[0_10px_30px_rgba(10,14,26,0.06)]"
           >
             {activeChain.weeksData.map((r, i) => {
               const formattedRev = formatPrice(r.revUsd);
               return (
                 <div
                   key={r.label}
-                  className={`flex items-center justify-between px-4 py-3 ${
+                  className={`flex items-center justify-between px-4 py-3 lg:px-6 lg:py-4.5 ${
                     i > 0 ? "border-t border-line" : ""
                   }`}
                 >
-                  <span className="text-[14px] font-semibold text-ink-soft">
+                  <span className="text-[14px] lg:text-[21px] font-semibold text-ink-soft">
                     {r.label}
                   </span>
-                  <div className="flex items-center gap-5">
-                    <span className="text-[14px] tnum font-medium text-ink">
+                  <div className="flex items-center gap-5 lg:gap-8">
+                    <span className="text-[14px] lg:text-[21px] tnum font-medium text-ink">
                       {r.plays.toLocaleString()} <span className="text-ink-faint font-normal">{t.caseStudy.plays}</span>
                     </span>
-                    <span className="text-[14px] tnum text-right w-[80px] font-semibold text-ink">
+                    <span className="text-[14px] lg:text-[21px] tnum text-right w-[80px] lg:w-[110px] font-semibold text-ink">
                       {formattedRev}
                     </span>
                   </div>
@@ -474,15 +474,15 @@ export default function CaseStudy() {
             })}
             
             {/* Extra Average Row for Desktop consistency */}
-            <div className="flex items-center justify-between px-4 py-3 border-t border-line bg-accent/5">
-              <span className="text-[14px] font-extrabold text-ink">
+            <div className="flex items-center justify-between px-4 py-3 lg:px-6 lg:py-4.5 border-t border-line bg-accent/5">
+              <span className="text-[14px] lg:text-[21px] font-extrabold text-ink">
                 {t.caseStudy.average}
               </span>
-              <div className="flex items-center gap-5">
-                <span className="text-[14px] tnum font-extrabold text-ink">
+              <div className="flex items-center gap-5 lg:gap-8">
+                <span className="text-[14px] lg:text-[21px] tnum font-extrabold text-ink">
                   {activeChain.avgPlays.toLocaleString()} <span className="text-ink-faint font-normal">{t.caseStudy.plays}</span>
                 </span>
-                <span className="text-[14px] tnum text-right w-[80px] font-extrabold text-accent">
+                <span className="text-[14px] lg:text-[21px] tnum text-right w-[80px] lg:w-[110px] font-extrabold text-accent">
                   {formatPrice(activeChain.avgRevenueUsd)}
                 </span>
               </div>

@@ -102,7 +102,7 @@ const en = {
     months: "months",
   },
   caseStudy: {
-    heading: "Proven Performance\nAcross Locations",
+    heading: "Proven performance across locations",
     subtitle: "Real world results from venues.",
     fecChain: "FEC Chain",
     viewReport: "View full report",

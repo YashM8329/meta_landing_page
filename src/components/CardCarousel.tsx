@@ -62,12 +62,12 @@ function CardContent({ card }: { card: CarouselCard }) {
       />
 
       {/* Text */}
-      <div className="absolute top-0 left-0 right-0 px-5 pt-5">
-        <p className="font-extrabold text-white text-[24px] leading-[1.05] tracking-[-0.01em] drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
+      <div className="absolute top-0 left-0 right-0 px-5 pt-5 lg:px-6 lg:pt-6">
+        <p className="font-extrabold text-white text-[24px] lg:text-[34px] leading-[1.05] tracking-[-0.01em] drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
           {card.label}
         </p>
         {card.sublabel && (
-          <p className="text-white/80 text-[13px] font-medium mt-1.5 leading-snug drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]">
+          <p className="text-white/80 text-[13px] lg:text-[19px] font-medium mt-1.5 lg:mt-2 leading-snug drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]">
             {card.sublabel}
           </p>
         )}
@@ -237,7 +237,7 @@ export default function CardCarousel({ cards }: { cards: CarouselCard[] }) {
 
   return (
     <div className="marquee-container select-none">
-      <div ref={scrollRef} className="marquee-scroll">
+      <div ref={scrollRef} className="marquee-scroll !pl-0 !pr-0">
         {trackCards.map((card, i) => (
           <div
             key={card.label + "-" + i}

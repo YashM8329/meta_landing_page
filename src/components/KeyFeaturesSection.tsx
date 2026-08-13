@@ -62,20 +62,20 @@ export default function KeyFeaturesSection({ cards }: { cards: CarouselCard[] })
   return (
     <section
       id="features"
-      className="min-h-0 lg:py-16 relative flex flex-col justify-center pt-8 pb-7 overflow-hidden"
+      className="min-h-0 lg:py-10 relative flex flex-col justify-center pt-8 pb-7 overflow-hidden"
       aria-label={t.features.heading}
     >
-      <div className="max-w-[1440px] mx-auto w-full px-6 lg:px-0">
+      <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0">
         <motion.h2
           {...rise()}
           className="mb-8 text-[clamp(32px,9vw,48px)] leading-[0.98] font-extrabold tracking-[-0.03em] text-ink"
         >
           {t.features.heading}
         </motion.h2>
-      </div>
 
-      <div className="w-full">
-        <CardCarousel cards={cards} />
+        <div className="w-full">
+          <CardCarousel cards={cards} />
+        </div>
       </div>
 
       <MobileBrochureCTA />

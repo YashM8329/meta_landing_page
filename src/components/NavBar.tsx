@@ -50,7 +50,7 @@ export default function NavBar() {
       }`}
     >
       {/* Mobile: centred pill */}
-      <div className="lg:hidden mx-auto max-w-[460px] h-[56px] flex items-center justify-center border-b border-white/20 bg-white/70 backdrop-blur-md shadow-[0_8px_32px_rgba(10,14,26,0.08)]">
+      <div className="md:hidden mx-auto max-w-[460px] h-[56px] flex items-center justify-center border-b border-white/20 bg-white/70 backdrop-blur-md shadow-[0_8px_32px_rgba(10,14,26,0.08)]">
         <Image
           src="/hero/hypergrid-logo.png"
           alt="HYPERGRID"
@@ -62,7 +62,7 @@ export default function NavBar() {
       </div>
 
       {/* Desktop: full-width bar */}
-      <div className="hidden lg:block border-b border-white/20 bg-white/75 backdrop-blur-lg shadow-[0_8px_32px_rgba(10,14,26,0.05)]">
+      <div className="hidden md:block border-b border-white/20 bg-white/75 backdrop-blur-lg shadow-[0_8px_32px_rgba(10,14,26,0.05)]">
         <div className="max-w-[1440px] mx-auto w-full h-[64px] flex items-center justify-between px-6 xl:px-0">
           <Image
             src="/hero/hypergrid-logo.png"

@@ -157,7 +157,7 @@ export default function ROICalculator() {
   return (
     <section
       id="roi"
-      className="min-h-0 lg:py-12 relative flex flex-col justify-center pt-6 pb-7 overflow-hidden"
+      className="min-h-0 lg:py-10 relative flex flex-col justify-center pt-6 pb-7 overflow-hidden"
       aria-label="Revenue and ROI calculator"
     >
       <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0">
@@ -173,7 +173,7 @@ export default function ROICalculator() {
             {t.roi.heading}
           </h2>
           {/* Currency indicator dropdown */}
-          <p className="text-[15px] text-ink-faint mt-2 flex flex-wrap items-center gap-1.5 select-none">
+          <p className="text-[15px] lg:text-[22px] text-ink-faint mt-2 flex flex-wrap items-center gap-1.5 select-none">
             <span>{t.roi.showing}</span>
             <span className="font-bold text-ink-soft bg-[#0a0e1a]/5 px-1.5 py-0.5 rounded text-[12px]">
               {activeCurrency.code} ({activeCurrency.symbol.trim()})
@@ -198,14 +198,14 @@ export default function ROICalculator() {
         </motion.div>
 
         {/* Desktop: 2-col layout — sliders left, metrics right */}
-        <div className="lg:grid lg:grid-cols-2 lg:gap-8">
+        <div className="md:grid md:grid-cols-2 md:gap-8 lg:gap-12">
           {/* Sliders */}
-          <div className="rounded-[12px] border border-line bg-white p-5 shadow-[0_12px_36px_rgba(10,14,26,0.08)]">
-            <p className="text-[20px] font-semibold text-ink mb-5 lg:mb-6">{t.roi.adjustEstimates}</p>
+          <div className="rounded-[12px] border border-line bg-white p-5 lg:p-8 shadow-[0_12px_36px_rgba(10,14,26,0.08)]">
+            <p className="text-[20px] lg:text-[28px] font-semibold text-ink mb-5 lg:mb-6">{t.roi.adjustEstimates}</p>
 
             <div className="mb-8">
               <div className="flex justify-between items-center mb-0">
-                <label htmlFor="slider-players" className="text-[17px] font-semibold text-ink-soft">
+                <label htmlFor="slider-players" className="text-[17px] lg:text-[24px] font-semibold text-ink-soft">
                   {t.roi.playersMonth}
                 </label>
               </div>

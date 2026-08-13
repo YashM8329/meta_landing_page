@@ -181,7 +181,7 @@ export default function ProofSection() {
   return (
     <section
       id="proof"
-      className="min-h-0 lg:py-12 relative flex flex-col justify-center pt-6 pb-7 overflow-hidden"
+      className="min-h-0 lg:py-10 relative flex flex-col justify-center pt-6 pb-7 overflow-hidden"
       aria-label="Operator testimonials"
     >
       <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0">
@@ -190,7 +190,7 @@ export default function ProofSection() {
         </motion.h2>
 
         {/* Mobile: horizontal scroll carousel */}
-        <div className="lg:hidden">
+        <div className="md:hidden">
           <div
             ref={trackRef}
             onScroll={handleScroll}
@@ -219,18 +219,18 @@ export default function ProofSection() {
         </div>
 
         {/* Desktop: 3-column grid */}
-        <motion.div {...rise(0.05)} className="hidden lg:grid lg:grid-cols-3 gap-6 mb-8">
+        <motion.div {...rise(0.05)} className="hidden md:grid md:grid-cols-3 gap-4 lg:gap-8 mb-8 lg:mb-12">
           {translatedTestimonials.map((item) => (
             <TestimonialCardInner key={item.name} t={item} />
           ))}
         </motion.div>
 
         {/* Logo grid */}
-        <motion.div {...rise(0.08)} className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <motion.div {...rise(0.08)} className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {logos.map((logo) => (
-            <div key={logo.src} className="h-[64px] rounded-[12px] bg-white border border-line flex items-center justify-center px-5">
-              <div className="relative h-8 w-full">
-                <Image src={logo.src} alt={logo.alt} fill sizes="150px" className="object-contain" />
+            <div key={logo.src} className="h-[64px] lg:h-[80px] rounded-[12px] bg-white border border-line flex items-center justify-center px-5 lg:px-8">
+              <div className="relative h-8 lg:h-10 w-full">
+                <Image src={logo.src} alt={logo.alt} fill sizes="200px" className="object-contain" />
               </div>
             </div>
           ))}

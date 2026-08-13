@@ -1,5 +1,6 @@
 "use client";
 
+import Script from "next/script";
 import NavBar from "@/components/NavBar";
 import HeroSection from "@/components/HeroSection";
 import VideoSection from "@/components/VideoSection";
@@ -51,11 +52,37 @@ export default function Home() {
 
   return (
     <>
+      {/* Meta Pixel — Home Page */}
+      <Script
+        id="meta-pixel-home"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            !function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window, document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '1079278694629302');
+            fbq('track', 'PageView');
+          `,
+        }}
+      />
+      <noscript>
+        <img height="1" width="1" style={{ display: "none" }}
+          src="https://www.facebook.com/tr?id=1079278694629302&ev=PageView&noscript=1"
+        />
+      </noscript>
+
       <SmoothScroll />
       <NavBar />
 
       <main className="page-canvas min-h-screen relative">
         <HeroSection />
+        <BrochureForm />
         {/* <VideoSection /> */}
         <KeyFeaturesSection cards={featureCards} />
         <MomentsSection cards={momentsCards} />
@@ -63,7 +90,6 @@ export default function Home() {
         <ProofSection />
         <ROICalculator />
         <CaseStudy />
-        <BrochureForm />
       </main>
 
       <Footer />

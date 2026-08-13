@@ -70,11 +70,11 @@ export default function HeroSection() {
           variants={container}
           initial="hidden"
           animate="show"
-          className="relative z-10 flex flex-col items-start w-full lg:flex-1 lg:max-w-[540px] text-left"
+          className="relative z-10 flex flex-col items-start w-full lg:flex-1 lg:max-w-[660px] text-left"
         >
           <motion.p
             variants={item}
-            className="text-[13px] font-semibold tracking-[0.26em] text-white/55 uppercase mb-0"
+            className="text-[13px] lg:text-[20px] font-semibold tracking-[0.26em] text-white/55 uppercase mb-1"
           >
             {t.hero.eyebrow}
           </motion.p>
@@ -89,33 +89,23 @@ export default function HeroSection() {
               width={624}
               height={117}
               priority
-              className="w-[624px] h-auto object-contain -ml-4"
+              className="w-[480px] lg:w-[680px] h-auto object-contain -ml-4"
             />
           </motion.h1>
 
-          <motion.div
-            variants={item}
-            className="flex flex-col text-[68px] font-black tracking-tight leading-[1.02] uppercase mb-6 text-white w-full text-left"
-          >
-            <span>{t.hero.heading1}</span>
-            <span>{t.hero.heading2}</span>
-            <span>{t.hero.heading3}</span>
-            <span className="text-[#000000]">{t.hero.heading4}</span>
-          </motion.div>
-
           <motion.p
             variants={item}
-            className="text-[15px] sm:text-[17px] font-medium text-white/60 leading-relaxed mb-8 max-w-[500px]"
-            dangerouslySetInnerHTML={{ __html: t.hero.description }}
+            className="text-[24px] lg:text-[44px] font-medium text-white/100 leading-snug lg:leading-[1.18] mb-8 text-left max-w-[660px]"
+            dangerouslySetInnerHTML={{ __html: t.hero.mobileDescription }}
           />
 
-          <motion.div variants={item} className="flex items-center gap-3">
+          <motion.div variants={item} className="flex items-center gap-4">
             <a
               href="#brochure-form"
-              className="btn-glass-accent text-white font-semibold text-[16px] px-7 py-3.5 rounded-lg flex items-center gap-2"
+              className="btn-glass-accent text-white font-semibold text-[18px] lg:text-[22px] px-8 py-4 rounded-xl flex items-center gap-2.5"
             >
               <motion.span
-                className="flex items-center justify-center gap-2"
+                className="flex items-center justify-center gap-2.5"
                 animate={{ scale: [1, 1, 1.05, 1, 1] }}
                 transition={{
                   times: [0, 0.14, 0.20, 0.26, 1.0],
@@ -125,24 +115,24 @@ export default function HeroSection() {
                 }}
               >
                 {t.hero.requestBrochure}
-                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </motion.span>
             </a>
             <button
               onClick={() => setIsOpen(true)}
-              className="btn-glass-light text-ink font-semibold text-[15px] px-6 py-3.5 rounded-lg flex items-center gap-2 cursor-pointer"
+              className="btn-glass-light text-ink font-semibold text-[17px] lg:text-[21px] px-7 py-4 rounded-xl flex items-center gap-2.5 cursor-pointer"
             >
               {t.hero.watchVideo}
-              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M6 4L12 8L6 12V4Z" fill="currentColor" />
               </svg>
             </button>
           </motion.div>
 
           {/* Stats row — desktop only */}
-          <motion.div variants={item} className="flex items-center gap-4 mt-10 border-t border-white/10 pt-8 w-full">
+          <motion.div variants={item} className="flex items-stretch gap-5 mt-10 border-t border-white/10 pt-8 w-full">
             {[
               { value: "150+", label: t.hero.stats.venues },
               { value: "15+", label: t.hero.stats.countries },
@@ -150,16 +140,16 @@ export default function HeroSection() {
             ].map(({ value, label }) => (
               <div
                 key={label}
-                className="bg-white rounded-2xl py-3 px-5 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 min-w-[140px]"
+                className="bg-white rounded-2xl py-4 px-5 flex flex-col justify-center items-center shadow-[0_12px_40px_rgba(0,0,0,0.08)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 min-w-[160px]"
               >
-                <p className="text-[26px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">{value}</p>
-                <p className="text-[11px] font-bold text-[#8A95A5] mt-1.5 leading-tight text-center">{label}</p>
+                <p className="text-[28px] lg:text-[36px] xl:text-[40px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center whitespace-nowrap">{value}</p>
+                <p className="text-[13px] lg:text-[16px] font-bold text-[#8A95A5] mt-2 leading-tight text-center whitespace-nowrap">{label}</p>
               </div>
             ))}
           </motion.div>
         </motion.div>
 
-        {/* Right Column: Hero Image (No play button overlay) */}
+        {/* Right Column: Hero Image */}
         <motion.div
           variants={container}
           initial="hidden"
@@ -185,8 +175,112 @@ export default function HeroSection() {
         </motion.div>
       </div>
 
+      {/* Tablet view of the Hero Section layout (stacked vertically so image is below tagline with original size) */}
+      <div className="hidden md:flex lg:hidden max-w-[1024px] mx-auto w-full relative z-10 flex-col items-start justify-start px-6 gap-6">
+        <motion.div
+          variants={container}
+          initial="hidden"
+          animate="show"
+          className="relative z-10 flex flex-col items-start w-full text-left"
+        >
+          <motion.p
+            variants={item}
+            className="text-[16px] font-semibold tracking-[0.26em] text-white/55 uppercase mb-1"
+          >
+            {t.hero.eyebrow}
+          </motion.p>
+
+          <motion.h1
+            variants={item}
+            className="mb-4 relative z-10 flex justify-start w-full"
+          >
+            <Image
+              src="/hero/hypergrid-logo.png"
+              alt="HYPERGRID"
+              width={624}
+              height={117}
+              priority
+              className="w-[480px] h-auto object-contain -ml-3"
+            />
+          </motion.h1>
+
+          <motion.p
+            variants={item}
+            className="text-[26px] font-medium text-white/100 leading-snug mb-4 text-left max-w-[720px]"
+            dangerouslySetInnerHTML={{ __html: t.hero.mobileDescription }}
+          />
+
+          {/* Hero Image placed directly below the tagline with original/large size */}
+          <motion.div variants={item} className="w-full my-4 flex justify-center">
+            <motion.div
+              animate={reduce ? undefined : { y: [0, -10, 0] }}
+              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+              className="relative w-full max-w-[760px]"
+            >
+              <Image
+                src="/hero/hypergrid-hero.png"
+                alt="HyperGrid — interactive LED-floor arcade attraction"
+                width={1300}
+                height={797}
+                priority
+                className="w-full h-auto drop-shadow-[0_30px_60px_rgba(0,0,0,0.5)] scale-100"
+              />
+            </motion.div>
+          </motion.div>
+
+          <motion.div variants={item} className="flex items-center gap-4 mt-2">
+            <a
+              href="#brochure-form"
+              className="btn-glass-accent text-white font-semibold text-[18px] px-8 py-4 rounded-xl flex items-center gap-2.5"
+            >
+              <motion.span
+                className="flex items-center justify-center gap-2.5"
+                animate={{ scale: [1, 1, 1.05, 1, 1] }}
+                transition={{
+                  times: [0, 0.14, 0.20, 0.26, 1.0],
+                  duration: 3.5,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              >
+                {t.hero.requestBrochure}
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </motion.span>
+            </a>
+            <button
+              onClick={() => setIsOpen(true)}
+              className="btn-glass-light text-ink font-semibold text-[17px] px-7 py-4 rounded-xl flex items-center gap-2.5 cursor-pointer"
+            >
+              {t.hero.watchVideo}
+              <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M6 4L12 8L6 12V4Z" fill="currentColor" />
+              </svg>
+            </button>
+          </motion.div>
+
+          {/* Stats row */}
+          <motion.div variants={item} className="flex items-stretch gap-4 mt-8 border-t border-white/10 pt-6 w-full justify-between">
+            {[
+              { value: "150+", label: t.hero.stats.venues },
+              { value: "15+", label: t.hero.stats.countries },
+              { value: t.hero.stats.fastestROIValue, label: t.hero.stats.fastestROI },
+            ].map(({ value, label }) => (
+              <div
+                key={label}
+                className="bg-white rounded-3xl py-5 px-6 flex flex-col justify-center items-center shadow-[0_12px_40px_rgba(0,0,0,0.08)] border border-black/5 flex-1 min-w-[160px]"
+              >
+                <p className="text-[34px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center whitespace-nowrap">{value}</p>
+                <p className="text-[15px] font-bold text-[#8A95A5] mt-2 leading-tight text-center whitespace-nowrap">{label}</p>
+              </div>
+            ))}
+          </motion.div>
+        </motion.div>
+      </div>
+
       {/* Mobile view of the Hero Section layout */}
-      <div className="flex flex-col lg:hidden w-full relative z-10 px-6 gap-8">
+      <div className="flex flex-col md:hidden w-full relative z-10 px-6 gap-8">
         {/* Text column */}
         <motion.div
           variants={container}
@@ -215,14 +309,6 @@ export default function HeroSection() {
             />
           </motion.h1>
 
-          {/* <motion.div
-            variants={item}
-            className="flex flex-col text-[38px] sm:text-[56px] font-black tracking-tight leading-[1.02] uppercase mb-4 text-white w-full text-left"
-          >
-            <span>SCALING FEC</span>
-            <span>ARCADE REVENUE</span>
-            <span className="text-[#000000]">ZERO STAFF</span>
-          </motion.div> */}
 
           <motion.p
             variants={item}

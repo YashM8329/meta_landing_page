@@ -14,7 +14,7 @@ export default function Footer() {
       {/* Mobile-only overlay to reduce gradient brightness and improve logo contrast */}
       <div className="absolute inset-0 bg-[#030714]/10 lg:hidden pointer-events-none z-0" />
 
-      <div className="max-w-[1440px] mx-auto w-full px-6 lg:px-0 flex flex-col items-center justify-center relative z-10">
+      <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0 flex flex-col items-center justify-center relative z-10">
         {/* Radial glow background behind the logo */}
         <div className="absolute w-[300px] h-[100px] bg-accent/25 rounded-full blur-[50px] pointer-events-none -translate-y-4" />
 
