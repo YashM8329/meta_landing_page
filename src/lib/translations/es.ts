@@ -66,6 +66,7 @@ const es: Translations = {
       { label: "Descargar & Compartir", desc: "Lo descargan y comparten con el mundo" },
     ],
     downloadShare: "Descargar & Compartir",
+    tapToUnmute: "Toca para activar el sonido",
   },
   venues: {
     title: "100+ Venues en todo el mundo",
@@ -161,8 +162,9 @@ const es: Translations = {
     submitting: "Enviando…",
     poweredBy: "Desarrollado por",
     successHeading: "¡Folleto en camino!",
-    successMessage: "Nos pondremos en contacto en",
+    successMessage: "Gracias por tu interés en HyperGrid. Nuestro equipo se pondrá en contacto contigo en breve con toda la información que necesitas.",
     successSoon: "pronto.",
+    backHome: "Volver al inicio",
   },
   momentsCards: {
     autoEdited: { label: "Edición automática", sublabel: "Highlights de gameplay profesionales" },

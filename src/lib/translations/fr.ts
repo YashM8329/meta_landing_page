@@ -66,6 +66,7 @@ const fr: Translations = {
       { label: "Télécharger & Partager", desc: "Ils téléchargent et partagent avec le monde" },
     ],
     downloadShare: "Télécharger & Partager",
+    tapToUnmute: "Appuyer pour activer le son",
   },
   venues: {
     title: "100+ Lieux dans le monde",
@@ -161,8 +162,9 @@ const fr: Translations = {
     submitting: "Envoi en cours…",
     poweredBy: "Propulsé par",
     successHeading: "Brochure en route !",
-    successMessage: "Nous vous contacterons à",
+    successMessage: "Merci pour votre intérêt pour HyperGrid. Notre équipe vous contactera très prochainement avec toutes les informations dont vous avez besoin.",
     successSoon: "bientôt.",
+    backHome: "Retour à l'accueil",
   },
   momentsCards: {
     autoEdited: { label: "Montage automatique", sublabel: "Highlights de gameplay professionnels" },

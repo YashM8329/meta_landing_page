@@ -64,6 +64,7 @@ const en = {
       { label: "Download & Share", desc: "They download and share with the world" },
     ],
     downloadShare: "Download & Share",
+    tapToUnmute: "Tap to unmute",
   },
   venues: {
     title: "100+ Venues Worldwide",
@@ -159,8 +160,9 @@ const en = {
     submitting: "Sending…",
     poweredBy: "Powered by",
     successHeading: "Brochure on its way!",
-    successMessage: "We'll be in touch at",
+    successMessage: "Thanks for your interest in HyperGrid. Our team will be in touch with you shortly with everything you need to know.",
     successSoon: "soon.",
+    backHome: "Back to Home",
   },
   momentsCards: {
     autoEdited: { label: "Auto-Edited", sublabel: "Professional gameplay highlights" },

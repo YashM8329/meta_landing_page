@@ -369,7 +369,7 @@ export default function HeroSection() {
           >
             {/* Row 1: Venues (col-3), Countries (col-3), ROI (col-6) */}
             <div className="col-span-3 bg-white rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
-              <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">100+</p>
+              <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">150+</p>
               <p className="text-[10px] sm:text-[11px] font-bold text-[#8A95A5] mt-1 leading-tight text-center">{t.hero.stats.venues}</p>
             </div>
 

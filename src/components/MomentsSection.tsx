@@ -285,7 +285,7 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
                         </svg>
                       </div>
                       <span className="text-white text-[9px] font-semibold leading-tight bg-black/50 backdrop-blur-sm rounded px-1.5 py-0.5 whitespace-nowrap">
-                        Tap to unmute
+                        {t.moments.tapToUnmute}
                       </span>
                     </motion.div>
                   )}
