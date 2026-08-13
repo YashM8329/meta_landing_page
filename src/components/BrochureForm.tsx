@@ -174,16 +174,7 @@ export default function BrochureForm() {
     setCountryOptions(filtered);
   }, [countryInputValue]);
 
-  useEffect(() => {
-    if (form.venueStatus === "existing" || form.venueStatus === "other") {
-      setTimeout(() => {
-        window.scrollTo({
-          top: document.documentElement.scrollHeight,
-          behavior: "smooth",
-        });
-      }, 100);
-    }
-  }, [form.venueStatus]);
+
 
   const validateEmailField = (emailVal: string) => {
     if (!emailVal.trim()) {
