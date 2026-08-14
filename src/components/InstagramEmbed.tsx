@@ -82,20 +82,22 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
           playsInline
           preload="none"
           onClick={handleVideoPress}
+          onPlay={() => setIsPlaying(true)}
+          onPlaying={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          onWaiting={() => setIsPlaying(false)}
+          onStalled={() => setIsPlaying(false)}
+          onError={() => setIsPlaying(false)}
         />
       )}
 
-      {/* Play/Pause icon indicator when paused */}
+      {/* Loading SVG Overlay when video is not playing */}
       {!isPlaying && (
-        <div 
-          onClick={handleVideoPress}
-          className="absolute inset-0 flex items-center justify-center bg-black/20 z-20 cursor-pointer transition-opacity duration-300"
-        >
-          <div className="w-16 h-16 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white transform scale-100 hover:scale-105 transition-transform duration-200">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-          </div>
+        <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-10 pointer-events-none">
+          <svg className="animate-spin text-white/60" width="40" height="40" viewBox="0 0 40 40" fill="none" aria-label="Loading video">
+            <circle cx="20" cy="20" r="16" stroke="currentColor" strokeOpacity="0.25" strokeWidth="4" />
+            <path d="M20 4a16 16 0 0116 16" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+          </svg>
         </div>
       )}
 

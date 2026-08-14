@@ -107,6 +107,7 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const toastTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [showSoundToast, setShowSoundToast] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(true);
@@ -126,26 +127,32 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
     v.muted = isMuted;
     const promise = v.play();
     if (promise !== undefined) {
-      promise.catch(() => {
-        // If browser autoplay policy delays unmuted audio until user interaction,
-        // listen for user gesture to play audio
-        if (!isMuted) {
-          const handleGesture = () => {
-            if (videoRef.current && !videoRef.current.muted) {
-              videoRef.current.play().catch(() => {});
-            }
-            window.removeEventListener("pointerdown", handleGesture);
-            window.removeEventListener("touchstart", handleGesture);
-          };
-          window.addEventListener("pointerdown", handleGesture, { once: true });
-          window.addEventListener("touchstart", handleGesture, { once: true });
-        }
-      });
+      promise
+        .then(() => setIsPlaying(true))
+        .catch(() => {
+          setIsPlaying(false);
+          // If browser autoplay policy delays unmuted audio until user interaction,
+          // listen for user gesture to play audio
+          if (!isMuted) {
+            const handleGesture = () => {
+              if (videoRef.current && !videoRef.current.muted) {
+                videoRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
+              }
+              window.removeEventListener("pointerdown", handleGesture);
+              window.removeEventListener("touchstart", handleGesture);
+            };
+            window.addEventListener("pointerdown", handleGesture, { once: true });
+            window.addEventListener("touchstart", handleGesture, { once: true });
+          }
+        });
     }
   }, [mounted, isMuted]);
 
   const toggleMute = () => {
     if (videoRef.current) {
+      if (videoRef.current.paused) {
+        videoRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
+      }
       const nextMuted = !isMuted;
       videoRef.current.muted = nextMuted;
       setIsMuted(nextMuted);
@@ -256,6 +263,14 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
                 className="relative w-full h-full bg-slate-900 overflow-hidden border border-zinc-900/60 cursor-pointer group select-none"
                 onClick={toggleMute}
               >
+                {!isPlaying && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-10 pointer-events-none">
+                    <svg className="animate-spin text-white/60" width="40" height="40" viewBox="0 0 40 40" fill="none" aria-label="Loading video">
+                      <circle cx="20" cy="20" r="16" stroke="currentColor" strokeOpacity="0.25" strokeWidth="4" />
+                      <path d="M20 4a16 16 0 0116 16" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                    </svg>
+                  </div>
+                )}
                 {mounted && (
                   <video
                     ref={videoRef}
@@ -265,6 +280,12 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
                     muted={isMuted}
                     loop
                     playsInline
+                    onPlay={() => setIsPlaying(true)}
+                    onPlaying={() => setIsPlaying(true)}
+                    onPause={() => setIsPlaying(false)}
+                    onWaiting={() => setIsPlaying(false)}
+                    onStalled={() => setIsPlaying(false)}
+                    onError={() => setIsPlaying(false)}
                   />
                 )}
                 
