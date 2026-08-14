@@ -16,7 +16,11 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isMuted, setIsMuted] = useState(true);
+  // isPlaying = video is actively playing frames (not paused by user, not buffering)
   const [isPlaying, setIsPlaying] = useState(false);
+  // isBuffering = video is loading/stalling (distinct from user-paused)
+  const [isBuffering, setIsBuffering] = useState(false);
+  const [isPausedByUser, setIsPausedByUser] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [hasIntersected, setHasIntersected] = useState(false);
   const id = useId();
@@ -35,20 +39,24 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
       ([entry]) => {
         if (entry.isIntersecting) {
           setHasIntersected(true);
+          setIsBuffering(true);
+          setIsPausedByUser(false);
           reportStalling(id);
           // Play video after a brief tick to allow source assignment to settle if newly intersected
           setTimeout(() => {
             const video = videoRef.current;
             if (video && entry.isIntersecting) {
-              video.play().then(() => setIsPlaying(true)).catch(() => {});
+              video.play().catch(() => {});
             }
           }, 50);
         } else {
           const video = videoRef.current;
           if (video) {
             video.pause();
-            setIsPlaying(false);
           }
+          setIsPlaying(false);
+          setIsBuffering(false);
+          setIsPausedByUser(false);
           reportPlaying(id);
         }
       },
@@ -65,11 +73,12 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
   const handleVideoPress = () => {
     const video = videoRef.current;
     if (!video) return;
-    
     if (video.paused) {
-      video.play().then(() => setIsPlaying(true)).catch(() => {});
+      setIsPausedByUser(false);
+      video.play().catch(() => {});
     } else {
       video.pause();
+      setIsPausedByUser(true);
       setIsPlaying(false);
     }
   };
@@ -91,17 +100,18 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
           playsInline
           preload="none"
           onClick={handleVideoPress}
-          onPlay={() => { setIsPlaying(true); reportPlaying(id); }}
-          onPlaying={() => { setIsPlaying(true); reportPlaying(id); }}
-          onPause={() => setIsPlaying(false)}
-          onWaiting={() => { setIsPlaying(false); reportStalling(id); }}
-          onStalled={() => { setIsPlaying(false); reportStalling(id); }}
-          onError={() => { setIsPlaying(false); reportPlaying(id); }}
+          onPlay={() => { setIsPlaying(true); setIsBuffering(false); reportPlaying(id); }}
+          onPlaying={() => { setIsPlaying(true); setIsBuffering(false); reportPlaying(id); }}
+          onPause={() => { setIsPlaying(false); setIsBuffering(false); }}
+          onWaiting={() => { setIsPlaying(false); setIsBuffering(true); reportStalling(id); }}
+          onStalled={() => { setIsPlaying(false); setIsBuffering(true); reportStalling(id); }}
+          onCanPlayThrough={() => { setIsBuffering(false); }}
+          onError={() => { setIsPlaying(false); setIsBuffering(false); reportPlaying(id); }}
         />
       )}
 
-      {/* Loading SVG Overlay when video is not playing */}
-      {!isPlaying && (
+      {/* Loading spinner — only while buffering, not while user-paused */}
+      {isBuffering && !isPausedByUser && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-10 pointer-events-none">
           <svg className="animate-spin text-white/60" width="40" height="40" viewBox="0 0 40 40" fill="none" aria-label="Loading video">
             <circle cx="20" cy="20" r="16" stroke="currentColor" strokeOpacity="0.25" strokeWidth="4" />
@@ -110,8 +120,19 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
         </div>
       )}
 
+      {/* Paused-by-user indicator — play icon, not a spinner */}
+      {isPausedByUser && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/40 z-10 pointer-events-none">
+          <div className="w-14 h-14 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="white" aria-hidden="true">
+              <polygon points="6 3 20 12 6 21 6 3" />
+            </svg>
+          </div>
+        </div>
+      )}
+
       {/* Mute indicator overlay */}
-      <div 
+      <div
         onClick={() => {
           const video = videoRef.current;
           if (!video) return;
@@ -175,48 +196,48 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
             </p> */}
           </div>
 
-          {/* Bottom Right: Action bar (Likes, Comments, Share, Music Vinyl) */}
-          <div className="flex flex-col items-center gap-4 text-white pb-2 pointer-events-auto">
+          {/* Bottom Right: Action bar — decorative only, matches Reels chrome */}
+          <div className="flex flex-col items-center gap-4 text-white pb-2 pointer-events-none select-none" aria-hidden="true">
             {/* Like */}
-            <button className="flex flex-col items-center group/btn cursor-pointer">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="white" strokeWidth="1" className="group-hover/btn:scale-110 transition-transform">
+            <div className="flex flex-col items-center">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="white" strokeWidth="1">
                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                 </svg>
               </div>
               <span className="text-[11px] font-semibold mt-0.5">{likes}</span>
-            </button>
+            </div>
 
             {/* Comments */}
-            <button className="flex flex-col items-center group/btn cursor-pointer">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="white" strokeWidth="1" className="group-hover/btn:scale-110 transition-transform">
+            <div className="flex flex-col items-center">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="white" strokeWidth="1">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                 </svg>
               </div>
               <span className="text-[11px] font-semibold mt-0.5">{comments}</span>
-            </button>
+            </div>
 
             {/* Share */}
-            <button className="flex flex-col items-center group/btn cursor-pointer">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="group-hover/btn:scale-110 transition-transform -rotate-12 translate-x-[2px] -translate-y-[1px]">
+            <div className="flex flex-col items-center">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="-rotate-12 translate-x-[2px] -translate-y-[1px]">
                   <line x1="22" y1="2" x2="11" y2="13" />
                   <polygon points="22 2 15 22 11 13 2 9 22 2" />
                 </svg>
               </div>
-            </button>
+            </div>
 
             {/* Options */}
-            <button className="flex flex-col items-center group/btn cursor-pointer">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors">
+            <div className="flex flex-col items-center">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="1" />
                   <circle cx="12" cy="5" r="1" />
                   <circle cx="12" cy="19" r="1" />
                 </svg>
               </div>
-            </button>
+            </div>
 
             {/* Vinyl record spinning */}
             <div className="w-7 h-7 rounded-full bg-slate-900 border-2 border-white flex items-center justify-center overflow-hidden animate-spin-slow shadow-md cursor-pointer mt-1">

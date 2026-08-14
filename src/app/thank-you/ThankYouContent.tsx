@@ -1,13 +1,19 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { useTranslation } from "@/lib/useTranslation";
 
 export default function ThankYouContent() {
   const { t } = useTranslation();
 
   return (
-    <main className="min-h-dvh bg-white flex flex-col items-center justify-center px-6 text-center">
+    <motion.main
+      className="min-h-dvh bg-white flex flex-col items-center justify-center px-6 text-center"
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
+    >
       {/* Checkmark icon */}
       <div className="w-20 h-20 rounded-full bg-accent flex items-center justify-center mb-8 shadow-[0_12px_32px_rgba(29,108,239,0.35)]">
         <svg width="36" height="36" viewBox="0 0 28 28" fill="none" aria-hidden="true">
@@ -29,6 +35,6 @@ export default function ThankYouContent() {
       >
         {t.form.backHome}
       </Link>
-    </main>
+    </motion.main>
   );
 }

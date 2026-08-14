@@ -10,6 +10,10 @@ export default function HeroSection() {
   const reduce = useReducedMotion();
   const [isOpen, setIsOpen] = useState(false);
   const [videoLoaded, setVideoLoaded] = useState(false);
+  const [videoError, setVideoError] = useState(false);
+  // Track whether the video has ever been opened so we keep the element mounted
+  // for cache reuse on subsequent opens.
+  const [hasOpenedOnce, setHasOpenedOnce] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -17,10 +21,10 @@ export default function HeroSection() {
       if (isOpen) {
         if (lenis) lenis.stop();
         document.body.style.overflow = "hidden";
+        setHasOpenedOnce(true);
       } else {
         if (lenis) lenis.start();
         document.body.style.overflow = "";
-        setVideoLoaded(false);
       }
     }
     return () => {
@@ -404,56 +408,79 @@ export default function HeroSection() {
         </motion.div>
       </div>
 
-      {/* Video Reel Modal Pop-up */}
+      {/* Video element kept mounted after first open so the browser cache is reused on re-open */}
+      {hasOpenedOnce && (
+        <div
+          className={`fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 transition-all duration-300 ${
+            isOpen ? "pointer-events-auto" : "pointer-events-none opacity-0"
+          }`}
+          style={{ background: isOpen ? "rgba(0,0,0,0.85)" : "transparent", backdropFilter: isOpen ? "blur(8px)" : "none" }}
+          onClick={() => setIsOpen(false)}
+        >
+          <motion.div
+            initial={false}
+            animate={isOpen ? { scale: 1, y: 0, opacity: 1 } : { scale: 0.95, y: 15, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="relative w-full max-w-[960px] aspect-video rounded-2xl overflow-hidden bg-black shadow-[0_30px_70px_rgba(0,0,0,0.8)] border border-white/10"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setIsOpen(false)}
+              className="absolute top-4 right-4 z-50 flex items-center justify-center w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 border border-white/20 text-white transition-colors duration-200 cursor-pointer"
+              aria-label={t.hero.closeVideo}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+
+            {/* Spinner — only while loading, not on error */}
+            {!videoLoaded && !videoError && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black z-10 pointer-events-none">
+                <svg className="animate-spin text-white/60" width="40" height="40" viewBox="0 0 40 40" fill="none" aria-label="Loading video">
+                  <circle cx="20" cy="20" r="16" stroke="currentColor" strokeOpacity="0.25" strokeWidth="4" />
+                  <path d="M20 4a16 16 0 0116 16" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                </svg>
+              </div>
+            )}
+
+            {/* Error state */}
+            {videoError && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-black z-10 gap-3 pointer-events-none">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-white/40">
+                  <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <p className="text-white/50 text-[13px] font-medium">Video unavailable</p>
+              </div>
+            )}
+
+            <video
+              src="/video/hypergrid-reel.mp4"
+              poster="/video/posters/hypergrid-reel.jpg"
+              preload="metadata"
+              className="w-full h-full object-contain"
+              autoPlay={isOpen}
+              controls
+              playsInline
+              onCanPlay={() => setVideoLoaded(true)}
+              onError={() => { setVideoLoaded(false); setVideoError(true); }}
+            />
+          </motion.div>
+        </div>
+      )}
+
+      {/* Backdrop shown before the video element has ever been opened */}
       <AnimatePresence>
-        {isOpen && (
+        {isOpen && !hasOpenedOnce && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/85 backdrop-blur-md z-[9999] flex items-center justify-center p-4 sm:p-6"
+            className="fixed inset-0 bg-black/85 backdrop-blur-md z-[9999] flex items-center justify-center"
             onClick={() => setIsOpen(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.95, y: 15 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 15 }}
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="relative w-full max-w-[960px] aspect-video rounded-2xl overflow-hidden bg-black shadow-[0_30px_70px_rgba(0,0,0,0.8)] border border-white/10"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Close Button */}
-              <button
-                onClick={() => setIsOpen(false)}
-                className="absolute top-4 right-4 z-50 flex items-center justify-center w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 border border-white/20 text-white transition-colors duration-200 cursor-pointer"
-                aria-label={t.hero.closeVideo}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </button>
-
-              {!videoLoaded && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
-                  <svg className="animate-spin text-white/60" width="40" height="40" viewBox="0 0 40 40" fill="none" aria-label="Loading video">
-                    <circle cx="20" cy="20" r="16" stroke="currentColor" strokeOpacity="0.25" strokeWidth="4" />
-                    <path d="M20 4a16 16 0 0116 16" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
-                  </svg>
-                </div>
-              )}
-              <video
-                src="/video/hypergrid-reel.mp4"
-                poster="/video/posters/hypergrid-reel.jpg"
-                preload="metadata"
-                className="w-full h-full object-contain"
-                autoPlay
-                controls
-                playsInline
-                onCanPlay={() => setVideoLoaded(true)}
-              />
-            </motion.div>
-          </motion.div>
+          />
         )}
       </AnimatePresence>
     </section>
