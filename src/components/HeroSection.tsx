@@ -468,6 +468,7 @@ export default function HeroSection() {
               preload="metadata"
               className="w-full h-full object-contain"
               autoPlay={isOpen}
+              muted
               controls
               playsInline
               onCanPlay={() => setVideoLoaded(true)}

@@ -74,6 +74,8 @@ export default function BrochureForm() {
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [defaultCountry, setDefaultCountry] = useState<Country | undefined>(undefined);
+  // Track whether the user has manually edited the country field so IP auto-fill won't overwrite it
+  const [countryEditedByUser, setCountryEditedByUser] = useState(false);
   const [venueInputValue, setVenueInputValue] = useState("");
   const [venueOptions, setVenueOptions] = useState<{ label: string; value: string; mainText?: string; secondaryText?: string }[]>([]);
   const [isVenueLoading, setIsVenueLoading] = useState(false);
@@ -90,7 +92,7 @@ export default function BrochureForm() {
   const { countryName, countryCode, setLocation } = useCurrency();
 
   useEffect(() => {
-    if (countryName) {
+    if (countryName && !countryEditedByUser) {
       const displayCountry = (countryName === "United Arab Emirates" || countryName === "UAE") ? "UAE" : countryName;
       setForm((prev) => ({
         ...prev,
@@ -447,6 +449,7 @@ export default function BrochureForm() {
                     onChange={(e) => {
                       set("country", e.target.value);
                       setCountryInputValue(e.target.value);
+                      setCountryEditedByUser(true);
                     }}
                     onBlur={() => {
                       setTimeout(() => setCountryOptions([]), 200);
@@ -490,6 +493,16 @@ export default function BrochureForm() {
                 onChange={(e) => {
                   const val = e.target.value as VenueStatus;
                   set("venueStatus", val);
+                  // Clear location data when switching away from panels that collected it
+                  if (val !== "existing") {
+                    setForm((prev) => ({ ...prev, venueLocation: "" }));
+                    setVenueInputValue("");
+                    setVenueOptions([]);
+                    setHasSelected(false);
+                  }
+                  if (val !== "other") {
+                    setForm((prev) => ({ ...prev, venueStatusOther: "" }));
+                  }
                   if (val === "other") scrollPanelIntoView(venuePanelOtherRef);
                   if (val === "existing") scrollPanelIntoView(venuePanelLocationRef);
                 }}

@@ -165,6 +165,7 @@ const es: Translations = {
     successHeading: "¡Folleto en camino!",
     successMessage: "Gracias por tu interés en HyperGrid. Nuestro equipo se pondrá en contacto contigo en breve con toda la información que necesitas.",
     successSoon: "pronto.",
+    followUp: "Un miembro de nuestro equipo de ventas se pondrá en contacto contigo en un plazo de 1 día hábil.",
     backHome: "Volver al inicio",
   },
   momentsCards: {

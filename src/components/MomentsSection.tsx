@@ -109,6 +109,7 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
   const toastTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [mounted, setMounted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [showSoundToast, setShowSoundToast] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(true);
@@ -119,7 +120,6 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
   useEffect(() => {
     setMounted(true);
     setIsTouchDevice(window.matchMedia("(hover: none) and (pointer: coarse)").matches);
-    reportStalling(MOMENTS_VIDEO_ID);
     return () => { reportPlaying(MOMENTS_VIDEO_ID); };
   }, []);
 
@@ -268,12 +268,20 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
                 className="relative w-full h-full bg-slate-900 overflow-hidden border border-zinc-900/60 cursor-pointer group select-none"
                 onClick={toggleMute}
               >
-                {!isPlaying && (
+                {!isPlaying && !hasError && (
                   <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-10 pointer-events-none">
                     <svg className="animate-spin text-white/60" width="40" height="40" viewBox="0 0 40 40" fill="none" aria-label="Loading video">
                       <circle cx="20" cy="20" r="16" stroke="currentColor" strokeOpacity="0.25" strokeWidth="4" />
                       <path d="M20 4a16 16 0 0116 16" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
                     </svg>
+                  </div>
+                )}
+                {hasError && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 z-10 pointer-events-none gap-2">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-white/40">
+                      <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    <p className="text-white/50 text-[11px] font-medium">Video unavailable</p>
                   </div>
                 )}
                 {mounted && (
@@ -286,12 +294,12 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
                     muted={isMuted}
                     loop
                     playsInline
-                    onPlay={() => { setIsPlaying(true); reportPlaying(MOMENTS_VIDEO_ID); }}
-                    onPlaying={() => { setIsPlaying(true); reportPlaying(MOMENTS_VIDEO_ID); }}
+                    onPlay={() => { setIsPlaying(true); setHasError(false); reportPlaying(MOMENTS_VIDEO_ID); }}
+                    onPlaying={() => { setIsPlaying(true); setHasError(false); reportPlaying(MOMENTS_VIDEO_ID); }}
                     onPause={() => setIsPlaying(false)}
                     onWaiting={() => { setIsPlaying(false); reportStalling(MOMENTS_VIDEO_ID); }}
                     onStalled={() => { setIsPlaying(false); reportStalling(MOMENTS_VIDEO_ID); }}
-                    onError={() => { setIsPlaying(false); reportPlaying(MOMENTS_VIDEO_ID); }}
+                    onError={() => { setIsPlaying(false); setHasError(true); reportPlaying(MOMENTS_VIDEO_ID); }}
                   />
                 )}
                 

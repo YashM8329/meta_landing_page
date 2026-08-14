@@ -25,8 +25,12 @@ export default function ThankYouContent() {
         {t.form.successHeading}
       </h1>
 
-      <p className="text-[17px] text-ink-soft leading-relaxed max-w-[480px] mb-10">
+      <p className="text-[17px] text-ink-soft leading-relaxed max-w-[480px] mb-4">
         {t.form.successMessage}
+      </p>
+
+      <p className="text-[14px] text-ink-faint leading-relaxed max-w-[400px] mb-10 border border-line rounded-lg px-4 py-3 bg-[#f8fafc]">
+        {t.form.followUp}
       </p>
 
       <Link

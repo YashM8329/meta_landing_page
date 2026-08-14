@@ -23,6 +23,8 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
   const [isPausedByUser, setIsPausedByUser] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [hasIntersected, setHasIntersected] = useState(false);
+  // Tracks whether the user has ever unmuted this card so re-intersection can restore the preference
+  const isMutedRef = useRef(true);
   const id = useId();
   const { reportStalling, reportPlaying } = useVideoLoad();
 
@@ -42,10 +44,13 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
           setIsBuffering(true);
           setIsPausedByUser(false);
           reportStalling(id);
-          // Play video after a brief tick to allow source assignment to settle if newly intersected
+          // Play video after a brief tick to allow source assignment to settle if newly intersected.
+          // Also restore the user's mute preference — the DOM element may have been reconstructed
+          // with the default muted attribute, so we re-apply whatever the user last chose.
           setTimeout(() => {
             const video = videoRef.current;
             if (video && entry.isIntersecting) {
+              video.muted = isMutedRef.current;
               video.play().catch(() => {});
             }
           }, 50);
@@ -96,7 +101,7 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
           src={hasIntersected ? videoSrc : undefined}
           poster={videoSrc.replace(/^\/video\//, "/video/posters/").replace(/\.mp4$/, ".jpg")}
           loop
-          muted
+          muted={isMuted}
           playsInline
           preload="none"
           onClick={handleVideoPress}
@@ -136,8 +141,9 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
         onClick={() => {
           const video = videoRef.current;
           if (!video) return;
-          const nextMuted = !video.muted;
+          const nextMuted = !isMuted;
           video.muted = nextMuted;
+          isMutedRef.current = nextMuted;
           setIsMuted(nextMuted);
         }}
         className="absolute top-4 right-4 z-25 w-8 h-8 rounded-full bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center cursor-pointer text-white transition-opacity duration-300 opacity-80 hover:opacity-100"

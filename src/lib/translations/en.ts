@@ -163,6 +163,7 @@ const en = {
     successHeading: "Brochure on its way!",
     successMessage: "Thanks for your interest in HyperGrid. Our team will be in touch with you shortly with everything you need to know.",
     successSoon: "soon.",
+    followUp: "A member of our sales team will contact you within 1 business day.",
     backHome: "Back to Home",
   },
   momentsCards: {
