@@ -1,78 +1,70 @@
 # UX Audit — HyperGrid Landing Page
-Generated: 2026-08-13
+_Generated: 2026-08-14_
 
-21 observations across 9 surfaces.
-
----
-
-## Surface: BrochureForm
-
-- **Missing feedback state — venue conditional fields cause layout jump on selection**: When the user selects "I'm planning a new venue" or "Other" from the Venue Status dropdown, a new sub-field box (`bg-accent/5` container) appears inline below the `<select>`. This expands the form height mid-page, shifting all content below it downward. The page does not scroll or compensate — the user's eye position jumps. The same happens for "I have an existing venue" (shows venue location field). This is a layout-shift UX issue on every status change.
-
-- **Missing feedback state — phone error persists after fix**: The phone field validates on `onBlur` only (`validatePhoneField`). Once an error is shown, fixing the number does not clear the red state until the field is blurred again. A user who corrects a mistake while the field is focused sees no improvement signal.
-
-- **Missing feedback state — country dropdown has no "no results" state**: If the user types something that matches no country (e.g., a misspelling), the dropdown simply closes (empty `countryOptions` array hides the `<ul>`). There is no "No countries found" message — the user doesn't know if the filter is running or if their input is just wrong.
-
-- **Edge case — autocomplete dropdown renders upward and may clip on mobile**: Both venue input dropdowns (venueStatusOther and venueLocation) use `bottom-full mb-1` positioning — they open upward above the input. On mobile, when the form keyboard is open and these fields are in the lower half of the viewport, the upward dropdown is partially or fully off-screen, making suggestions invisible.
-
-- **Edge case — blur-before-click race on autocomplete**: Both venue autocomplete lists dismiss on `onBlur` with a 200ms `setTimeout`. On some mobile browsers, the blur fires before the `onClick` registers on the list item, closing the dropdown before the tap completes. The user taps a suggestion and nothing happens.
-
-- **Inconsistency — venue dropdown opens downward for country, upward for venue**: The country autocomplete list uses `absolute` positioning without `bottom-full` (opens downward), while both venue fields open upward. The direction inconsistency is jarring, especially when both are visible at the same time on larger phones.
-
-- **Inconsistency — "Tap to submit" button pulse animation runs on disabled state**: The submit button's `motion.div` has a `scale` pulse animating continuously (every 3.5s). When `submitting=true`, the button is `disabled` and shows a spinner, but the `motion.div` animation continues underneath (it's swapped in `JSX` via a ternary). The pulse stops only because the element unmounts — but if the submit call is instant, the animation visually "jumps" as it restarts.
-
-- **Roughness — no minimum character hint for name**: The full name field accepts a single character (e.g., "A") and shows no validation error until submit. A user entering initials or a nickname will only discover the issue at submit time.
-
-- **Roughness — "Other" venue field placeholder says "Search for a place" which implies location search, but "other" could mean anything**: The placeholder `t.form.fields.venueLocationOtherPlaceholder` is mapped to a Google Places autocomplete. This mismatch is confusing — "Other" was chosen specifically because it's not a venue, but the field still tries to look up places.
+18 observations across 9 surfaces.
 
 ---
 
-## Surface: HeroSection
+## Surface: InstagramEmbed / InstagramCarousel
 
-- **Missing feedback state — video modal has no buffering/loading state**: When the user clicks "Watch Video", the modal opens immediately and the `<video>` begins loading. On slow connections, the video area is pure black with no spinner, progress indicator, or skeleton. The user doesn't know if the video is coming or if something broke.
-
-- **Inconsistency — mobile hero play button is `w-11 h-11` (44px), which is at the minimum Apple touch target size**: At 44px, the play button is exactly at the Apple HIG minimum touch target. Combined with its absolute position at `bottom-[12%] left-[0%]`, the button sits near the edge of the image. It is easy to miss or accidentally scroll past without activating.
-
-- **Inconsistency — desktop and tablet stat cards show different venue counts**: Desktop shows `150+` venues; mobile shows `100+` venues. These are different hardcoded values for the same metric on the same page.
-
-- **Roughness — "Watch Video" button missing on tablet layout**: The tablet layout (md:flex lg:hidden) includes a "Watch Video" button in the CTA row, but the mobile layout (flex md:hidden) only exposes the floating play button overlaid on the hero image. If a user on a mobile device misses the tiny play button, they have no other affordance to open the video.
-
----
-
-## Surface: NavBar
-
-- **Missing feedback state — no active section highlighting**: The navbar links (Features, Moments AI, Testimonials, ROI) are plain anchor links with no active state. As the user scrolls through sections, the nav gives no visual feedback about which section they're currently in. Standard on single-page sites.
-
-- **Roughness — navbar is invisible until user scrolls past 70% of the hero, then requires scrolling up to reveal it**: A user who lands on the page and immediately scrolls down past the hero has no persistent navigation. They must reverse-scroll to make the navbar appear. On long pages this is disorienting.
+- **Missing feedback state:** Spinner shows whenever `isPlaying` is false — including the paused state after a user intentionally taps to pause. There is no distinction between "loading" and "paused by user", so the spinner misleadingly appears on a user-paused video.
+- **Missing slow-connection feedback:** If a video stalls for an extended period, the spinner is the only signal. No message or timeout fallback communicates that the connection is slow. User has no way to know if the video will ever load.
+- **Edge case — preload=none + intersection:** Videos start with `src={hasIntersected ? videoSrc : undefined}`. On very slow connections, assigning the src and immediately calling `.play()` after 50ms may succeed (play() resolves) before any frames are buffered, causing `isPlaying = true` but a blank black frame until data arrives. Spinner disappears prematurely.
+- **Inconsistency:** Action bar buttons (Like, Comment, Share, Options) have `onClick` handlers on the heart/comment/send icons but no affordance or feedback — pressing them does nothing. On a landing page these are purely decorative, but they look interactive and raise tap expectations.
+- **Missing state:** Mute toggle icon in `InstagramEmbed` does not reset when the video is re-assigned (e.g. if component remounts). `isMuted` defaults to `true` but video `muted` attribute is always `muted` — the toggle visually tracks state but the actual audio never plays regardless.
 
 ---
 
 ## Surface: MomentsSection
 
-- **Inconsistency — "Tap to unmute" hint is hardcoded English and not translated**: The string `"Tap to unmute"` at line 288 is a hardcoded string literal, not pulled from the translation system (`t.*`). All other visible text on the page is translated for DE/FR/IT/ES visitors. This one string will display in English regardless of locale.
-
-- **Roughness — "Tap to unmute" copy assumes touch input**: The hint says "Tap" but this phone mockup is visible on desktop too, where users click (not tap). The label is technically inaccurate on mouse devices.
+- **Missing feedback state:** `isTouchDevice` initialises to `true` on the server and during SSR, meaning desktop users see "Tap to unmute" for a brief flash on hydration before it corrects to "Click to unmute". No layout shift, but semantically wrong for that instant.
+- **Edge case — video loading:** The `isPlaying` spinner in `MomentsSection` sits behind the video element in z-order (`z-10` on overlay, video renders on top). If the video element itself is transparent before playback, the spinner is visible. If the video has a black poster, the spinner is hidden. Depends on browser behaviour — no explicit `poster` is set.
 
 ---
 
-## Surface: InstagramCarousel (Locations section)
+## Surface: HeroSection
 
-- **Edge case — typos in venue `gameZone` data visible to users**: The `venueReels` data in `page.tsx` contains typos that display in the carousel UI: `"Reunioun Island"` (Reunion Island), `"Aurstralia"` (Australia), `"Surfurs Paradise"` (Surfers Paradise). These appear in the published Instagram embed cards.
+- **Missing feedback state:** Video modal sets `videoLoaded = false` on close, but the `<video>` element is only rendered when `isOpen` is true (inside `AnimatePresence`). Every modal open starts a fresh network fetch — no caching benefit from keeping the element mounted. On slow connections, the spinner shows every single open.
+- **Edge case — video error:** No `onError` handler on the modal `<video>`. If the video fails to load (404, network drop), the spinner never clears and the user sees an infinite spinner with no way to dismiss other than closing the modal.
+- **Missing state:** Close button (`×`) has no `aria-label` fallback visible on screen — relies purely on the SVG icon for sighted users. Keyboard/screen-reader users get `aria-label={t.hero.closeVideo}` which is correct, but the icon-only button is invisible to a screen reader without the label.
+
+---
+
+## Surface: BrochureForm
+
+- **Missing feedback state:** Country field has no loading state while the IP-based default country is being resolved. During that window the field shows empty — user may start typing a wrong country before the auto-fill lands, and their input gets overwritten silently.
+- **Edge case — venueStatus expand/collapse:** When switching between "existing" and "other" (without going back to blank first), the old panel exits and the new one enters simultaneously via `AnimatePresence`. Both panels share `venueOptions` state — suggestions from the previous panel could briefly appear in the new one.
+- **Edge case — form submit with expanded panel:** If user selects "new" (no sub-panel) after having typed in "existing" sub-field, `form.venueLocation` is still populated. The validation clears it (no error for "new"), but the data is silently submitted. Server receives a venue location for a user who said "new venue".
+- **Missing feedback:** Submit success route is a hard `router.push("/thank-you")`. If that navigation fails (e.g. network drop after POST succeeds), the user sees no confirmation — they remain on the form page with no indication anything happened.
+
+---
+
+## Surface: NavBar
+
+- **Missing state:** Mobile NavBar only shows the logo with no CTA. A user who scrolls up on mobile to re-orient has no action available in the nav — no "Get Brochure" link.
+- **Inconsistency:** Nav link `#proof` maps to the section `id="proof"` but the displayed label is "Testimonials" — a mismatch if the anchor ever drifts or is refactored.
+
+---
+
+## Surface: StickyFooterCTA
+
+- **Missing feedback state:** StickyFooterCTA is always visible — it does not hide when the BrochureForm section is in the viewport. On mobile, it overlaps the form fields at the bottom of the screen.
+- **Inconsistency:** CTA label uses `t.form.submit` ("Get Your Free Brochure") rather than a nav-style short label like "Get Brochure". On mobile the button is long — may truncate on narrow devices.
 
 ---
 
 ## Surface: ROICalculator
 
-- **Edge case — players slider minimum is 2,500 with no way to enter a lower value**: The players slider has `min={2500}`. A venue operator with fewer than 2,500 players per month (a realistic scenario for a new or small venue) cannot accurately model their situation. The calculator implicitly excludes smaller operators.
+- **Edge case — zero players:** Slider minimum is 2,500. No path for a small venue with fewer monthly players. `paybackMonths` formula handles `monthlyUsd > 0` but the lower bound of the slider prevents testing realistic small-venue numbers.
 
 ---
 
-## Surface: CaseStudy
+## Surface: ThankYouContent
 
-- **Roughness — tab selector shows only location name ("Texas", "UK", "New York") with no visual distinction between them beyond text**: The three tab cards are identical in appearance except for the location label. There's no flag, icon, or visual shorthand. On small screens where the cards compress, the distinction relies entirely on reading small text.
+- **Missing state:** No loading or transition state between form submit and the thank-you page. Users on slow connections see the form button spinner until `router.push` completes, then a blank page flash before the thank-you renders.
 
 ---
 
-## Surface: ThankYouPage
+## Surface: InstagramCarousel (container)
 
-- **Missing feedback state — page content is English-only, not translated**: The thank-you page (`/thank-you`) has hardcoded English strings: "Brochure on its way!", "Thanks for your interest in HyperGrid…", "Back to Home". A user who arrived via the German or French locale will see an English confirmation page, breaking the i18n experience at the most critical conversion moment.
+- **Missing feedback state (global):** No site-level slow-connection indicator. If multiple carousel videos stall simultaneously on a slow connection, each card shows its own individual spinner with no unified message. The user has no single signal that it's a connection issue rather than broken content.

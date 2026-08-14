@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion, type Variants } from "framer-motion";
 import { useTranslation } from "@/lib/useTranslation";
@@ -14,6 +14,7 @@ export default function HeroSection() {
   // Track whether the video has ever been opened so we keep the element mounted
   // for cache reuse on subsequent opens.
   const [hasOpenedOnce, setHasOpenedOnce] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -22,9 +23,13 @@ export default function HeroSection() {
         if (lenis) lenis.stop();
         document.body.style.overflow = "hidden";
         setHasOpenedOnce(true);
+        videoRef.current?.play().catch(() => {});
       } else {
         if (lenis) lenis.start();
         document.body.style.overflow = "";
+        if (videoRef.current) {
+          videoRef.current.pause();
+        }
       }
     }
     return () => {
@@ -457,6 +462,7 @@ export default function HeroSection() {
             )}
 
             <video
+              ref={videoRef}
               src="/video/hypergrid-reel.mp4"
               poster="/video/posters/hypergrid-reel.jpg"
               preload="metadata"
