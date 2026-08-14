@@ -444,6 +444,8 @@ export default function HeroSection() {
               )}
               <video
                 src="/video/hypergrid-reel.mp4"
+                poster="/video/posters/hypergrid-reel.jpg"
+                preload="metadata"
                 className="w-full h-full object-contain"
                 autoPlay
                 controls

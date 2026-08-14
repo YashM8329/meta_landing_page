@@ -85,6 +85,7 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
           ref={videoRef}
           className="absolute inset-0 w-full h-full object-cover cursor-pointer"
           src={hasIntersected ? videoSrc : undefined}
+          poster={videoSrc.replace(/^\/video\//, "/video/posters/").replace(/\.mp4$/, ".jpg")}
           loop
           muted
           playsInline

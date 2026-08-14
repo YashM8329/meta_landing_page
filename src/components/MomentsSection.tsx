@@ -281,6 +281,7 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
                     ref={videoRef}
                     className="absolute inset-0 w-full h-full object-cover"
                     src="/video/moments-reel.mp4"
+                    poster="/video/posters/moments-reel.jpg"
                     autoPlay
                     muted={isMuted}
                     loop

@@ -1,17 +1,9 @@
 import type { Metadata } from "next";
-import { Inter, Urbanist } from "next/font/google";
+import { Urbanist } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import LogRocketInit from "@/components/LogRocketInit";
 import { I18nProvider } from "@/lib/useTranslation";
-
-/* Inter — kept only for the /demo font comparison page */
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
 
 /* Urbanist — primary font (matches the design reference) */
 const urbanist = Urbanist({
@@ -19,6 +11,7 @@ const urbanist = Urbanist({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800"],
   display: "swap",
+  preload: true,
 });
 
 /* Mugen Grotesk — used ONLY for the HYPERGRID wordmark */
@@ -43,7 +36,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${urbanist.variable} ${mugen.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${urbanist.variable} ${mugen.variable}`} suppressHydrationWarning>
+      <head>
+        {/* Preload the above-fold phone-frame video so it starts fetching before JS hydrates */}
+        <link rel="preload" href="/video/moments-reel.mp4" as="video" type="video/mp4" />
+      </head>
       <body className="min-h-dvh bg-white text-ink antialiased overflow-x-hidden font-sans">
         <LogRocketInit />
         <I18nProvider>
