@@ -109,9 +109,13 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
   const [mounted, setMounted] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [showSoundToast, setShowSoundToast] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(true);
 
   // Prevent hydration mismatch from browser extensions that inject around <video> tags.
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+    setIsTouchDevice(window.matchMedia("(hover: none) and (pointer: coarse)").matches);
+  }, []);
 
   // Handle playback & audio control based on isMuted state
   useEffect(() => {
@@ -285,7 +289,7 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
                         </svg>
                       </div>
                       <span className="text-white text-[9px] font-semibold leading-tight bg-black/50 backdrop-blur-sm rounded px-1.5 py-0.5 whitespace-nowrap">
-                        {t.moments.tapToUnmute}
+                        {isTouchDevice ? t.moments.tapToUnmute : t.moments.clickToUnmute}
                       </span>
                     </motion.div>
                   )}

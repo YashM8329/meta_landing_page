@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import PhoneInput, { Country } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { isValidPhoneNumber } from "libphonenumber-js";
@@ -81,6 +81,11 @@ export default function BrochureForm() {
   const [countryOptions, setCountryOptions] = useState<string[]>([]);
   const [sessionToken, setSessionToken] = useState("");
   const [hasSelected, setHasSelected] = useState(false);
+  const [venueDropdownDirection, setVenueDropdownDirection] = useState<"down" | "up">("down");
+  const venueOtherInputRef = useRef<HTMLInputElement>(null);
+  const venueLocationInputRef = useRef<HTMLInputElement>(null);
+  const venuePanelOtherRef = useRef<HTMLDivElement>(null);
+  const venuePanelLocationRef = useRef<HTMLDivElement>(null);
 
   const { countryName, countryCode, setLocation } = useCurrency();
 
@@ -237,6 +242,21 @@ export default function BrochureForm() {
   const set = (field: keyof FormState, value: string) => {
     setForm((p) => ({ ...p, [field]: value }));
     if (errors[field as keyof FieldError]) setErrors((p) => ({ ...p, [field]: undefined }));
+  };
+
+  // Scroll the expanded sub-panel into view after animation starts (#1)
+  const scrollPanelIntoView = (ref: React.RefObject<HTMLDivElement | null>) => {
+    setTimeout(() => {
+      ref.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }, 120);
+  };
+
+  // Detect available space below the input and set dropdown direction (#4)
+  const detectDropdownDirection = (inputEl: HTMLInputElement | null) => {
+    if (!inputEl) return;
+    const rect = inputEl.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    setVenueDropdownDirection(spaceBelow < 220 ? "up" : "down");
   };
 
   const validate = (): FieldError => {
@@ -442,6 +462,7 @@ export default function BrochureForm() {
                       {countryOptions.map((c, idx) => (
                         <li
                           key={idx}
+                          onMouseDown={(e) => e.preventDefault()}
                           onClick={() => {
                             set("country", c);
                             setCountryOptions([]);
@@ -466,7 +487,12 @@ export default function BrochureForm() {
               <select
                 id="field-venueStatus"
                 value={form.venueStatus}
-                onChange={(e) => set("venueStatus", e.target.value as VenueStatus)}
+                onChange={(e) => {
+                  const val = e.target.value as VenueStatus;
+                  set("venueStatus", val);
+                  if (val === "other") scrollPanelIntoView(venuePanelOtherRef);
+                  if (val === "existing") scrollPanelIntoView(venuePanelLocationRef);
+                }}
                 aria-invalid={!!errors.venueStatus}
                 aria-describedby={errors.venueStatus ? "err-venueStatus" : undefined}
                 className={`${inputBase} appearance-none bg-no-repeat bg-[right_14px_center] ${errors.venueStatus ? "border-red-400 bg-red-50" : "border-line bg-white"}`}
@@ -478,11 +504,22 @@ export default function BrochureForm() {
                 <option value="other">{t.form.fields.venueStatusOther}</option>
               </select>
               {errors.venueStatus && <p id="err-venueStatus" role="alert" className="text-[12px] text-red-500 mt-1 font-medium">{errors.venueStatus}</p>}
+              <AnimatePresence>
               {form.venueStatus === "other" && (
-              <div id="venue-other-container" className="mb-4 bg-accent/5 border border-accent/15 rounded-[12px] p-4 mt-4">
+              <motion.div
+                ref={venuePanelOtherRef}
+                id="venue-other-container"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                className="overflow-hidden"
+              >
+              <div className="mb-4 bg-accent/5 border border-accent/15 rounded-[12px] p-4 mt-4">
                 <label htmlFor="field-venueStatusOther" className="block text-[14px] lg:text-[16px] font-semibold text-ink mb-1.5">{t.form.fields.venueLocationOther} <span className="text-accent">*</span></label>
                 <div className="relative">
                   <input
+                    ref={venueOtherInputRef}
                     id="field-venueStatusOther"
                     type="text"
                     value={form.venueStatusOther}
@@ -492,6 +529,7 @@ export default function BrochureForm() {
                       setHasSelected(false);
                     }}
                     onFocus={() => {
+                      detectDropdownDirection(venueOtherInputRef.current);
                       fetchSuggestions(venueInputValue);
                     }}
                     onBlur={() => {
@@ -509,10 +547,11 @@ export default function BrochureForm() {
                     </div>
                   )}
                   {venueOptions.length > 0 && (
-                    <ul className="absolute left-0 right-0 bottom-full mb-1 bg-white border border-line rounded-lg shadow-lg max-h-56 overflow-y-auto z-50 divide-y divide-line">
+                    <ul className={`absolute left-0 right-0 bg-white border border-line rounded-lg shadow-lg max-h-56 overflow-y-auto z-50 divide-y divide-line ${venueDropdownDirection === "up" ? "bottom-full mb-1" : "mt-1"}`}>
                       {venueOptions.map((opt, idx) => (
                         <li
                           key={idx}
+                          onMouseDown={(e) => e.preventDefault()}
                           onClick={() => {
                             set("venueStatusOther", opt.value);
                             setVenueInputValue(opt.value);
@@ -551,13 +590,26 @@ export default function BrochureForm() {
                 </div>
                 {errors.venueStatusOther && <p id="err-venueStatusOther" role="alert" className="text-[12px] text-red-500 mt-1.5 font-medium">{errors.venueStatusOther}</p>}
               </div>
+              </motion.div>
             )}
+            </AnimatePresence>
 
+            <AnimatePresence>
             {form.venueStatus === "existing" && (
-              <div id="venue-location-container" className="mb-4 bg-accent/5 border border-accent/15 rounded-[12px] p-4 mt-3">
+              <motion.div
+                ref={venuePanelLocationRef}
+                id="venue-location-container"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                className="overflow-hidden"
+              >
+              <div className="mb-4 bg-accent/5 border border-accent/15 rounded-[12px] p-4 mt-3">
                 <label htmlFor="field-venueLocation" className="block text-[14px] lg:text-[16px] font-semibold text-ink mb-1.5">{t.form.fields.venueLocation} <span className="text-accent">*</span></label>
                 <div className="relative">
                   <input
+                    ref={venueLocationInputRef}
                     id="field-venueLocation"
                     type="text"
                     value={form.venueLocation}
@@ -567,6 +619,7 @@ export default function BrochureForm() {
                       setHasSelected(false);
                     }}
                     onFocus={() => {
+                      detectDropdownDirection(venueLocationInputRef.current);
                       fetchSuggestions(venueInputValue);
                     }}
                     onBlur={() => {
@@ -584,10 +637,11 @@ export default function BrochureForm() {
                     </div>
                   )}
                   {venueOptions.length > 0 && (
-                    <ul className="absolute left-0 right-0 bottom-full mb-1 bg-white border border-line rounded-lg shadow-lg max-h-56 overflow-y-auto z-50 divide-y divide-line">
+                    <ul className={`absolute left-0 right-0 bg-white border border-line rounded-lg shadow-lg max-h-56 overflow-y-auto z-50 divide-y divide-line ${venueDropdownDirection === "up" ? "bottom-full mb-1" : "mt-1"}`}>
                       {venueOptions.map((opt, idx) => (
                         <li
                           key={idx}
+                          onMouseDown={(e) => e.preventDefault()}
                           onClick={() => {
                             set("venueLocation", opt.value);
                             setVenueInputValue(opt.value);
@@ -626,7 +680,9 @@ export default function BrochureForm() {
                 </div>
                 {errors.venueLocation && <p id="err-venueLocation" role="alert" className="text-[12px] text-red-500 mt-1.5 font-medium">{errors.venueLocation}</p>}
               </div>
+              </motion.div>
             )}
+            </AnimatePresence>
             </div>
 
             {serverError && (
@@ -649,31 +705,33 @@ export default function BrochureForm() {
                 }}
               />
 
-              {submitting ? (
-                <div className="flex items-center gap-2 relative z-10">
-                  <svg className="animate-spin" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-                    <circle cx="9" cy="9" r="7" stroke="currentColor" strokeOpacity="0.3" strokeWidth="2" />
-                    <path d="M9 2a7 7 0 017 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                  </svg>
-                  {t.form.submitting}
-                </div>
-              ) : (
-                <motion.div 
-                  className="flex items-center justify-center gap-2 relative z-10"
-                  animate={{ scale: [1, 1, 1.05, 1, 1] }}
-                  transition={{
-                    times: [0, 0.14, 0.20, 0.26, 1.0],
-                    duration: 3.5,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                >
-                  {t.form.submit}
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                    <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </motion.div>
-              )}
+              <motion.div
+                className="flex items-center justify-center gap-2 relative z-10"
+                animate={{ scale: [1, 1, 1.05, 1, 1] }}
+                transition={{
+                  times: [0, 0.14, 0.20, 0.26, 1.0],
+                  duration: 3.5,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              >
+                {submitting ? (
+                  <>
+                    <svg className="animate-spin" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                      <circle cx="9" cy="9" r="7" stroke="currentColor" strokeOpacity="0.3" strokeWidth="2" />
+                      <path d="M9 2a7 7 0 017 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                    {t.form.submitting}
+                  </>
+                ) : (
+                  <>
+                    {t.form.submit}
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </>
+                )}
+              </motion.div>
             </button>
             {/* <p className="text-[12px] text-ink-faint text-center mt-3">No spam. Brochure + follow-up from the FOG team only.</p> */}
           </form>

@@ -67,6 +67,7 @@ const de: Translations = {
     ],
     downloadShare: "Herunterladen & Teilen",
     tapToUnmute: "Tippen zum Aktivieren",
+    clickToUnmute: "Klicken zum Aktivieren",
   },
   venues: {
     title: "100+ Venues weltweit",

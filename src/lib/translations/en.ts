@@ -65,6 +65,7 @@ const en = {
     ],
     downloadShare: "Download & Share",
     tapToUnmute: "Tap to unmute",
+    clickToUnmute: "Click to unmute",
   },
   venues: {
     title: "100+ Venues Worldwide",

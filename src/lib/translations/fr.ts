@@ -67,6 +67,7 @@ const fr: Translations = {
     ],
     downloadShare: "Télécharger & Partager",
     tapToUnmute: "Appuyer pour activer le son",
+    clickToUnmute: "Cliquer pour activer le son",
   },
   venues: {
     title: "100+ Lieux dans le monde",

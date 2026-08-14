@@ -9,6 +9,7 @@ export default function HeroSection() {
   const { t } = useTranslation();
   const reduce = useReducedMotion();
   const [isOpen, setIsOpen] = useState(false);
+  const [videoLoaded, setVideoLoaded] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -19,6 +20,7 @@ export default function HeroSection() {
       } else {
         if (lenis) lenis.start();
         document.body.style.overflow = "";
+        setVideoLoaded(false);
       }
     }
     return () => {
@@ -432,12 +434,21 @@ export default function HeroSection() {
                 </svg>
               </button>
 
+              {!videoLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
+                  <svg className="animate-spin text-white/60" width="40" height="40" viewBox="0 0 40 40" fill="none" aria-label="Loading video">
+                    <circle cx="20" cy="20" r="16" stroke="currentColor" strokeOpacity="0.25" strokeWidth="4" />
+                    <path d="M20 4a16 16 0 0116 16" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                  </svg>
+                </div>
+              )}
               <video
                 src="/video/hypergrid-reel.mp4"
                 className="w-full h-full object-contain"
                 autoPlay
                 controls
                 playsInline
+                onCanPlay={() => setVideoLoaded(true)}
               />
             </motion.div>
           </motion.div>
