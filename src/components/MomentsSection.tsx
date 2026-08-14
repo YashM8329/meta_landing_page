@@ -5,6 +5,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Typewriter from "./Typewriter";
 import MobileBrochureCTA from "./MobileBrochureCTA";
 import { useTranslation } from "@/lib/useTranslation";
+import { useVideoLoad } from "@/lib/VideoLoadContext";
 
 const steps = [
   {
@@ -111,11 +112,15 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
   const [isMuted, setIsMuted] = useState(true);
   const [showSoundToast, setShowSoundToast] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(true);
+  const { reportStalling, reportPlaying } = useVideoLoad();
+  const MOMENTS_VIDEO_ID = "moments-reel";
 
   // Prevent hydration mismatch from browser extensions that inject around <video> tags.
   useEffect(() => {
     setMounted(true);
     setIsTouchDevice(window.matchMedia("(hover: none) and (pointer: coarse)").matches);
+    reportStalling(MOMENTS_VIDEO_ID);
+    return () => { reportPlaying(MOMENTS_VIDEO_ID); };
   }, []);
 
   // Handle playback & audio control based on isMuted state
@@ -280,12 +285,12 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
                     muted={isMuted}
                     loop
                     playsInline
-                    onPlay={() => setIsPlaying(true)}
-                    onPlaying={() => setIsPlaying(true)}
+                    onPlay={() => { setIsPlaying(true); reportPlaying(MOMENTS_VIDEO_ID); }}
+                    onPlaying={() => { setIsPlaying(true); reportPlaying(MOMENTS_VIDEO_ID); }}
                     onPause={() => setIsPlaying(false)}
-                    onWaiting={() => setIsPlaying(false)}
-                    onStalled={() => setIsPlaying(false)}
-                    onError={() => setIsPlaying(false)}
+                    onWaiting={() => { setIsPlaying(false); reportStalling(MOMENTS_VIDEO_ID); }}
+                    onStalled={() => { setIsPlaying(false); reportStalling(MOMENTS_VIDEO_ID); }}
+                    onError={() => { setIsPlaying(false); reportPlaying(MOMENTS_VIDEO_ID); }}
                   />
                 )}
                 

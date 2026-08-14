@@ -176,6 +176,9 @@ const fr: Translations = {
   footer: {
     manufacturedBy: "Fabriqué par",
   },
+  slowConnection: {
+    message: "Vidéos lentes à charger — vérifiez votre connexion",
+  },
 };
 
 export default fr;

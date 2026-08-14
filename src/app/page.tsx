@@ -16,6 +16,8 @@ import StickyFooterCTA from "@/components/StickyFooterCTA";
 import SmoothScroll from "@/components/SmoothScroll";
 import Footer from "@/components/Footer";
 import { useTranslation } from "@/lib/useTranslation";
+import { VideoLoadProvider } from "@/lib/VideoLoadContext";
+import SlowConnectionToast from "@/components/SlowConnectionToast";
 
 /* S5 — Locations: international reels (provided by business) */
 const venueReels: ReelItem[] = [
@@ -51,7 +53,7 @@ export default function Home() {
   ];
 
   return (
-    <>
+    <VideoLoadProvider>
       {/* Meta Pixel — Home Page */}
       <Script
         id="meta-pixel-home"
@@ -95,6 +97,7 @@ export default function Home() {
       <Footer />
 
       {/* <StickyFooterCTA /> */}
-    </>
+      <SlowConnectionToast />
+    </VideoLoadProvider>
   );
 }

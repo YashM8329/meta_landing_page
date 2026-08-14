@@ -176,6 +176,9 @@ const de: Translations = {
   footer: {
     manufacturedBy: "Hergestellt von",
   },
+  slowConnection: {
+    message: "Videos laden langsam – Verbindung prüfen",
+  },
 };
 
 export default de;

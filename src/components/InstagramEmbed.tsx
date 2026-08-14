@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import { useVideoLoad } from "@/lib/VideoLoadContext";
 
 interface Props {
   videoSrc: string;
@@ -18,6 +19,8 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
   const [isPlaying, setIsPlaying] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [hasIntersected, setHasIntersected] = useState(false);
+  const id = useId();
+  const { reportStalling, reportPlaying } = useVideoLoad();
 
   // Prevent hydration mismatch from browser extensions that inject around <video> tags
   useEffect(() => { setMounted(true); }, []);
@@ -32,6 +35,7 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
       ([entry]) => {
         if (entry.isIntersecting) {
           setHasIntersected(true);
+          reportStalling(id);
           // Play video after a brief tick to allow source assignment to settle if newly intersected
           setTimeout(() => {
             const video = videoRef.current;
@@ -45,14 +49,18 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
             video.pause();
             setIsPlaying(false);
           }
+          reportPlaying(id);
         }
       },
       { threshold: 0.05, rootMargin: "150px" }
     );
 
     observer.observe(container);
-    return () => observer.disconnect();
-  }, [mounted]);
+    return () => {
+      observer.disconnect();
+      reportPlaying(id);
+    };
+  }, [mounted, id, reportStalling, reportPlaying]);
 
   const handleVideoPress = () => {
     const video = videoRef.current;
@@ -82,12 +90,12 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
           playsInline
           preload="none"
           onClick={handleVideoPress}
-          onPlay={() => setIsPlaying(true)}
-          onPlaying={() => setIsPlaying(true)}
+          onPlay={() => { setIsPlaying(true); reportPlaying(id); }}
+          onPlaying={() => { setIsPlaying(true); reportPlaying(id); }}
           onPause={() => setIsPlaying(false)}
-          onWaiting={() => setIsPlaying(false)}
-          onStalled={() => setIsPlaying(false)}
-          onError={() => setIsPlaying(false)}
+          onWaiting={() => { setIsPlaying(false); reportStalling(id); }}
+          onStalled={() => { setIsPlaying(false); reportStalling(id); }}
+          onError={() => { setIsPlaying(false); reportPlaying(id); }}
         />
       )}
 

@@ -174,6 +174,9 @@ const en = {
   footer: {
     manufacturedBy: "Manufactured By",
   },
+  slowConnection: {
+    message: "Videos loading slowly — check your connection",
+  },
 };
 
 export type Translations = typeof en;
