@@ -164,15 +164,27 @@ export function useCurrency(): CurrencyInfo & { setLocation: (info: Partial<Curr
     
     if (!hasFetched) {
       hasFetched = true;
-      fetch("https://ipapi.co/json/", { signal: AbortSignal.timeout(4000) })
+      // Check localStorage cache first (24h TTL) — avoids network round-trip on repeat visits
+      try {
+        const cached = localStorage.getItem("hg_geo");
+        if (cached) {
+          const { countryCode, countryName, ts } = JSON.parse(cached);
+          if (Date.now() - ts < 86_400_000) {
+            setGlobalLocation({ countryCode, countryName });
+            return;
+          }
+        }
+      } catch {}
+      fetch("https://ipapi.co/json/", { signal: AbortSignal.timeout(2000) })
         .then((r) => r.json())
         .then((data) => {
           const countryCode = typeof data?.country === "string" ? data.country.toUpperCase() : "US";
           const countryName = typeof data?.country_name === "string" ? data.country_name : "United States";
           setGlobalLocation({ countryCode, countryName });
+          try { localStorage.setItem("hg_geo", JSON.stringify({ countryCode, countryName, ts: Date.now() })); } catch {}
         })
         .catch(() => {
-          // keep default
+          // keep default USD
         });
     }
 

@@ -65,7 +65,7 @@ export default function InstagramEmbed({ videoSrc, account, caption, likes = "1.
           reportPlaying(id);
         }
       },
-      { threshold: 0.05, rootMargin: "150px" }
+      { threshold: 0.05, rootMargin: "0px" }
     );
 
     observer.observe(container);

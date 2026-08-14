@@ -57,7 +57,7 @@ export default function Home() {
       {/* Meta Pixel — Home Page */}
       <Script
         id="meta-pixel-home"
-        strategy="afterInteractive"
+        strategy="lazyOnload"
         dangerouslySetInnerHTML={{
           __html: `
             !function(f,b,e,v,n,t,s)
