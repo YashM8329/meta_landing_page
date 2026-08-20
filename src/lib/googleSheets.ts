@@ -57,8 +57,18 @@ async function ensureHeaders(sheets: ReturnType<typeof google.sheets>, spreadshe
       requestBody: { values: [SHEET_HEADERS] },
     });
   }
+}
 
-  // Always ensure dropdown validation is applied to col C (Lead Status), rows 2–1000
+async function getSheetId(sheets: ReturnType<typeof google.sheets>, spreadsheetId: string): Promise<number> {
+  const meta = await sheets.spreadsheets.get({ spreadsheetId });
+  return meta.data.sheets?.[0]?.properties?.sheetId ?? 0;
+}
+
+async function setRowDataValidation(
+  sheets: ReturnType<typeof google.sheets>,
+  spreadsheetId: string,
+  rowIndex: number // 1-indexed row number
+): Promise<void> {
   const sheetId = await getSheetId(sheets, spreadsheetId);
   await sheets.spreadsheets.batchUpdate({
     spreadsheetId,
@@ -68,8 +78,8 @@ async function ensureHeaders(sheets: ReturnType<typeof google.sheets>, spreadshe
           setDataValidation: {
             range: {
               sheetId,
-              startRowIndex: 1,      // row 2 onward (0-indexed)
-              endRowIndex: 1000,
+              startRowIndex: rowIndex - 1, // 0-indexed
+              endRowIndex: rowIndex,       // 0-indexed exclusive
               startColumnIndex: STATUS_COLUMN - 1, // col C (0-indexed = 2)
               endColumnIndex: STATUS_COLUMN,
             },
@@ -93,11 +103,6 @@ async function ensureHeaders(sheets: ReturnType<typeof google.sheets>, spreadshe
       ],
     },
   });
-}
-
-async function getSheetId(sheets: ReturnType<typeof google.sheets>, spreadsheetId: string): Promise<number> {
-  const meta = await sheets.spreadsheets.get({ spreadsheetId });
-  return meta.data.sheets?.[0]?.properties?.sheetId ?? 0;
 }
 
 async function isDuplicate(sheets: ReturnType<typeof google.sheets>, spreadsheetId: string, email: string): Promise<boolean> {
@@ -162,6 +167,8 @@ export async function appendLead(lead: LeadRow): Promise<{ duplicate: boolean }>
     valueInputOption: "RAW",
     requestBody: { values: [row] },
   });
+
+  await setRowDataValidation(sheets, spreadsheetId, nextRow);
 
   return { duplicate: false };
 }
