@@ -24,7 +24,7 @@ const SHEET_HEADERS = [
   "Notes",
 ];
 
-const STATUS_COLUMN = 3; // 1-indexed, column C (Lead Status)
+const STATUS_COLUMN = 4; // 1-indexed, column D (Lead Status — headers start at col B)
 
 function getAuth() {
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
@@ -44,14 +44,14 @@ function getAuth() {
 async function ensureHeaders(sheets: ReturnType<typeof google.sheets>, spreadsheetId: string): Promise<void> {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: "Sheet1!A1:J1",
+    range: "Sheet1!B1:K1",
   });
 
   const firstRow = response.data.values?.[0];
   if (!firstRow || firstRow.length === 0) {
     await sheets.spreadsheets.values.update({
       spreadsheetId,
-      range: "Sheet1!A1",
+      range: "Sheet1!B1",
       valueInputOption: "RAW",
       requestBody: { values: [SHEET_HEADERS] },
     });
@@ -100,7 +100,7 @@ async function getSheetId(sheets: ReturnType<typeof google.sheets>, spreadsheetI
 async function isDuplicate(sheets: ReturnType<typeof google.sheets>, spreadsheetId: string, email: string): Promise<boolean> {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: "Sheet1!F:F", // Email column (col F after UTM Source inserted at B)
+    range: "Sheet1!G:G", // Email column (col G — headers start at B, Email is 5th header = col G)
   });
 
   const emails = response.data.values?.flat() ?? [];
@@ -147,7 +147,7 @@ export async function appendLead(lead: LeadRow): Promise<{ duplicate: boolean }>
 
   await sheets.spreadsheets.values.append({
     spreadsheetId,
-    range: "Sheet1!A:J", // A=Date, B=UTM Source, C=Lead Status, D=Full Name, E=Contact Number, F=Email, G=Country, H=Venue Status, I=Venue Address, J=Notes
+    range: "Sheet1!B:K", // B=Date, C=Source URL, D=Lead Status, E=Full Name, F=Contact Number, G=Email, H=Country, I=Venue Status, J=Venue Address, K=Notes
     valueInputOption: "RAW",
     insertDataOption: "INSERT_ROWS",
     requestBody: { values: [row] },
