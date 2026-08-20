@@ -24,7 +24,8 @@ const SHEET_HEADERS = [
   "Notes",
 ];
 
-const STATUS_COLUMN = 4; // 1-indexed, column D (Lead Status — headers start at col B)
+// A=Date, B=Source URL, C=Lead Status, D=Full Name, E=Contact Number, F=Email, G=Country, H=Venue Status, I=Venue Address, J=Notes
+const STATUS_COLUMN = 3; // 1-indexed, column C
 
 function getAuth() {
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
@@ -44,19 +45,18 @@ function getAuth() {
 async function ensureHeaders(sheets: ReturnType<typeof google.sheets>, spreadsheetId: string): Promise<void> {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: "Sheet1!B1:K1",
+    range: "Sheet1!A1:J1",
   });
 
   const firstRow = response.data.values?.[0];
   if (!firstRow || firstRow.length === 0) {
     await sheets.spreadsheets.values.update({
       spreadsheetId,
-      range: "Sheet1!B1",
+      range: "Sheet1!A1",
       valueInputOption: "RAW",
       requestBody: { values: [SHEET_HEADERS] },
     });
 
-    // Apply dropdown validation to Lead Status column (B)
     const sheetId = await getSheetId(sheets, spreadsheetId);
     await sheets.spreadsheets.batchUpdate({
       spreadsheetId,
@@ -66,8 +66,8 @@ async function ensureHeaders(sheets: ReturnType<typeof google.sheets>, spreadshe
             setDataValidation: {
               range: {
                 sheetId,
-                startRowIndex: 1, // row 2 onward (0-indexed)
-                startColumnIndex: STATUS_COLUMN - 1,
+                startRowIndex: 1,
+                startColumnIndex: STATUS_COLUMN - 1, // col C (0-indexed = 2)
                 endColumnIndex: STATUS_COLUMN,
               },
               rule: {
@@ -100,7 +100,7 @@ async function getSheetId(sheets: ReturnType<typeof google.sheets>, spreadsheetI
 async function isDuplicate(sheets: ReturnType<typeof google.sheets>, spreadsheetId: string, email: string): Promise<boolean> {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: "Sheet1!G:G", // Email column (col G — headers start at B, Email is 5th header = col G)
+    range: "Sheet1!F:F", // Email is column F
   });
 
   const emails = response.data.values?.flat() ?? [];
@@ -133,21 +133,21 @@ export async function appendLead(lead: LeadRow): Promise<{ duplicate: boolean }>
     : "";
 
   const row = [
-    formattedDate,
-    lead.utmParams ?? "",
-    "New",
-    lead.fullName,
-    lead.phone,
-    lead.email,
-    lead.country,
-    lead.venueStatus,
-    venueAddress,
-    "",
+    formattedDate,       // A - Date
+    lead.utmParams ?? "", // B - Source URL
+    "New",               // C - Lead Status
+    lead.fullName,       // D - Full Name
+    lead.phone,          // E - Contact Number
+    lead.email,          // F - Email
+    lead.country,        // G - Country
+    lead.venueStatus,    // H - Venue Status
+    venueAddress,        // I - Venue Address (if any)
+    "",                  // J - Notes
   ];
 
   await sheets.spreadsheets.values.append({
     spreadsheetId,
-    range: "Sheet1!B:K", // B=Date, C=Source URL, D=Lead Status, E=Full Name, F=Contact Number, G=Email, H=Country, I=Venue Status, J=Venue Address, K=Notes
+    range: "Sheet1!A:J",
     valueInputOption: "RAW",
     insertDataOption: "INSERT_ROWS",
     requestBody: { values: [row] },
