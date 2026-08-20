@@ -56,40 +56,43 @@ async function ensureHeaders(sheets: ReturnType<typeof google.sheets>, spreadshe
       valueInputOption: "RAW",
       requestBody: { values: [SHEET_HEADERS] },
     });
+  }
 
-    const sheetId = await getSheetId(sheets, spreadsheetId);
-    await sheets.spreadsheets.batchUpdate({
-      spreadsheetId,
-      requestBody: {
-        requests: [
-          {
-            setDataValidation: {
-              range: {
-                sheetId,
-                startRowIndex: 1,
-                startColumnIndex: STATUS_COLUMN - 1, // col C (0-indexed = 2)
-                endColumnIndex: STATUS_COLUMN,
+  // Always ensure dropdown validation is applied to col C (Lead Status), rows 2–1000
+  const sheetId = await getSheetId(sheets, spreadsheetId);
+  await sheets.spreadsheets.batchUpdate({
+    spreadsheetId,
+    requestBody: {
+      requests: [
+        {
+          setDataValidation: {
+            range: {
+              sheetId,
+              startRowIndex: 1,      // row 2 onward (0-indexed)
+              endRowIndex: 1000,
+              startColumnIndex: STATUS_COLUMN - 1, // col C (0-indexed = 2)
+              endColumnIndex: STATUS_COLUMN,
+            },
+            rule: {
+              condition: {
+                type: "ONE_OF_LIST",
+                values: [
+                  { userEnteredValue: "New" },
+                  { userEnteredValue: "Contacted" },
+                  { userEnteredValue: "Qualified" },
+                  { userEnteredValue: "Disqualified" },
+                  { userEnteredValue: "Follow Up" },
+                  { userEnteredValue: "Processed" },
+                ],
               },
-              rule: {
-                condition: {
-                  type: "ONE_OF_LIST",
-                  values: [
-                    { userEnteredValue: "New" },
-                    { userEnteredValue: "Contacted" },
-                    { userEnteredValue: "Qualified" },
-                    { userEnteredValue: "Disqualified" },
-                    { userEnteredValue: "Follow Up" },
-                  ],
-                },
-                showCustomUi: true,
-                strict: true,
-              },
+              showCustomUi: true,
+              strict: true,
             },
           },
-        ],
-      },
-    });
-  }
+        },
+      ],
+    },
+  });
 }
 
 async function getSheetId(sheets: ReturnType<typeof google.sheets>, spreadsheetId: string): Promise<number> {
