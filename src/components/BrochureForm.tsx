@@ -341,7 +341,16 @@ export default function BrochureForm() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          utmParams: (() => {
+            const utms = Array.from(new URLSearchParams(window.location.search).entries())
+              .filter(([k]) => k.startsWith("utm_"))
+              .map(([k, v]) => `${k}=${v}`)
+              .join("&");
+            return utms || "direct";
+          })(),
+        }),
       });
 
       const resData = await response.json();

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { appendLead } from "@/lib/googleSheets";
 
 export async function POST(request: Request) {
   try {
@@ -25,6 +26,7 @@ export async function POST(request: Request) {
       venueLocation,
       plannedArea,
       country,
+      utmParams,
     } = body;
 
     // Basic server-side validation
@@ -120,6 +122,19 @@ export async function POST(request: Request) {
       console.error("Resend API Error:", error);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
+
+    // Fire-and-forget: append lead to Google Sheets (never blocks or fails the response)
+    appendLead({ fullName, phone, email, country, venueStatus, venueLocation, venueStatusOther, utmParams })
+      .then(({ duplicate }) => {
+        if (duplicate) {
+          console.warn(`[Sheets] Duplicate lead skipped: ${email}`);
+        } else {
+          console.log(`[Sheets] Lead appended: ${email}`);
+        }
+      })
+      .catch((err) => {
+        console.error("[Sheets] Failed to append lead:", err);
+      });
 
     return NextResponse.json({ success: true, data });
   } catch (error: any) {
