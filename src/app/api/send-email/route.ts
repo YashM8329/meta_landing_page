@@ -123,18 +123,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // Fire-and-forget: append lead to Google Sheets (never blocks or fails the response)
-    appendLead({ fullName, phone, email, country, venueStatus, venueLocation, venueStatusOther, utmParams })
-      .then(({ duplicate }) => {
-        if (duplicate) {
-          console.warn(`[Sheets] Duplicate lead skipped: ${email}`);
-        } else {
-          console.log(`[Sheets] Lead appended: ${email}`);
-        }
-      })
-      .catch((err) => {
-        console.error("[Sheets] Failed to append lead:", err);
-      });
+    // Append lead to Google Sheets before responding (fire-and-forget is killed by Vercel on serverless)
+    try {
+      const { duplicate } = await appendLead({ fullName, phone, email, country, venueStatus, venueLocation, venueStatusOther, utmParams });
+      if (duplicate) {
+        console.warn(`[Sheets] Duplicate lead skipped: ${email}`);
+      } else {
+        console.log(`[Sheets] Lead appended: ${email}`);
+      }
+    } catch (err: any) {
+      console.error("[Sheets] Failed to append lead:", err.message);
+      // Never block the response — sheet failure is non-critical
+    }
 
     return NextResponse.json({ success: true, data });
   } catch (error: any) {
