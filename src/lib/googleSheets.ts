@@ -145,11 +145,18 @@ export async function appendLead(lead: LeadRow): Promise<{ duplicate: boolean }>
     "",                  // J - Notes
   ];
 
-  await sheets.spreadsheets.values.append({
+  // Get last row with data to append directly after it
+  const existing = await sheets.spreadsheets.values.get({
     spreadsheetId,
     range: "Sheet1!A:J",
+  });
+  const lastRow = existing.data.values?.length ?? 1;
+  const nextRow = lastRow + 1;
+
+  await sheets.spreadsheets.values.update({
+    spreadsheetId,
+    range: `Sheet1!A${nextRow}:J${nextRow}`,
     valueInputOption: "RAW",
-    insertDataOption: "INSERT_ROWS",
     requestBody: { values: [row] },
   });
 
