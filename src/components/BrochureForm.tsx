@@ -344,22 +344,11 @@ export default function BrochureForm() {
         body: JSON.stringify({
           ...form,
           utmParams: (() => {
-            const page = window.location.pathname || "/";
-            const rawRef = document.referrer;
-            let ref = "direct";
-            if (rawRef) {
-              try {
-                ref = "ref:" + new URL(rawRef).hostname.replace(/^www\./, "");
-              } catch {
-                ref = "ref:" + rawRef;
-              }
-            }
             const utms = Array.from(new URLSearchParams(window.location.search).entries())
               .filter(([k]) => k.startsWith("utm_"))
               .map(([k, v]) => `${k}=${v}`)
               .join("&");
-            const source = utms ? `${ref} | ${utms}` : ref;
-            return `${source} | page:${page}`;
+            return utms || "direct";
           })(),
         }),
       });
