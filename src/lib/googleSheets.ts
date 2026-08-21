@@ -14,18 +14,19 @@ export interface LeadRow {
 const SHEET_HEADERS = [
   "Date & Time",
   "Source URL",
-  "Lead Status",
   "Full Name",
   "Contact Number",
   "Email",
   "Country",
   "Venue Status",
   "Venue Address (if any)",
+  "Lead Status",
+  "Assigned to",
   "Notes",
 ];
 
-// A=Date, B=Source URL, C=Lead Status, D=Full Name, E=Contact Number, F=Email, G=Country, H=Venue Status, I=Venue Address, J=Notes
-const STATUS_COLUMN = 3; // 1-indexed, column C
+// A=Date & Time, B=Source URL, C=Full Name, D=Contact Number, E=Email, F=Country, G=Venue Status, H=Venue Address, I=Lead Status, J=Assigned to, K=Notes
+const STATUS_COLUMN = 9; // 1-indexed, column I
 
 function getAuth() {
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
@@ -45,7 +46,7 @@ function getAuth() {
 async function ensureHeaders(sheets: ReturnType<typeof google.sheets>, spreadsheetId: string): Promise<void> {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: "Sheet1!A1:J1",
+    range: "Sheet1!A1:K1",
   });
 
   const firstRow = response.data.values?.[0];
@@ -80,7 +81,7 @@ async function setRowDataValidation(
               sheetId,
               startRowIndex: rowIndex - 1, // 0-indexed
               endRowIndex: rowIndex,       // 0-indexed exclusive
-              startColumnIndex: STATUS_COLUMN - 1, // col C (0-indexed = 2)
+              startColumnIndex: STATUS_COLUMN - 1, // col I (0-indexed = 8)
               endColumnIndex: STATUS_COLUMN,
             },
             rule: {
@@ -108,7 +109,7 @@ async function setRowDataValidation(
 async function isDuplicate(sheets: ReturnType<typeof google.sheets>, spreadsheetId: string, email: string): Promise<boolean> {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: "Sheet1!F:F", // Email is column F
+    range: "Sheet1!E:E", // Email is column E
   });
 
   const emails = response.data.values?.flat() ?? [];
@@ -131,14 +132,14 @@ export async function appendLead(lead: LeadRow): Promise<{ duplicate: boolean }>
     return { duplicate: true };
   }
 
-  const now = new Date();
+  const now = new Date(Date.now() + 5.5 * 60 * 60 * 1000); // shift to IST (UTC+5:30)
   const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const dd = String(now.getUTCDate()).padStart(2, "0");
   const mon = months[now.getUTCMonth()];
   const yyyy = now.getUTCFullYear();
   const hh = String(now.getUTCHours()).padStart(2, "0");
   const mm = String(now.getUTCMinutes()).padStart(2, "0");
-  const formattedDate = `${dd}-${mon}-${yyyy} ${hh}:${mm} UTC`;
+  const formattedDate = `${dd}-${mon}-${yyyy} ${hh}:${mm} IST`;
 
   const venueAddress = lead.venueStatus === "existing"
     ? lead.venueLocation ?? ""
@@ -147,29 +148,30 @@ export async function appendLead(lead: LeadRow): Promise<{ duplicate: boolean }>
     : "";
 
   const row = [
-    formattedDate,       // A - Date
+    formattedDate,        // A - Date & Time
     lead.utmParams ?? "", // B - Source URL
-    "New",               // C - Lead Status
-    lead.fullName,       // D - Full Name
-    lead.phone,          // E - Contact Number
-    lead.email,          // F - Email
-    lead.country,        // G - Country
-    lead.venueStatus,    // H - Venue Status
-    venueAddress,        // I - Venue Address (if any)
-    "",                  // J - Notes
+    lead.fullName,        // C - Full Name
+    lead.phone,           // D - Contact Number
+    lead.email,           // E - Email
+    lead.country,         // F - Country
+    lead.venueStatus,     // G - Venue Status
+    venueAddress,         // H - Venue Address (if any)
+    "New",                // I - Lead Status
+    "",                   // J - Assigned to
+    "",                   // K - Notes
   ];
 
   // Get last row with data to append directly after it
   const existing = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: "Sheet1!A:J",
+    range: "Sheet1!A:K",
   });
   const lastRow = existing.data.values?.length ?? 1;
   const nextRow = lastRow + 1;
 
   await sheets.spreadsheets.values.update({
     spreadsheetId,
-    range: `Sheet1!A${nextRow}:J${nextRow}`,
+    range: `Sheet1!A${nextRow}:K${nextRow}`,
     valueInputOption: "RAW",
     requestBody: { values: [row] },
   });
