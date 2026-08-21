@@ -12,7 +12,7 @@ export interface LeadRow {
 }
 
 const SHEET_HEADERS = [
-  "Date",
+  "Date & Time",
   "Source URL",
   "Lead Status",
   "Full Name",
@@ -132,7 +132,13 @@ export async function appendLead(lead: LeadRow): Promise<{ duplicate: boolean }>
   }
 
   const now = new Date();
-  const formattedDate = now.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).replace(/ /g, "-");
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const dd = String(now.getUTCDate()).padStart(2, "0");
+  const mon = months[now.getUTCMonth()];
+  const yyyy = now.getUTCFullYear();
+  const hh = String(now.getUTCHours()).padStart(2, "0");
+  const mm = String(now.getUTCMinutes()).padStart(2, "0");
+  const formattedDate = `${dd}-${mon}-${yyyy} ${hh}:${mm} UTC`;
 
   const venueAddress = lead.venueStatus === "existing"
     ? lead.venueLocation ?? ""
