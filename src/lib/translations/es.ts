@@ -143,10 +143,10 @@ const es: Translations = {
       venueStatusExisting: "Sí, tengo un venue existente",
       venueStatusNew: "No, estoy planeando un nuevo venue",
       venueStatusOther: "Otros",
-      venueLocationOther: "Introduzca la ubicación de su venue",
+      venueLocationOther: "Introduzca la dirección de su venue",
       venueLocationOtherPlaceholder: "Buscar o introducir dirección…",
-      venueLocation: "Ubicación del venue",
-      venueLocationPlaceholder: "Buscar ubicación del venue..",
+      venueLocation: "Dirección del venue",
+      venueLocationPlaceholder: "Buscar dirección del venue..",
     },
     errors: {
       fullNameRequired: "El nombre completo es obligatorio.",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import PhoneInput, { Country } from "react-phone-number-input";
@@ -65,6 +66,55 @@ const COUNTRY_PHONE_SPECS: Record<string, { code: string; length: number | numbe
 const inputBase = "w-full h-[50px] lg:h-[52px] rounded-xl border px-4 text-[15px] lg:text-[16px] font-medium text-ink placeholder-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/40 transition-all duration-150";
 const selectArrow = `url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%235B6472' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`;
 
+// Dropdown rendered in a portal so it escapes any parent overflow:hidden/clip
+function AnchoredDropdown({ anchorRef, children, open }: {
+  anchorRef: React.RefObject<HTMLElement | null>;
+  children: React.ReactNode;
+  open: boolean;
+}) {
+  const [style, setStyle] = useState<React.CSSProperties>({});
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
+
+  useEffect(() => {
+    if (!open || !anchorRef.current) return;
+    const update = () => {
+      const rect = anchorRef.current!.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const spaceAbove = rect.top;
+      const maxH = 260;
+      const openUp = spaceBelow < maxH + 8 && spaceAbove > spaceBelow;
+      setStyle({
+        position: "fixed",
+        left: rect.left,
+        width: rect.width,
+        zIndex: 99999,
+        ...(openUp
+          ? { bottom: window.innerHeight - rect.top + 6, top: "auto", maxHeight: Math.min(spaceAbove - 8, maxH) }
+          : { top: rect.bottom + 6, bottom: "auto", maxHeight: Math.min(spaceBelow - 8, maxH) }),
+      });
+    };
+    update();
+    window.addEventListener("scroll", update, true);
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update, true);
+      window.removeEventListener("resize", update);
+    };
+  }, [open, anchorRef]);
+
+  if (!mounted || !open) return null;
+  return createPortal(
+    <ul
+      style={{ ...style, WebkitOverflowScrolling: "touch", overscrollBehavior: "contain" }}
+      className="bg-white border border-line rounded-xl shadow-2xl overflow-y-auto divide-y divide-line"
+    >
+      {children}
+    </ul>,
+    document.body
+  );
+}
 
 export default function BrochureForm() {
   const { t } = useTranslation();
@@ -83,9 +133,9 @@ export default function BrochureForm() {
   const [countryOptions, setCountryOptions] = useState<string[]>([]);
   const [sessionToken, setSessionToken] = useState("");
   const [hasSelected, setHasSelected] = useState(false);
-  const [venueDropdownDirection, setVenueDropdownDirection] = useState<"down" | "up">("down");
   const venueOtherInputRef = useRef<HTMLInputElement>(null);
   const venueLocationInputRef = useRef<HTMLInputElement>(null);
+  const countryInputRef = useRef<HTMLInputElement>(null);
   const venuePanelOtherRef = useRef<HTMLDivElement>(null);
   const venuePanelLocationRef = useRef<HTMLDivElement>(null);
 
@@ -253,14 +303,6 @@ export default function BrochureForm() {
     }, 120);
   };
 
-  // Detect available space below the input and set dropdown direction (#4)
-  const detectDropdownDirection = (inputEl: HTMLInputElement | null) => {
-    if (!inputEl) return;
-    const rect = inputEl.getBoundingClientRect();
-    const spaceBelow = window.innerHeight - rect.bottom;
-    setVenueDropdownDirection(spaceBelow < 220 ? "up" : "down");
-  };
-
   const validate = (): FieldError => {
     const e: FieldError = {};
     if (!form.fullName.trim()) e.fullName = t.form.errors.fullNameRequired;
@@ -368,7 +410,7 @@ export default function BrochureForm() {
   };
 
   return (
-    <section id="brochure-form" className="min-h-0 lg:py-10 relative flex flex-col justify-center pt-6 pb-8 overflow-hidden" aria-label="Request brochure form">
+    <section id="brochure-form" className="min-h-0 lg:py-10 relative flex flex-col justify-center pt-6 pb-8" aria-label="Request brochure form">
       <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0 md:grid md:grid-cols-2 md:gap-8 lg:gap-16 md:items-start">
         {/* Left column: context */}
         <div className="hidden md:flex flex-col">
@@ -448,10 +490,11 @@ export default function BrochureForm() {
                 {errors.phone && <p id="err-phone" role="alert" className="text-[12px] text-red-500 mt-1 font-medium">{errors.phone}</p>}
               </div>
 
-              <div className="mb-4">
+              <div className="mb-4 relative z-30">
                 <label htmlFor="field-country" className="block text-[14px] lg:text-[16px] font-semibold text-ink mb-1.5">{t.form.fields.country} <span className="text-accent">*</span></label>
                 <div className="relative">
                   <input
+                    ref={countryInputRef}
                     id="field-country"
                     type="text"
                     value={form.country}
@@ -461,7 +504,7 @@ export default function BrochureForm() {
                       setCountryEditedByUser(true);
                     }}
                     onBlur={() => {
-                      setTimeout(() => setCountryOptions([]), 200);
+                      setTimeout(() => setCountryOptions([]), 300);
                       if (form.country) {
                         setLocation({ countryName: form.country });
                       }
@@ -469,30 +512,29 @@ export default function BrochureForm() {
                     placeholder={t.form.fields.countryPlaceholder}
                     className={`${inputBase} ${errors.country ? "border-red-400 bg-red-50" : "border-line bg-white"}`}
                   />
-                  {countryOptions.length > 0 && (
-                    <ul className="absolute left-0 right-0 mt-1 bg-white border border-line rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
-                      {countryOptions.map((c, idx) => (
-                        <li
-                          key={idx}
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => {
-                            set("country", c);
-                            setCountryOptions([]);
-                            setLocation({ countryName: c });
-                          }}
-                          className="px-4 py-2 hover:bg-accent/10 cursor-pointer text-[14px] text-ink border-b border-line last:border-none"
-                        >
-                          {c}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+                  <AnchoredDropdown anchorRef={countryInputRef} open={countryOptions.length > 0}>
+                    {countryOptions.map((c, idx) => (
+                      <li
+                        key={idx}
+                        onMouseDown={(e) => e.preventDefault()}
+                        onTouchStart={(e) => e.preventDefault()}
+                        onClick={() => {
+                          set("country", c);
+                          setCountryOptions([]);
+                          setLocation({ countryName: c });
+                        }}
+                        className="px-4 py-2.5 hover:bg-accent/10 cursor-pointer text-[14px] text-ink border-b border-line last:border-none"
+                      >
+                        {c}
+                      </li>
+                    ))}
+                  </AnchoredDropdown>
                 </div>
                 {errors.country && <p id="err-country" role="alert" className="text-[12px] text-red-500 mt-1 font-medium">{errors.country}</p>}
               </div>
             </div>
 
-            <div className="mb-4">
+            <div className="mb-4 relative z-10">
               <label htmlFor="field-venueStatus" className="block text-[14px] lg:text-[16px] font-semibold text-ink mb-1.5">
                 {t.form.fields.venueStatus} <span className="text-accent">*</span>
               </label>
@@ -535,11 +577,15 @@ export default function BrochureForm() {
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-                className="overflow-hidden"
+                onAnimationComplete={() => {
+                  if (venuePanelOtherRef.current) venuePanelOtherRef.current.style.overflow = "visible";
+                }}
+                className="relative z-40 overflow-visible"
+                style={{ overflow: "visible" }}
               >
-              <div className="mb-4 bg-accent/5 border border-accent/15 rounded-[12px] p-4 mt-4">
+              <div className="mb-4 bg-accent/5 border border-accent/15 rounded-[12px] p-4 mt-4 relative z-30">
                 <label htmlFor="field-venueStatusOther" className="block text-[14px] lg:text-[16px] font-semibold text-ink mb-1.5">{t.form.fields.venueLocationOther} <span className="text-accent">*</span></label>
-                <div className="relative">
+                <div className="relative z-30">
                   <input
                     ref={venueOtherInputRef}
                     id="field-venueStatusOther"
@@ -550,12 +596,9 @@ export default function BrochureForm() {
                       setVenueInputValue(e.target.value);
                       setHasSelected(false);
                     }}
-                    onFocus={() => {
-                      detectDropdownDirection(venueOtherInputRef.current);
-                      fetchSuggestions(venueInputValue);
-                    }}
+                    onFocus={() => fetchSuggestions(venueInputValue)}
                     onBlur={() => {
-                      setTimeout(() => setVenueOptions([]), 200);
+                      setTimeout(() => setVenueOptions([]), 300);
                     }}
                     placeholder={t.form.fields.venueLocationOtherPlaceholder}
                     className={`${inputBase} ${errors.venueStatusOther ? "border-red-400 bg-red-50" : "border-line bg-white"}`}
@@ -568,47 +611,38 @@ export default function BrochureForm() {
                       </svg>
                     </div>
                   )}
-                  {venueOptions.length > 0 && (
-                    <ul className={`absolute left-0 right-0 bg-white border border-line rounded-lg shadow-lg max-h-56 overflow-y-auto z-50 divide-y divide-line ${venueDropdownDirection === "up" ? "bottom-full mb-1" : "mt-1"}`}>
-                      {venueOptions.map((opt, idx) => (
-                        <li
-                          key={idx}
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => {
-                            set("venueStatusOther", opt.value);
-                            setVenueInputValue(opt.value);
-                            setVenueOptions([]);
-                            setSessionToken("");
-                            setHasSelected(true);
-                          }}
-                          className="px-4 py-2.5 hover:bg-accent/10 cursor-pointer flex items-center gap-2.5 text-[14px]"
-                        >
-                          <svg className="w-4 h-4 text-[#8A95A5] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                          </svg>
-                          <div className="flex-1 truncate text-left">
-                            <span className="font-semibold text-ink">
-                              {opt.mainText || opt.label}
-                            </span>
-                            {opt.secondaryText && (
-                              <span className="text-[12px] text-ink-faint ml-1.5">
-                                {opt.secondaryText}
-                              </span>
-                            )}
-                          </div>
-                        </li>
-                      ))}
-                      <li className="flex justify-end items-center px-4 py-2 bg-gray-50 border-t border-line sticky bottom-0 select-none">
-                        <span className="text-[10px] text-ink-faint font-medium uppercase tracking-wider">{t.form.poweredBy}</span>
-                        <img
-                          src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
-                          alt="Google"
-                          className="h-[12px] ml-1.5 object-contain"
-                        />
+                  <AnchoredDropdown anchorRef={venueOtherInputRef} open={venueOptions.length > 0}>
+                    {venueOptions.map((opt, idx) => (
+                      <li
+                        key={idx}
+                        onMouseDown={(e) => e.preventDefault()}
+                        onTouchStart={(e) => e.preventDefault()}
+                        onClick={() => {
+                          set("venueStatusOther", opt.value);
+                          setVenueInputValue(opt.value);
+                          setVenueOptions([]);
+                          setSessionToken("");
+                          setHasSelected(true);
+                        }}
+                        className="px-4 py-2.5 hover:bg-accent/10 cursor-pointer flex items-center gap-2.5 text-[14px]"
+                      >
+                        <svg className="w-4 h-4 text-[#8A95A5] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                        </svg>
+                        <div className="flex-1 truncate text-left">
+                          <span className="font-semibold text-ink">{opt.mainText || opt.label}</span>
+                          {opt.secondaryText && (
+                            <span className="text-[12px] text-ink-faint ml-1.5">{opt.secondaryText}</span>
+                          )}
+                        </div>
                       </li>
-                    </ul>
-                  )}
+                    ))}
+                    <li className="flex justify-end items-center px-4 py-2 bg-gray-50 border-t border-line sticky bottom-0 select-none">
+                      <span className="text-[10px] text-ink-faint font-medium uppercase tracking-wider">{t.form.poweredBy}</span>
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" className="h-[12px] ml-1.5 object-contain" />
+                    </li>
+                  </AnchoredDropdown>
                 </div>
                 {errors.venueStatusOther && <p id="err-venueStatusOther" role="alert" className="text-[12px] text-red-500 mt-1.5 font-medium">{errors.venueStatusOther}</p>}
               </div>
@@ -625,11 +659,15 @@ export default function BrochureForm() {
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-                className="overflow-hidden"
+                onAnimationComplete={() => {
+                  if (venuePanelLocationRef.current) venuePanelLocationRef.current.style.overflow = "visible";
+                }}
+                className="relative z-40 overflow-visible"
+                style={{ overflow: "visible" }}
               >
-              <div className="mb-4 bg-accent/5 border border-accent/15 rounded-[12px] p-4 mt-3">
+              <div className="mb-4 bg-accent/5 border border-accent/15 rounded-[12px] p-4 mt-3 relative z-30">
                 <label htmlFor="field-venueLocation" className="block text-[14px] lg:text-[16px] font-semibold text-ink mb-1.5">{t.form.fields.venueLocation} <span className="text-accent">*</span></label>
-                <div className="relative">
+                <div className="relative z-30">
                   <input
                     ref={venueLocationInputRef}
                     id="field-venueLocation"
@@ -640,12 +678,9 @@ export default function BrochureForm() {
                       setVenueInputValue(e.target.value);
                       setHasSelected(false);
                     }}
-                    onFocus={() => {
-                      detectDropdownDirection(venueLocationInputRef.current);
-                      fetchSuggestions(venueInputValue);
-                    }}
+                    onFocus={() => fetchSuggestions(venueInputValue)}
                     onBlur={() => {
-                      setTimeout(() => setVenueOptions([]), 200);
+                      setTimeout(() => setVenueOptions([]), 300);
                     }}
                     placeholder={t.form.fields.venueLocationPlaceholder}
                     className={`${inputBase} ${errors.venueLocation ? "border-red-400 bg-red-50" : "border-line bg-white"}`}
@@ -658,47 +693,38 @@ export default function BrochureForm() {
                       </svg>
                     </div>
                   )}
-                  {venueOptions.length > 0 && (
-                    <ul className={`absolute left-0 right-0 bg-white border border-line rounded-lg shadow-lg max-h-56 overflow-y-auto z-50 divide-y divide-line ${venueDropdownDirection === "up" ? "bottom-full mb-1" : "mt-1"}`}>
-                      {venueOptions.map((opt, idx) => (
-                        <li
-                          key={idx}
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => {
-                            set("venueLocation", opt.value);
-                            setVenueInputValue(opt.value);
-                            setVenueOptions([]);
-                            setSessionToken("");
-                            setHasSelected(true);
-                          }}
-                          className="px-4 py-2.5 hover:bg-accent/10 cursor-pointer flex items-center gap-2.5 text-[14px]"
-                        >
-                          <svg className="w-4 h-4 text-[#8A95A5] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                          </svg>
-                          <div className="flex-1 truncate text-left">
-                            <span className="font-semibold text-ink">
-                              {opt.mainText || opt.label}
-                            </span>
-                            {opt.secondaryText && (
-                              <span className="text-[12px] text-ink-faint ml-1.5">
-                                {opt.secondaryText}
-                              </span>
-                            )}
-                          </div>
-                        </li>
-                      ))}
-                      <li className="flex justify-end items-center px-4 py-2 bg-gray-50 border-t border-line sticky bottom-0 select-none">
-                        <span className="text-[10px] text-ink-faint font-medium uppercase tracking-wider">{t.form.poweredBy}</span>
-                        <img
-                          src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
-                          alt="Google"
-                          className="h-[12px] ml-1.5 object-contain"
-                        />
+                  <AnchoredDropdown anchorRef={venueLocationInputRef} open={venueOptions.length > 0}>
+                    {venueOptions.map((opt, idx) => (
+                      <li
+                        key={idx}
+                        onMouseDown={(e) => e.preventDefault()}
+                        onTouchStart={(e) => e.preventDefault()}
+                        onClick={() => {
+                          set("venueLocation", opt.value);
+                          setVenueInputValue(opt.value);
+                          setVenueOptions([]);
+                          setSessionToken("");
+                          setHasSelected(true);
+                        }}
+                        className="px-4 py-2.5 hover:bg-accent/10 cursor-pointer flex items-center gap-2.5 text-[14px]"
+                      >
+                        <svg className="w-4 h-4 text-[#8A95A5] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                        </svg>
+                        <div className="flex-1 truncate text-left">
+                          <span className="font-semibold text-ink">{opt.mainText || opt.label}</span>
+                          {opt.secondaryText && (
+                            <span className="text-[12px] text-ink-faint ml-1.5">{opt.secondaryText}</span>
+                          )}
+                        </div>
                       </li>
-                    </ul>
-                  )}
+                    ))}
+                    <li className="flex justify-end items-center px-4 py-2 bg-gray-50 border-t border-line sticky bottom-0 select-none">
+                      <span className="text-[10px] text-ink-faint font-medium uppercase tracking-wider">{t.form.poweredBy}</span>
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" className="h-[12px] ml-1.5 object-contain" />
+                    </li>
+                  </AnchoredDropdown>
                 </div>
                 {errors.venueLocation && <p id="err-venueLocation" role="alert" className="text-[12px] text-red-500 mt-1.5 font-medium">{errors.venueLocation}</p>}
               </div>
@@ -714,7 +740,7 @@ export default function BrochureForm() {
             )}
 
             <button type="submit" disabled={submitting} aria-busy={submitting}
-              className="relative w-full h-[54px] text-white font-semibold text-[18px] rounded-lg flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent mt-2 overflow-hidden shadow-lg select-none bg-gradient-to-r from-[#1D6CEF] via-[#2f74e6] to-[#1D6CEF] hover:brightness-105 active:scale-[0.98] transition-all duration-150">
+              className="relative z-0 w-full h-[54px] text-white font-semibold text-[18px] rounded-lg flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent mt-2 overflow-hidden shadow-lg select-none bg-gradient-to-r from-[#1D6CEF] via-[#2f74e6] to-[#1D6CEF] hover:brightness-105 active:scale-[0.98] transition-all duration-150">
               
               {/* Halftone pattern overlay denser on left and right flanks (white dots) */}
               <div 

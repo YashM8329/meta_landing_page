@@ -141,10 +141,10 @@ const en = {
       venueStatusExisting: "Yes, I have an existing venue",
       venueStatusNew: "No, I'm planning a new venue",
       venueStatusOther: "Others",
-      venueLocationOther: "Enter your venue location",
+      venueLocationOther: "Enter your venue address",
       venueLocationOtherPlaceholder: "Search or enter address…",
-      venueLocation: "Venue location",
-      venueLocationPlaceholder: "Search Venue Location..",
+      venueLocation: "Venue address",
+      venueLocationPlaceholder: "Search venue address..",
     },
     errors: {
       fullNameRequired: "Full name is required.",
