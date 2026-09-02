@@ -133,7 +133,7 @@ const es: Translations = {
       fullName: "Nombre completo",
       fullNamePlaceholder: "Juan García",
       email: "Correo electrónico",
-      emailPlaceholder: "juan@venue.es",
+      emailPlaceholder: "jane@example.com",
       phone: "Número de teléfono",
       phonePlaceholder: "Introduce el número de teléfono",
       country: "País",

@@ -131,7 +131,7 @@ const en = {
       fullName: "Full name",
       fullNamePlaceholder: "Jane Smith",
       email: "Email",
-      emailPlaceholder: "jane@venue.com",
+      emailPlaceholder: "jane@example.com",
       phone: "Phone number",
       phonePlaceholder: "Enter phone number",
       country: "Country",

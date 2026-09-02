@@ -563,15 +563,14 @@ export default function BrochureForm() {
                   if (val !== "other") {
                     setForm((prev) => ({ ...prev, venueStatusOther: "" }));
                   }
-                  if (val === "other") scrollPanelIntoView(venuePanelOtherRef);
                   if (val === "existing") scrollPanelIntoView(venuePanelLocationRef);
                 }}
                 aria-invalid={!!errors.venueStatus}
                 aria-describedby={errors.venueStatus ? "err-venueStatus" : undefined}
-                className={`${inputBase} appearance-none bg-no-repeat bg-[right_14px_center] ${errors.venueStatus ? "border-red-400 bg-red-50" : "border-line bg-white"}`}
+                className={`${inputBase} appearance-none bg-no-repeat bg-[right_14px_center] ${form.venueStatus === "" ? "text-ink-faint" : "text-ink"} ${errors.venueStatus ? "border-red-400 bg-red-50" : "border-line bg-white"}`}
                 style={{ backgroundImage: selectArrow }}
               >
-                <option value="">{t.form.fields.venueStatusDefault}</option>
+                <option value="" disabled hidden>{t.form.fields.venueStatusDefault}</option>
                 <option value="existing">{t.form.fields.venueStatusExisting}</option>
                 <option value="new">{t.form.fields.venueStatusNew}</option>
               </select>
