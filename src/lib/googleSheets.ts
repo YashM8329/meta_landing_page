@@ -12,21 +12,25 @@ export interface LeadRow {
 }
 
 const SHEET_HEADERS = [
-  "Date & Time",
-  "Source URL",
-  "Full Name",
-  "Contact Number",
-  "Email",
-  "Country",
-  "Venue Status",
-  "Venue Address (if any)",
-  "Lead Status",
-  "Assigned to",
-  "Notes",
+  "Date & Time",       // A
+  "Source URL",        // B
+  "utm_source",        // C
+  "utm_medium",        // D
+  "utm_campaign",      // E
+  "utm_content",       // F
+  "Full Name",         // G
+  "Contact Number",    // H
+  "Email",             // I
+  "Country",           // J
+  "Venue Status",      // K
+  "Venue Address (if any)", // L
+  "Lead Status",       // M
+  "Assigned to",       // N
+  "Notes",             // O
 ];
 
-// A=Date & Time, B=Source URL, C=Full Name, D=Contact Number, E=Email, F=Country, G=Venue Status, H=Venue Address, I=Lead Status, J=Assigned to, K=Notes
-const STATUS_COLUMN = 9; // 1-indexed, column I
+// A=Date & Time, B=Source URL, C=utm_source, D=utm_medium, E=utm_campaign, F=utm_content, G=Full Name, H=Contact Number, I=Email, J=Country, K=Venue Status, L=Venue Address, M=Lead Status, N=Assigned to, O=Notes
+const STATUS_COLUMN = 13; // 1-indexed, column M
 
 function getAuth() {
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
@@ -46,7 +50,7 @@ function getAuth() {
 async function ensureHeaders(sheets: ReturnType<typeof google.sheets>, spreadsheetId: string): Promise<void> {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: "Sheet1!A1:K1",
+    range: "Sheet1!A1:O1",
   });
 
   const firstRow = response.data.values?.[0];
@@ -94,6 +98,7 @@ async function setRowDataValidation(
                   { userEnteredValue: "Disqualified" },
                   { userEnteredValue: "Follow Up" },
                   { userEnteredValue: "Processed" },
+                  { userEnteredValue: "Duplicate" },
                 ],
               },
               showCustomUi: true,
@@ -109,7 +114,7 @@ async function setRowDataValidation(
 async function isDuplicate(sheets: ReturnType<typeof google.sheets>, spreadsheetId: string, email: string): Promise<boolean> {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: "Sheet1!E:E", // Email is column E
+    range: "Sheet1!I:I", // Email is column I
   });
 
   const emails = response.data.values?.flat() ?? [];
@@ -147,31 +152,44 @@ export async function appendLead(lead: LeadRow): Promise<{ duplicate: boolean }>
     ? lead.venueStatusOther ?? ""
     : "";
 
+  // Parse UTM params string into individual columns (skip if direct)
+  const utmMap: Record<string, string> = {};
+  if (lead.utmParams && lead.utmParams !== "direct") {
+    lead.utmParams.split("&").forEach((part) => {
+      const [k, v] = part.split("=");
+      if (k && v) utmMap[k] = decodeURIComponent(v);
+    });
+  }
+
   const row = [
-    formattedDate,        // A - Date & Time
-    lead.utmParams ?? "", // B - Source URL
-    lead.fullName,        // C - Full Name
-    lead.phone,           // D - Contact Number
-    lead.email,           // E - Email
-    lead.country,         // F - Country
-    lead.venueStatus,     // G - Venue Status
-    venueAddress,         // H - Venue Address (if any)
-    "New",                // I - Lead Status
-    "",                   // J - Assigned to
-    "",                   // K - Notes
+    formattedDate,                  // A - Date & Time
+    lead.utmParams ?? "",           // B - Source URL
+    utmMap["utm_source"] ?? "",     // C - utm_source
+    utmMap["utm_medium"] ?? "",     // D - utm_medium
+    utmMap["utm_campaign"] ?? "",   // E - utm_campaign
+    utmMap["utm_content"] ?? "",    // F - utm_content
+    lead.fullName,                  // G - Full Name
+    lead.phone,                     // H - Contact Number
+    lead.email,                     // I - Email
+    lead.country,                   // J - Country
+    lead.venueStatus,               // K - Venue Status
+    venueAddress,                   // L - Venue Address (if any)
+    "New",                          // M - Lead Status
+    "",                             // N - Assigned to
+    "",                             // O - Notes
   ];
 
   // Get last row with data to append directly after it
   const existing = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: "Sheet1!A:K",
+    range: "Sheet1!A:O",
   });
   const lastRow = existing.data.values?.length ?? 1;
   const nextRow = lastRow + 1;
 
   await sheets.spreadsheets.values.update({
     spreadsheetId,
-    range: `Sheet1!A${nextRow}:K${nextRow}`,
+    range: `Sheet1!A${nextRow}:O${nextRow}`,
     valueInputOption: "RAW",
     requestBody: { values: [row] },
   });
