@@ -2,9 +2,14 @@
 
 import { motion } from "framer-motion";
 import { useTranslation } from "@/lib/useTranslation";
+import { useCTA } from "@/lib/CTAContext";
 
 export default function MobileBrochureCTA() {
   const { t } = useTranslation();
+  const { showCTA } = useCTA();
+
+  if (!showCTA) return null;
+
   const handleClick = () => {
     const el = document.getElementById("brochure-form");
     if (el) {

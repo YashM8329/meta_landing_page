@@ -2,9 +2,13 @@
 
 import { motion } from "framer-motion";
 import { useTranslation } from "@/lib/useTranslation";
+import { useCTA } from "@/lib/CTAContext";
 
 export default function StickyFooterCTA() {
   const { t } = useTranslation();
+  const { showCTA } = useCTA();
+
+  if (!showCTA) return null;
   return (
     <div
       className="fixed bottom-0 left-0 right-0 z-40"

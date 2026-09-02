@@ -4,9 +4,11 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion, type Variants } from "framer-motion";
 import { useTranslation } from "@/lib/useTranslation";
+import { useCTA } from "@/lib/CTAContext";
 
 export default function HeroSection() {
   const { t } = useTranslation();
+  const { showCTA } = useCTA();
   const reduce = useReducedMotion();
   const [isOpen, setIsOpen] = useState(false);
   const [videoLoaded, setVideoLoaded] = useState(false);
@@ -111,26 +113,28 @@ export default function HeroSection() {
           />
 
           <motion.div variants={item} className="flex items-center gap-4">
-            <a
-              href="#brochure-form"
-              className="btn-glass-accent text-white font-semibold text-[18px] lg:text-[22px] px-8 py-4 rounded-xl flex items-center gap-2.5"
-            >
-              <motion.span
-                className="flex items-center justify-center gap-2.5"
-                animate={{ scale: [1, 1, 1.05, 1, 1] }}
-                transition={{
-                  times: [0, 0.14, 0.20, 0.26, 1.0],
-                  duration: 3.5,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
+            {showCTA && (
+              <a
+                href="#brochure-form"
+                className="btn-glass-accent text-white font-semibold text-[18px] lg:text-[22px] px-8 py-4 rounded-xl flex items-center gap-2.5"
               >
-                {t.hero.requestBrochure}
-                <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </motion.span>
-            </a>
+                <motion.span
+                  className="flex items-center justify-center gap-2.5"
+                  animate={{ scale: [1, 1, 1.05, 1, 1] }}
+                  transition={{
+                    times: [0, 0.14, 0.20, 0.26, 1.0],
+                    duration: 3.5,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  {t.hero.requestBrochure}
+                  <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </motion.span>
+              </a>
+            )}
             <button
               onClick={() => setIsOpen(true)}
               className="btn-glass-light text-ink font-semibold text-[17px] lg:text-[21px] px-7 py-4 rounded-xl flex items-center gap-2.5 cursor-pointer"
@@ -240,26 +244,28 @@ export default function HeroSection() {
           </motion.div>
 
           <motion.div variants={item} className="flex items-center gap-4 mt-2">
-            <a
-              href="#brochure-form"
-              className="btn-glass-accent text-white font-semibold text-[18px] px-8 py-4 rounded-xl flex items-center gap-2.5"
-            >
-              <motion.span
-                className="flex items-center justify-center gap-2.5"
-                animate={{ scale: [1, 1, 1.05, 1, 1] }}
-                transition={{
-                  times: [0, 0.14, 0.20, 0.26, 1.0],
-                  duration: 3.5,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
+            {showCTA && (
+              <a
+                href="#brochure-form"
+                className="btn-glass-accent text-white font-semibold text-[18px] px-8 py-4 rounded-xl flex items-center gap-2.5"
               >
-                {t.hero.requestBrochure}
-                <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </motion.span>
-            </a>
+                <motion.span
+                  className="flex items-center justify-center gap-2.5"
+                  animate={{ scale: [1, 1, 1.05, 1, 1] }}
+                  transition={{
+                    times: [0, 0.14, 0.20, 0.26, 1.0],
+                    duration: 3.5,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  {t.hero.requestBrochure}
+                  <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </motion.span>
+              </a>
+            )}
             <button
               onClick={() => setIsOpen(true)}
               className="btn-glass-light text-ink font-semibold text-[17px] px-7 py-4 rounded-xl flex items-center gap-2.5 cursor-pointer"

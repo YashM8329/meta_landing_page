@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useCurrency } from "@/lib/useCurrency";
 import { useTranslation } from "@/lib/useTranslation";
+import { useCTA } from "@/lib/CTAContext";
 
 // Lucide icon approximations
 const GamepadIcon = ({ className }: { className?: string }) => (
@@ -137,6 +138,7 @@ const CHAINS_DATA: ChainData[] = [
 export default function CaseStudy() {
   const reduce = useReducedMotion();
   const { t } = useTranslation();
+  const { showCTA } = useCTA();
   const { symbol, rate } = useCurrency();
   const [activeTab, setActiveTab] = useState(0);
 
@@ -366,35 +368,35 @@ export default function CaseStudy() {
                 </div>
               </div>
 
-              {/* View Full Report Button */}
-              <a
-                href="#brochure-form"
-                className="relative w-full h-[52px] text-white font-bold text-[18px] rounded-xl flex items-center justify-center gap-2 overflow-hidden shadow-lg bg-gradient-to-r from-[#1D6CEF] via-[#2f74e6] to-[#1D6CEF] active:scale-[0.98] transition-all duration-150 border border-white/10 select-none cursor-pointer"
-              >
-                {/* Halftone pattern overlay */}
-                <div 
-                  className="absolute inset-0 opacity-40 pointer-events-none"
-                  style={{
-                    backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.7) 1.5px, transparent 2px)',
-                    backgroundSize: '6px 6px',
-                    WebkitMaskImage: 'linear-gradient(to right, black 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.05) 65%, black 100%)',
-                    maskImage: 'linear-gradient(to right, black 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.05) 65%, black 100%)',
-                  }}
-                />
-                <motion.span 
-                  className="relative z-10 flex items-center justify-center gap-2"
-                  animate={{ scale: [1, 1, 1.05, 1, 1] }}
-                  transition={{
-                    times: [0, 0.14, 0.20, 0.26, 1.0],
-                    duration: 3.5,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
+              {showCTA && (
+                <a
+                  href="#brochure-form"
+                  className="relative w-full h-[52px] text-white font-bold text-[18px] rounded-xl flex items-center justify-center gap-2 overflow-hidden shadow-lg bg-gradient-to-r from-[#1D6CEF] via-[#2f74e6] to-[#1D6CEF] active:scale-[0.98] transition-all duration-150 border border-white/10 select-none cursor-pointer"
                 >
-                  {t.caseStudy.viewReport}
-                  <ExternalLinkIcon className="w-4 h-4" />
-                </motion.span>
-              </a>
+                  <div 
+                    className="absolute inset-0 opacity-40 pointer-events-none"
+                    style={{
+                      backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.7) 1.5px, transparent 2px)',
+                      backgroundSize: '6px 6px',
+                      WebkitMaskImage: 'linear-gradient(to right, black 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.05) 65%, black 100%)',
+                      maskImage: 'linear-gradient(to right, black 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.05) 65%, black 100%)',
+                    }}
+                  />
+                  <motion.span 
+                    className="relative z-10 flex items-center justify-center gap-2"
+                    animate={{ scale: [1, 1, 1.05, 1, 1] }}
+                    transition={{
+                      times: [0, 0.14, 0.20, 0.26, 1.0],
+                      duration: 3.5,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  >
+                    {t.caseStudy.viewReport}
+                    <ExternalLinkIcon className="w-4 h-4" />
+                  </motion.span>
+                </a>
+              )}
             </div>
           </motion.div>
 
