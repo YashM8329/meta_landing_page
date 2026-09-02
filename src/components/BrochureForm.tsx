@@ -303,6 +303,15 @@ export default function BrochureForm() {
     }, 120);
   };
 
+  // On mobile, scroll the input so it sits ~80px from the top, keeping it visible
+  // and leaving maximum space below for the dropdown to open downward
+  const scrollInputToTop = (inputEl: HTMLInputElement | null) => {
+    if (!inputEl || window.innerWidth >= 768) return;
+    const rect = inputEl.getBoundingClientRect();
+    const targetTop = 80; // px from viewport top (clears navbar)
+    window.scrollBy({ top: rect.top - targetTop, behavior: "smooth" });
+  };
+
   const validate = (): FieldError => {
     const e: FieldError = {};
     if (!form.fullName.trim()) e.fullName = t.form.errors.fullNameRequired;
@@ -596,7 +605,7 @@ export default function BrochureForm() {
                       setVenueInputValue(e.target.value);
                       setHasSelected(false);
                     }}
-                    onFocus={() => fetchSuggestions(venueInputValue)}
+                    onFocus={(e) => { scrollInputToTop(e.currentTarget); fetchSuggestions(venueInputValue); }}
                     onBlur={() => {
                       setTimeout(() => setVenueOptions([]), 300);
                     }}
@@ -678,7 +687,7 @@ export default function BrochureForm() {
                       setVenueInputValue(e.target.value);
                       setHasSelected(false);
                     }}
-                    onFocus={() => fetchSuggestions(venueInputValue)}
+                    onFocus={(e) => { scrollInputToTop(e.currentTarget); fetchSuggestions(venueInputValue); }}
                     onBlur={() => {
                       setTimeout(() => setVenueOptions([]), 300);
                     }}
