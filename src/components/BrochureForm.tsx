@@ -303,10 +303,10 @@ export default function BrochureForm() {
     }, 120);
   };
 
-  // On mobile, scroll the input so it sits ~80px from the top, keeping it visible
-  // and leaving maximum space below for the dropdown to open downward
+  // Scroll the input so it sits ~80px from the top, keeping it visible
+  // and leaving maximum space below for the dropdown
   const scrollInputToTop = (inputEl: HTMLInputElement | null) => {
-    if (!inputEl || window.innerWidth >= 768) return;
+    if (!inputEl) return;
     const rect = inputEl.getBoundingClientRect();
     const targetTop = 80; // px from viewport top (clears navbar)
     window.scrollBy({ top: rect.top - targetTop, behavior: "smooth" });
@@ -574,90 +574,8 @@ export default function BrochureForm() {
                 <option value="">{t.form.fields.venueStatusDefault}</option>
                 <option value="existing">{t.form.fields.venueStatusExisting}</option>
                 <option value="new">{t.form.fields.venueStatusNew}</option>
-                <option value="other">{t.form.fields.venueStatusOther}</option>
               </select>
               {errors.venueStatus && <p id="err-venueStatus" role="alert" className="text-[12px] text-red-500 mt-1 font-medium">{errors.venueStatus}</p>}
-              <AnimatePresence>
-              {form.venueStatus === "other" && (
-              <motion.div
-                ref={venuePanelOtherRef}
-                id="venue-other-container"
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-                onAnimationComplete={() => {
-                  if (venuePanelOtherRef.current) venuePanelOtherRef.current.style.overflow = "visible";
-                }}
-                className="relative z-40 overflow-visible"
-                style={{ overflow: "visible" }}
-              >
-              <div className="mb-4 bg-accent/5 border border-accent/15 rounded-[12px] p-4 mt-4 relative z-30">
-                <label htmlFor="field-venueStatusOther" className="block text-[14px] lg:text-[16px] font-semibold text-ink mb-1.5">{t.form.fields.venueLocationOther} <span className="text-accent">*</span></label>
-                <div className="relative z-30">
-                  <input
-                    ref={venueOtherInputRef}
-                    id="field-venueStatusOther"
-                    type="text"
-                    value={form.venueStatusOther}
-                    onChange={(e) => {
-                      set("venueStatusOther", e.target.value);
-                      setVenueInputValue(e.target.value);
-                      setHasSelected(false);
-                    }}
-                    onFocus={(e) => { scrollInputToTop(e.currentTarget); fetchSuggestions(venueInputValue); }}
-                    onBlur={() => {
-                      setTimeout(() => setVenueOptions([]), 300);
-                    }}
-                    placeholder={t.form.fields.venueLocationOtherPlaceholder}
-                    className={`${inputBase} ${errors.venueStatusOther ? "border-red-400 bg-red-50" : "border-line bg-white"}`}
-                  />
-                  {isVenueLoading && (
-                    <div className="absolute right-3 top-3.5">
-                      <svg className="animate-spin h-5 w-5 text-accent" viewBox="0 0 24 24" fill="none">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                      </svg>
-                    </div>
-                  )}
-                  <AnchoredDropdown anchorRef={venueOtherInputRef} open={venueOptions.length > 0}>
-                    {venueOptions.map((opt, idx) => (
-                      <li
-                        key={idx}
-                        onMouseDown={(e) => e.preventDefault()}
-                        onTouchStart={(e) => e.preventDefault()}
-                        onClick={() => {
-                          set("venueStatusOther", opt.value);
-                          setVenueInputValue(opt.value);
-                          setVenueOptions([]);
-                          setSessionToken("");
-                          setHasSelected(true);
-                        }}
-                        className="px-4 py-2.5 hover:bg-accent/10 cursor-pointer flex items-center gap-2.5 text-[14px]"
-                      >
-                        <svg className="w-4 h-4 text-[#8A95A5] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                        </svg>
-                        <div className="flex-1 truncate text-left">
-                          <span className="font-semibold text-ink">{opt.mainText || opt.label}</span>
-                          {opt.secondaryText && (
-                            <span className="text-[12px] text-ink-faint ml-1.5">{opt.secondaryText}</span>
-                          )}
-                        </div>
-                      </li>
-                    ))}
-                    <li className="flex justify-end items-center px-4 py-2 bg-gray-50 border-t border-line sticky bottom-0 select-none">
-                      <span className="text-[10px] text-ink-faint font-medium uppercase tracking-wider">{t.form.poweredBy}</span>
-                      <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" className="h-[12px] ml-1.5 object-contain" />
-                    </li>
-                  </AnchoredDropdown>
-                </div>
-                {errors.venueStatusOther && <p id="err-venueStatusOther" role="alert" className="text-[12px] text-red-500 mt-1.5 font-medium">{errors.venueStatusOther}</p>}
-              </div>
-              </motion.div>
-            )}
-            </AnimatePresence>
 
             <AnimatePresence>
             {form.venueStatus === "existing" && (
@@ -687,6 +605,7 @@ export default function BrochureForm() {
                       setVenueInputValue(e.target.value);
                       setHasSelected(false);
                     }}
+                    onClick={(e) => scrollInputToTop(e.currentTarget)}
                     onFocus={(e) => { scrollInputToTop(e.currentTarget); fetchSuggestions(venueInputValue); }}
                     onBlur={() => {
                       setTimeout(() => setVenueOptions([]), 300);
