@@ -87,13 +87,12 @@ export default function LandingPage({ showCTA = true }: { showCTA?: boolean }) {
         <main className="page-canvas min-h-screen relative">
           <HeroSection />
           {showCTA && <BrochureForm />}
-          {/* <VideoSection /> */}
           <KeyFeaturesSection cards={featureCards} />
           <MomentsSection cards={momentsCards} />
-          <InstagramCarousel items={venueReels} title={t.venues.title} sectionId="locations" />
           <ProofSection />
           <ROICalculator />
           <CaseStudy />
+          <InstagramCarousel items={venueReels} title={t.venues.title} sectionId="locations" />
         </main>
 
         <Footer />
