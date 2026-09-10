@@ -21,8 +21,8 @@ export default function ThankYouContent() {
         </svg>
       </div>
 
-      <h1 className="text-[clamp(26px,4.5vw,40px)] font-extrabold tracking-[-0.03em] text-ink leading-[1.25] max-w-[680px] mb-10">
-        Thank you for your interest in HyperGrid. Our team will contact you within 24hours
+      <h1 className="text-[clamp(26px,4.5vw,40px)] font-extrabold tracking-[-0.03em] text-ink leading-[1.25] max-w-[680px] mb-4">
+        {t.form.followUp}
       </h1>
 
       <Link
