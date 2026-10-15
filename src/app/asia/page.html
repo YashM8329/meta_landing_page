@@ -1,0 +1,808 @@
+<title>HyperGrid Brochure Request</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#F3F5F9; --grid:rgba(40,60,110,.055); --surface:#FFFFFF; --surface-2:#F7F9FC;
+  --ink:#10162A; --muted:#667085; --line:#E1E6EF;
+  --accent:#3E6BE6; --accent-2:#5D82F2; --btn-ink:#FFFFFF; --accent-soft:#E9EFFD;
+  --hot:#138A43; --hot-soft:#E3F5EA; --warm:#B86A06; --warm-soft:#FCF0DD; --cold:#5B6678; --cold-soft:#ECEFF4;
+  --danger:#C2362B;
+  --font:"Urbanist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0D1220; --grid:rgba(140,165,230,.06); --surface:#151C2E; --surface-2:#1A2338;
+    --ink:#E9EDF6; --muted:#98A3BA; --line:#27314A;
+    --accent:#6A8CF6; --accent-2:#86A2FA; --btn-ink:#0B1020; --accent-soft:#1D2A4F;
+    --hot:#4CC985; --hot-soft:#143325; --warm:#F0A94A; --warm-soft:#3A2A12; --cold:#A3AEC2; --cold-soft:#232C40;
+    --danger:#F07A70;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0D1220; --grid:rgba(140,165,230,.06); --surface:#151C2E; --surface-2:#1A2338;
+  --ink:#E9EDF6; --muted:#98A3BA; --line:#27314A;
+  --accent:#6A8CF6; --accent-2:#86A2FA; --btn-ink:#0B1020; --accent-soft:#1D2A4F;
+  --hot:#4CC985; --hot-soft:#143325; --warm:#F0A94A; --warm-soft:#3A2A12; --cold:#A3AEC2; --cold-soft:#232C40;
+  --danger:#F07A70;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{
+  margin:0; font-family:var(--font); color:var(--ink); font-size:16px; line-height:1.5;
+  background-color:var(--bg);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:48px 48px;
+}
+button{font:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- shell ---------- */
+.app{padding-bottom:var(--kb,0px);min-height:100%;display:flex;flex-direction:column}
+.progress{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;height:5px;background:var(--line)}
+.fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .5s cubic-bezier(.2,.8,.2,1)}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 24px;flex-wrap:wrap}
+.logo{display:flex;align-items:baseline;gap:10px}
+.logo b{font-weight:800;letter-spacing:.16em;font-size:15px}
+.logo span{font-size:13px;color:var(--muted);font-weight:600}
+.hright{display:flex;align-items:center;gap:14px}
+.pct{font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.viewbtn{background:var(--surface);border:1px solid var(--line);color:var(--ink);font-size:13.5px;font-weight:700;padding:7px 12px;border-radius:9px;cursor:pointer}
+.viewbtn:hover{border-color:var(--accent-2)}
+
+main{flex:1;scroll-padding-bottom:24px;display:flex;align-items:center;justify-content:center;padding-inline:24px;padding-block:8px 32px}
+.stage{width:100%;max-width:640px}
+.q{display:flex;flex-direction:column;gap:20px;animation:rise .4s cubic-bezier(.2,.8,.2,1)}
+@keyframes rise{from{opacity:.001;transform:translateY(16px)}to{opacity:1;transform:none}}
+.crumb{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.04em}
+.crumb .branch{color:var(--muted);font-weight:600;letter-spacing:0}
+h1{font-size:clamp(28px,5.4vw,40px);line-height:1.12;margin:0;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
+.sub{margin:-8px 0 0;color:var(--muted);font-size:17px;max-width:52ch}
+
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{text-align:left;display:flex;align-items:center;gap:12px;background:var(--surface);border:1.5px solid var(--line);color:var(--ink);border-radius:12px;padding:12px 14px;cursor:pointer;font-size:17px;font-weight:500;transition:border-color .15s,background .15s,transform .15s}
+.opt:hover{border-color:var(--accent-2)}
+.opt:active{transform:scale(.99)}
+.opt .key{flex:none;width:26px;height:26px;border-radius:7px;border:1.5px solid var(--line);display:grid;place-items:center;font-size:12.5px;font-weight:800;color:var(--muted);background:var(--surface-2)}
+.opt .lbl{flex:1;display:flex;flex-direction:column;gap:2px}
+.opt .desc{font-size:14px;color:var(--muted);font-weight:500}
+.opt .tick{flex:none;opacity:0;color:var(--accent);display:flex}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.opt[aria-pressed="true"] .key{background:var(--accent);border-color:var(--accent);color:var(--btn-ink)}
+.opt[aria-pressed="true"] .tick{opacity:1}
+
+.fields{display:flex;flex-direction:column;gap:16px}
+label.f .eg{font-size:13px;font-weight:500;color:var(--muted)}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:700;color:var(--muted)}
+.inp{font:inherit;font-size:22px;color:var(--ink);background:transparent;border:0;border-bottom:2px solid var(--line);padding:8px 2px;border-radius:0;outline:none;width:100%}
+.inp:focus{border-bottom-color:var(--accent)}
+.inp::placeholder{color:var(--muted);opacity:.6}
+select.inp{font-size:18px;cursor:pointer}
+.phone{display:flex;gap:12px}
+.phone select{flex:0 0 100px}
+.otp{font-family:var(--mono);font-size:34px;letter-spacing:.5em;max-width:230px}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:16px;cursor:pointer}
+.check input{width:20px;height:20px;accent-color:var(--accent);margin-top:2px;flex:none}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-size:14.5px;font-weight:600;background:var(--surface);border:1.5px solid var(--line);color:var(--ink);padding:8px 14px;border-radius:99px;cursor:pointer}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.hint{font-size:14px;color:var(--muted);font-weight:600}
+.err{color:var(--danger);font-size:14.5px;font-weight:600;min-height:21px}
+
+.nav{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.btn{font-weight:700;font-size:17px;border:0;border-radius:11px;padding:13px 24px;cursor:pointer;color:var(--btn-ink);
+  background-color:var(--accent);
+  background-image:radial-gradient(rgba(255,255,255,.22) 1px,transparent 1.2px),linear-gradient(90deg,var(--accent),var(--accent-2));
+  background-size:6px 6px,100% 100%;display:inline-flex;align-items:center;gap:8px}
+.link{font-size:14.5px;font-weight:700;background:none;border:0;color:var(--muted);cursor:pointer;padding:6px 2px}
+.link:hover{color:var(--ink)}
+.enter{font-size:13.5px;color:var(--muted)}
+kbd{font-family:var(--font);font-weight:700;font-size:12.5px;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 5px;background:var(--surface)}
+.spacer{flex:1}
+
+.promise{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.promise li{display:flex;gap:10px;align-items:flex-start;font-size:17px}
+.promise svg{flex:none;margin-top:4px;color:var(--accent)}
+.endicon{width:56px;height:56px;border-radius:16px;display:grid;place-items:center}
+.endicon.hot{background:var(--hot-soft);color:var(--hot)}
+.endicon.warm{background:var(--warm-soft);color:var(--warm)}
+.endicon.cold,.endicon.knock{background:var(--cold-soft);color:var(--cold)}
+.callout{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:16px}
+
+/* save contact card */
+.savecard{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--accent-soft);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.savecard div{display:flex;flex-direction:column;line-height:1.3}
+.savecard b{font-size:16px}
+.savecard span{font-size:14.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.savebtn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:15px;border:1.5px solid var(--accent);color:var(--accent);background:var(--surface);border-radius:10px;padding:9px 14px;cursor:pointer}
+.savebtn:hover{background:var(--accent-soft)}
+
+.unit{display:inline-grid;vertical-align:baseline;text-align:center;white-space:nowrap;padding:0 .3em;margin:0 .05em;border-radius:.3em;background:var(--accent-soft);color:var(--accent)}
+.unit .u{grid-area:1/1;opacity:0;transition:opacity .3s ease-in-out}
+.unit .u.on{opacity:1}
+@media (prefers-reduced-motion: reduce){.unit .u{transition:none}}
+.sw{position:relative;display:block}
+.sugg{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:99999;margin:0;padding:4px;list-style:none;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);max-height:260px;overflow:auto}
+.sugg li{padding:9px 12px;border-radius:8px;cursor:pointer;font-size:14.5px;font-weight:500;color:var(--ink);line-height:1.35;display:flex;flex-direction:column;gap:1px}
+.sugg li:hover,.sugg li[aria-selected="true"]{background:var(--accent-soft)}
+.sugg li.sugg-credit{flex-direction:row;justify-content:flex-end;cursor:default;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-radius:0;padding:6px 10px 2px;background:transparent!important}
+.sugg .sugg-sec{font-size:12.5px;font-weight:500;color:var(--muted)}
+/* ---------- internal bar ---------- */
+.tools{position:sticky;bottom:0;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 24px calc(10px + env(safe-area-inset-bottom,0px));background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(6px);border-top:1px dashed var(--line);font-size:13.5px}
+.tools .tag{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.tools .score{font-weight:800;font-variant-numeric:tabular-nums}
+.pill{font-size:12.5px;font-weight:800;padding:3px 10px;border-radius:99px}
+.pill.hot{background:var(--hot-soft);color:var(--hot)}
+.pill.warm{background:var(--warm-soft);color:var(--warm)}
+.pill.cold,.pill.knock,.pill.pending{background:var(--cold-soft);color:var(--cold)}
+.trail{color:var(--muted);font-family:var(--mono);font-size:11.5px;overflow-x:auto;white-space:nowrap;max-width:100%}
+pre.payload{margin:0 24px 12px;font-family:var(--mono);font-size:12px;line-height:1.55;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;overflow-x:auto;max-height:240px}
+
+/* ---------- flow map ---------- */
+.map{max-width:1100px;margin:0 auto;padding-inline:24px;padding-block:8px 48px;display:flex;flex-direction:column;gap:28px}
+.map-intro{display:flex;flex-direction:column;gap:8px;max-width:70ch}
+.map-intro h2{margin:0;font-size:28px;text-wrap:balance}
+.map-intro p{margin:0;color:var(--muted)}
+.legend{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:13.5px;color:var(--muted)}
+.lane{display:flex;flex-direction:column;gap:12px}
+.lane h3{margin:0;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.nodes{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;align-items:start}
+.node{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;scroll-margin-top:24px}
+.node:target,.node.flash{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.node .nid{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.node .nq{font-weight:700;font-size:16.5px;line-height:1.3}
+.edge{display:grid;grid-template-columns:1fr auto;gap:2px 10px;font-size:14px;padding:7px 0;border-top:1px solid var(--line)}
+.edge .el{font-weight:600}
+.edge .ed{display:block;font-weight:500;color:var(--muted);font-size:12.5px}
+.edge .ep{font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;text-align:right}
+.edge .et{grid-column:1/-1;color:var(--muted);font-size:13px}
+.edge .et a{color:var(--accent);font-weight:700;text-decoration:none}
+.edge .et a:hover{text-decoration:underline}
+.edge .et .exit{color:var(--cold);font-weight:700}
+.rule{font-size:13.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:8px}
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.tier{border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:6px;background:var(--surface)}
+.tier .pill{align-self:flex-start}
+.tier p{margin:0;font-size:14.5px}
+.tier small{color:var(--muted);font-size:13.5px}
+
+@media (max-width:560px){
+  header,main,.tools{padding-inline:16px}
+  .map{padding-inline:16px}
+  .enter{display:none}
+  .opt{font-size:16px}
+  .inp{font-size:20px}
+}
+@media (prefers-reduced-motion: reduce){.q{animation:none}.fill{transition:none}}
+</style>
+
+<div class="app">
+  <div class="progress" role="progressbar" aria-label="Form progress" aria-valuemin="0" aria-valuemax="100" id="bar"><div class="fill" id="fill"></div></div>
+  <header>
+    <div class="logo"><b>HYPERGRID</b><span>by FOG Technologies</span></div>
+    <div class="hright">
+      <span class="pct" id="pct" hidden>0% done</span>
+      <button class="viewbtn" id="viewbtn" hidden>Flow map</button>
+    </div>
+  </header>
+
+  <main id="formview"><div class="stage" id="stage"></div></main>
+
+  <section id="mapview" hidden><div class="map" id="map"></div></section>
+
+  <pre class="payload" id="payload" hidden></pre>
+  <div class="tools" id="tools" hidden>
+    <span class="tag">Internal</span>
+    <span>Segment <span class="score" id="iscore">—</span></span>
+    <span class="pill pending" id="itier">In progress</span>
+    <span class="trail" id="trail"></span>
+    <span class="spacer"></span>
+    <button class="link" id="ptoggle" aria-expanded="false">CRM payload</button>
+  </div>
+</div>
+
+<script>
+/* ===== Edit before going live ===== */
+const CONFIG = {
+  salesNumber: "[+91 sales number]",   // used for the “Save to contacts” card too
+  salesContactName: "HyperGrid Sales Team",
+  floorArea: "15 to 25 m²",
+  floorAreaFt: "160 to 270 sq ft",        // shown alternating with the m² figure
+  analyticsUrl: "",                  // optional: your own endpoint that accepts JSON POSTs of each event
+  analyticsDebug: false,               // true = also print every event in the browser console
+  brochureUrl: "",                     // paste the brochure PDF link here (https://…)
+};
+
+const I = {
+  check:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  arrow:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+  phone:'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>',
+  pin:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
+  user:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="4"/><path d="M2.5 21a7.5 7.5 0 0 1 15 0M19 8v6M16 11h6"/></svg>',
+  mail:'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
+  play:'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l5.5-3.5z"/></svg>',
+};
+
+/* ===== The tree =====
+   Question node: q, sub, branch, opts[{label, desc?, next, reason?, set?}]
+   Router node: decides the next step silently from earlier answers.        */
+const o=(label,next,extra={})=>({label,next,...extra});
+
+const REGIONS = {
+  europe: ['AL','AD','AT','BY','BE','BA','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','XK','LV','LI','LT','LU','MT','MD','MC','ME','NL','MK','NO','PL','PT','RO','RU','SM','RS','SK','SI','ES','SE','CH','UA','GB','VA'],
+  na: ['US','CA'],
+};
+const COUNTRY_ALIASES = { 'uk':'GB','u.k.':'GB','britain':'GB','great britain':'GB','england':'GB','scotland':'GB','wales':'GB','northern ireland':'GB','usa':'US','u.s.':'US','u.s.a.':'US','us':'US','united states of america':'US','america':'US','holland':'NL','czechia':'CZ' };
+let _names=null;
+function countryCode(name){
+  const k=String(name||'').trim().toLowerCase(); if(!k) return null;
+  if (COUNTRY_ALIASES[k]) return COUNTRY_ALIASES[k];
+  if (!_names){
+    _names={};
+    try{ const dn=new Intl.DisplayNames(['en'],{type:'region'});
+      for (let a=65;a<91;a++) for (let b=65;b<91;b++){ const c=String.fromCharCode(a,b); const n=dn.of(c); if(n&&n!==c) _names[n.toLowerCase()]=c; } }catch(e){}
+  }
+  return _names[k]||null;
+}
+function regionOf(){
+  const c=S.f.ccode||countryCode(S.f.country);
+  if (c && REGIONS.europe.includes(c)) return 'europe';
+  if (c && REGIONS.na.includes(c)) return 'na';
+  return 'other';
+}
+
+const N = {
+  intro:{type:'intro', branch:'Start', q:'Get the HyperGrid brochure', next:'role'},
+
+  role:{branch:'Questions', q:'What best describes you?', opts:[
+    o('I operate multiple venues','loc',{set:{segment:'Operates multiple venues'}}),
+    o('I operate one venue','loc',{set:{segment:'Operates one venue'}}),
+    o('I’m building my first venue','loc',{set:{segment:'Building first venue', kind:'building'}}),
+    o('I’m just exploring','loc',{set:{segment:'Just exploring', kind:'exploring'}}),
+  ]},
+
+  loc:{type:'venue', branch:'Questions', q:'What’s your venue called?',
+    qPlain:'What’s your venue called? (then its address, city and country)', next:'space',
+    note:'Address search suggests places as the visitor types (Google Places, same source as the main brochure form) and fills address, city and country. They can also type everything by hand.'},
+
+  space:{branch:'Questions', q:()=>`Can you set aside <span class="unit" id="unit" role="text" aria-label="${CONFIG.floorArea} (${CONFIG.floorAreaFt})"><span class="u on" aria-hidden="true">${CONFIG.floorArea}</span><span class="u" aria-hidden="true">${CONFIG.floorAreaFt}</span></span> of space for HyperGrid?`, qPlain:'Can you set aside 15 to 25 m² (160 to 270 sq ft) of space for HyperGrid?', opts:[
+    o('Yes, I can make space','r_budget',{set:{space:'Can make 15 to 25 m²'}}),
+    o('No, I’ll miss out on a high revenue per m² game','r_budget',{set:{space:'Passed on space'}}),
+  ]},
+
+  r_budget:{type:'router', branch:'Questions', q:'Budget check (automatic, by country)', rule:'Uses the country from the venue location. The USA and Canada see the $75K question; every other country sees the $40K to $60K question.',
+    to:['budget_eu','budget_na'], fn:()=>regionOf()==='na' ? 'budget_na' : 'budget_eu'},
+  budget_eu:{branch:'Questions', q:'Are you ready to invest <span class="unit"><span class="u on">$40K to $60K</span></span> in a game with high returns?', qPlain:'Are you ready to invest $40K to $60K in a game with high returns?', opts:[
+    o('Yes, I’m ready to invest','name',{set:{budget:'Ready, $40K to $60K'}}),
+    o('No, I’ll miss out on the opportunity to earn $10,000 a month','name',{html:'No, I’ll miss out on the opportunity to earn <b>$10,000 a month</b>',set:{budget:'Passed ($40K to $60K)'}}),
+  ]},
+  budget_na:{branch:'Questions', q:'Are you ready to invest <span class="unit"><span class="u on">$75K</span></span> in a game with high returns?', qPlain:'Are you ready to invest $75K in a game with high returns?', opts:[
+    o('Yes, I’m ready to invest','name',{set:{budget:'Ready, $75K'}}),
+    o('No, I’ll miss out on the opportunity to earn $10,000 a month','name',{html:'No, I’ll miss out on the opportunity to earn <b>$10,000 a month</b>',set:{budget:'Passed ($75K)'}}),
+  ]},
+
+  name:{type:'name', branch:'Questions', q:'Your name?', next:'email'},
+  email:{type:'email', branch:'Questions', q:'Your work email?', next:'phone'},
+  phone:{type:'phone', branch:'Questions', q:'Your phone number?', next:'comm'},
+  comm:{type:'comm', branch:'Questions', q:'How would you like us to reach you?', next:'end',
+    note:'Call, WhatsApp or email. Only “Call” asks for a day and time. “Today” shows only when 5 or more hours of the day are left; passed time slots are hidden.'},
+
+  end:{type:'end', branch:'Endings', q:'Thank you, brochure download and save our contact'},
+};
+
+/* ===== State ===== */
+const S = { hist:['intro'], a:{}, set:{}, reason:null, f:{} };
+const cur = ()=> S.hist[S.hist.length-1];
+const txt = (n,k='q')=> typeof n[k]==='function'? n[k]() : n[k];
+const esc = s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function targets(id){
+  const n=N[id]; if(!n) return [];
+  if (n.type==='router') return n.to;
+  if (n.opts) return [...new Set(n.opts.map(x=>x.next))];
+  return n.next?[n.next]:[];
+}
+const memo={};
+function longest(id){
+  if (id in memo) return memo[id];
+  let best=0;
+  for (const x of targets(id)){ const add=N[x].type==='router'?0:1; best=Math.max(best, add+longest(x)); }
+  return memo[id]=best;
+}
+
+function derive(){
+  S.set={}; S.reason=null;
+  for (const id of S.hist){
+    const n=N[id], v=S.a[id];
+    if (!n.opts || v==null) continue;
+    const opt=n.opts[v]; if(!opt) continue;
+    if (opt.set) Object.assign(S.set,opt.set);
+    if (opt.reason) S.reason=opt.reason;
+  }
+}
+function route(){ return S.hist.includes('end') ? 'done' : 'pending'; }
+const ROUTE = {done:['hot','Lead captured'], pending:['pending','In progress']};
+
+function goTo(id){
+  while (N[id].type==='router'){ S.hist.push(id); id=N[id].fn(); }
+  S.hist.push(id); derive(); render();
+}
+function back(){
+  if (S.hist.length<=1) return;
+  S.hist.pop();
+  while (S.hist.length>1 && N[cur()].type==='router') S.hist.pop();
+  derive(); render();
+}
+function restart(){ S.hist=['intro']; S.a={}; S.f={}; derive(); render(); }
+
+/* ===== Call day and time =====
+   Day choices follow the visitor’s own clock: “Today” appears only when 5+ hours of the day are left
+   (and at least one time slot is still open); otherwise tomorrow and the day after. */
+const SLOTS=[
+  {k:'Morning',   label:'Morning (9–12)',   range:'9 am–12 pm', end:12},
+  {k:'Afternoon', label:'Afternoon (12–4)', range:'12–4 pm',    end:16},
+  {k:'Evening',   label:'Evening (4–7)',    range:'4–7 pm',     end:19},
+];
+const WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const ymd=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const shortDate=d=>`${WD[d.getDay()]} ${d.getDate()} ${MO[d.getMonth()]}`;
+function slotsFor(iso, now=new Date()){
+  if (iso!==ymd(now)) return SLOTS;
+  const h=now.getHours()+now.getMinutes()/60;
+  return SLOTS.filter(x=>x.end>h);
+}
+function dayOptions(now=new Date()){
+  const mk=(add,name)=>{ const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+add); const sh=shortDate(d); return {iso:ymd(d), short:sh, label:name?`${name} · ${sh}`:sh}; };
+  const hoursLeft=24-(now.getHours()+now.getMinutes()/60);
+  const out=[], today=mk(0,'Today');
+  if (hoursLeft>=5 && slotsFor(today.iso,now).length) out.push(today);
+  out.push(mk(1,'Tomorrow'), mk(2,''), {iso:'next-week', short:'next week', label:'Next week'});
+  return out;
+}
+const onDay=()=> S.f.dayISO==='next-week' ? 'during <b>next week</b>' : `on <b>${esc(S.f.dayShort)}</b>`;
+const timeChips=()=> slotsFor(S.f.dayISO).map(x=>`<button class="chip" data-time="${x.k}" aria-pressed="${S.f.time===x.k}">${x.label}</button>`).join('');
+const slotOf=()=> SLOTS.find(x=>x.k===S.f.time);
+const clearErr=()=>{ const e=document.getElementById('err'); if(e) e.textContent=''; };
+
+/* ===== Analytics =====
+   Counts how many people reach each page, so you can see where they drop off. No names, emails or phone
+   numbers are ever sent. Events go to whatever is on the page: Google Analytics (gtag) or Tag Manager
+   (dataLayer), Meta Pixel (fbq), LogRocket, and/or your own endpoint (CONFIG.analyticsUrl).
+   Events: form_view, step_view (each page, once per visit and again when someone goes back),
+   step_complete, form_complete, form_exit (the page they left on). */
+const SID=(()=>{ try{ let v=sessionStorage.getItem('hg_sid'); if(!v){ v=Math.random().toString(36).slice(2,10)+Date.now().toString(36); sessionStorage.setItem('hg_sid',v); } return v; }catch(e){ return Math.random().toString(36).slice(2,10); } })();
+const UTM=(()=>{ const o={}; try{ const q=new URLSearchParams(location.search); ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','gclid'].forEach(k=>{ if(q.get(k)) o[k]=q.get(k); }); if(document.referrer) o.referrer=document.referrer; }catch(e){} return o; })();
+const STEP_NAME={intro:'start',role:'role',loc:'venue_location',space:'floor_space',budget_eu:'budget',budget_na:'budget',name:'name',email:'work_email',phone:'phone',comm:'contact_preference',end:'thank_you'};
+const seenSteps=new Set(); let lastStep=null, completed=false, exited=false;
+function track(event, props={}){
+  const data={event, form:'hypergrid-brochure', session_id:SID, ts:new Date().toISOString(), ...UTM, ...props};
+  try{
+    if (typeof window.gtag==='function') window.gtag('event', event, data);
+    else (window.dataLayer=window.dataLayer||[]).push(data);
+    if (typeof window.fbq==='function') window.fbq('trackCustom','HG_'+event, data);
+    if (window.LogRocket && typeof window.LogRocket.track==='function') window.LogRocket.track(event, data);
+    if (CONFIG.analyticsUrl){
+      const body=JSON.stringify(data);
+      if (!(navigator.sendBeacon && navigator.sendBeacon(CONFIG.analyticsUrl, new Blob([body],{type:'application/json'})))) fetch(CONFIG.analyticsUrl,{method:'POST',body,headers:{'Content-Type':'application/json'},keepalive:true}).catch(()=>{});
+    }
+    if (CONFIG.analyticsDebug) console.log('[analytics]', event, data);
+  }catch(e){}
+}
+function trackStep(id){
+  if (id===lastStep) return;
+  const prev=lastStep; lastStep=id; exited=false;
+  const n=N[id]; if (!n || n.type==='router') return;
+  const number=S.hist.filter(h=>N[h].type!=='router').length;
+  const base={step_id:STEP_NAME[id]||id, step_number:number, segment:S.set.segment||undefined, region:S.f.country?regionOf():undefined};
+  if (!seenSteps.size) track('form_view', base);
+  if (prev && prev!==id && N[prev] && N[prev].type!=='router' && S.hist.includes(prev) && S.hist.lastIndexOf(prev)<S.hist.lastIndexOf(id)) track('step_complete',{step_id:STEP_NAME[prev]||prev, step_number:number-1});
+  track('step_view', {...base, repeat:seenSteps.has(id)});
+  seenSteps.add(id);
+  if (n.type==='end' && !completed){
+    completed=true;
+    track('form_complete',{...base, segment:S.set.segment, space:S.set.space, budget:S.set.budget, contact_mode:S.f.mode, region:regionOf()});
+  }
+}
+function trackExit(){
+  if (completed || exited || !lastStep || !seenSteps.size) return;
+  const n=N[lastStep]; if (!n || n.type==='end') return;
+  exited=true; // send once per page
+  track('form_exit',{step_id:STEP_NAME[lastStep]||lastStep, step_number:S.hist.filter(h=>N[h].type!=='router').length});
+}
+addEventListener('pagehide',trackExit);
+document.addEventListener('visibilitychange',()=>{ if (document.visibilityState==='hidden') trackExit(); });
+
+/* ===== Render ===== */
+const stage=document.getElementById('stage');
+let timer=null, unitTimer=null;
+function startUnit(){
+  const el=document.getElementById('unit'); if(!el) return;
+  const [a,b]=el.querySelectorAll('.u');
+  unitTimer=setInterval(()=>{ a.classList.toggle('on'); b.classList.toggle('on'); },1800);
+}
+
+function render(){
+  clearTimeout(timer); clearInterval(unitTimer);
+  const id=cur(), n=N[id];
+  trackStep(id);
+  const done=S.hist.filter(h=>N[h].type!=='router').length-1;
+  const pct = n.type==='end'?100:Math.round(done/(done+longest(id))*100);
+  document.getElementById('fill').style.width=pct+'%';
+  document.getElementById('pct').textContent=pct+'% done';
+  document.getElementById('bar').setAttribute('aria-valuenow',pct);
+
+  const crumb = '';
+  const head = `${crumb}<h1>${txt(n)}</h1>${n.sub?`<p class="sub">${txt(n,'sub')}</p>`:''}`;
+  let h='';
+
+  if (n.type==='intro'){
+    h=`<div class="q">
+      <div class="crumb">About 1 minute</div>
+      <h1>Get HyperGrid brochure and Revenue reports</h1>
+      <div class="nav"><span class="spacer"></span><button class="btn" data-next>Start ${I.arrow}</button></div>
+    </div>`;
+  }
+  else if (n.opts){
+    h=`<div class="q">${head}
+      <div class="opts" role="radiogroup">
+        ${n.opts.map((x,i)=>`<button class="opt" role="radio" data-i="${i}" aria-checked="${S.a[id]===i}" aria-pressed="${S.a[id]===i}"><span class="key">${String.fromCharCode(65+i)}</span><span class="lbl">${x.html?`<span>${x.html}</span>`:esc(x.label)}${x.desc?`<span class="desc">${esc(x.desc)}</span>`:''}</span><span class="tick">${I.check}</span></button>`).join('')}
+      </div>
+      <div class="nav">${backBtn()}</div>
+    </div>`;
+  }
+  else if (n.type==='name'){
+    h=`<div class="q">${head}<div class="fields"><input class="inp" id="f-name" autocomplete="name" placeholder="Full name" value="${esc(S.f.name)}"></div><div class="err" id="err"></div>${navOK('Next')}</div>`;
+  }
+  else if (n.type==='venue'){
+    h=`<div class="q">${head}<div class="fields">
+      <label class="f">Address
+        <span class="sw"><input class="inp" id="f-address" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="sugg" placeholder="Start typing your venue’s name or address" value="${esc(S.f.address)}"><ul class="sugg" id="sugg" role="listbox" hidden></ul></span>
+      </label>
+    </div><div class="err" id="err"></div>${navOK('Next')}</div>`;
+  }
+  else if (n.type==='email'){
+    h=`<div class="q">${head}
+      <div class="fields"><input class="inp" id="f-email" type="email" autocomplete="email" placeholder="name@yourvenue.com" value="${esc(S.f.email)}"></div>
+      <div class="err" id="err"></div>${navOK('Next')}</div>`;
+  }
+  else if (n.type==='phone'){
+    const codes=['+91','+971','+966','+974','+1','+44','+61','+64','+65','+60','+62','+66','+63','+84','+81','+82','+27'];
+    h=`<div class="q">${head}<div class="fields">
+      <div class="phone">
+        <select class="inp" id="f-cc" aria-label="Country code">${codes.map(c=>`<option ${c===(S.f.cc||'+91')?'selected':''}>${c}</option>`).join('')}</select>
+        <input class="inp" id="f-phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="98765 43210" value="${esc(S.f.phone)}">
+      </div>
+    </div><div class="err" id="err"></div>${navOK('Next')}</div>`;
+  }
+  else if (n.type==='comm'){
+    const modes=[['Email','Email'],['WhatsApp','WhatsApp'],['Call','Call']];
+    const days=dayOptions();
+    if (S.f.dayISO && !days.some(d=>d.iso===S.f.dayISO)){ delete S.f.dayISO; delete S.f.dayShort; delete S.f.time; }
+    if (S.f.time && !slotsFor(S.f.dayISO).some(x=>x.k===S.f.time)) delete S.f.time;
+    h=`<div class="q">${head}<div class="opts" role="radiogroup">
+      ${modes.map(([k,l],i)=>`<button class="opt" role="radio" data-mode="${k}" aria-checked="${S.f.mode===k}" aria-pressed="${S.f.mode===k}"><span class="key">${String.fromCharCode(65+i)}</span><span class="lbl">${l}</span><span class="tick">${I.check}</span></button>`).join('')}
+      </div>
+      ${S.f.mode==='Call'?`<div class="fields" style="margin-top:20px">
+        <div><div class="hint" id="dayhint" style="margin-bottom:8px">Which day should we call?</div>
+          <div class="chips" id="daychips" role="group" aria-labelledby="dayhint">${days.map(d=>`<button class="chip" data-day="${d.iso}" data-short="${esc(d.short)}" aria-pressed="${S.f.dayISO===d.iso}">${esc(d.label)}</button>`).join('')}</div></div>
+        <div id="timegroup"><div class="hint" id="timehint" style="margin-bottom:8px">What time? (your time)</div>
+          <div class="chips" id="timechips" role="group" aria-labelledby="timehint">${timeChips()}</div></div>
+      </div>`:''}
+      <div class="err" id="err"></div><div class="nav">${backBtn()}</div></div>`;
+  }
+  else if (n.type==='end'){ h=endScreen(id); }
+
+  stage.innerHTML=h;
+  bind();
+  updateTools();
+  if (n.type==='end') autoDownload();
+  startUnit();
+  const first=stage.querySelector('input.inp');
+  if (first) first.focus({preventScroll:true});
+}
+const backBtn=()=> S.hist.length>1 ? `<button class="link" data-back>← Back</button>` : '';
+const navOK=(label)=>`<div class="nav">${backBtn()}<span class="spacer"></span><button class="btn" data-next>${label} ${I.arrow}</button></div>`;
+
+function endScreen(id){
+  const hasLink=/^https?:\/\//.test(CONFIG.brochureUrl);
+  return `<div class="q"><div class="endicon hot">${I.check}</div>
+    <h1>Thank you, your brochure is being downloaded!</h1>
+    <p class="sub">Our team will reach out to you with more details within 24 hours.</p>
+    ${hasLink?`<div class="hint" id="dlnote"><a href="${esc(CONFIG.brochureUrl)}" target="_blank" rel="noopener" download>Download didn’t start? Tap here.</a></div>`:''}
+    ${S.f.mode==='Email'?'':`<div class="savecard" style="margin-top:20px">
+      <div><b>${esc(CONFIG.salesContactName)}</b><span>${esc(CONFIG.salesNumber)}</span></div>
+      <button class="savebtn" id="savecontact" type="button">${I.user} Save to contacts</button>
+    </div>
+    <div class="hint" id="savenote" aria-live="polite"></div>`}
+    <div class="nav"><button class="link" data-restart>Start over</button></div></div>`;
+}
+
+function autoDownload(){
+  if (!/^https?:\/\//.test(CONFIG.brochureUrl)) return;
+  const a=document.createElement('a'); a.href=CONFIG.brochureUrl; a.download=''; a.rel='noopener'; a.style.display='none';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+/* ===== Save sales contact (vCard) =====
+   On the live site this downloads a .vcf file; phones open it in the Contacts
+   app with the name and number filled in, and the visitor taps Save.
+   Inside the Claude preview, file downloads are blocked, so it copies the number instead. */
+function vcard(){
+  const tel=CONFIG.salesNumber.replace(/[^\d+]/g,'');
+  return ['BEGIN:VCARD','VERSION:3.0',`N:;${CONFIG.salesContactName};;;`,`FN:${CONFIG.salesContactName}`,'ORG:FOG Technologies',`TEL;TYPE=WORK,VOICE:${tel}`,'NOTE:HyperGrid sales, FOG Technologies','END:VCARD'].join('\r\n');
+}
+const isMobileDevice = ()=> /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints>1 && /Mac/i.test(navigator.userAgent));
+async function saveContact(){
+  const note=document.getElementById('savenote');
+  const inPreview = !!(window.claude && typeof window.claude.use==='function');
+  if (!inPreview){
+    const blob=new Blob([vcard()],{type:'text/vcard'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='HyperGrid-Sales-Team.vcf';
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+    if (isMobileDevice()) note.textContent='Opening your contacts. Tap Save to keep the number.';
+    else note.textContent='Contact card downloaded. Open the downloaded .vcf file to add it to your contacts app (or scan the brochure on your phone to save it there instead).';
+    return;
+  }
+  try{ await navigator.clipboard.writeText(CONFIG.salesNumber); note.textContent='Preview only: number copied. On the live site this button opens your phone’s contacts with the number filled in.'; }
+  catch(e){ note.textContent='Preview only: on the live site this button opens your phone’s contacts with the number filled in.'; }
+}
+
+/* ===== Venue address search =====
+   Same Google Places Autocomplete (New) endpoint used by the main brochure form (/api/places-autocomplete),
+   with a session token per search burst. Country for the budget question is parsed from each suggestion's
+   secondary text (falls back to typing a country at the end of the address, as before). */
+let _placesToken=null;
+function newSessionToken(){
+  try{ return crypto.randomUUID(); }catch(e){ return Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2); }
+}
+function placeFromSuggestion(s){
+  const parts=String(s.secondaryText||'').split(',').map(x=>x.trim()).filter(Boolean);
+  const last=parts[parts.length-1]||'';
+  const code=countryCode(last);
+  return {address:s.label||s.value, city:parts[0]||'', country:code?last:'', ccode:code||null};
+}
+function applyPlace(pl){
+  Object.assign(S.f,{address:pl.address,city:pl.city,country:pl.country,ccode:pl.ccode});
+  const e=document.getElementById('f-address'); if(e) e.value=pl.address;
+  clearErr();
+}
+async function lookup(q){
+  if (!_placesToken) _placesToken=newSessionToken();
+  const r=await fetch(`/api/places-autocomplete?input=${encodeURIComponent(q)}&sessiontoken=${encodeURIComponent(_placesToken)}`);
+  if(!r.ok) throw 0; const data=await r.json();
+  if(!Array.isArray(data)) throw 0;
+  return data.map(s=>({label:s.label||s.value, mainText:s.mainText||s.label, secondaryText:s.secondaryText||'', place:placeFromSuggestion(s)}));
+}
+function bindVenue(){
+  const inp=document.getElementById('f-address'); if(!inp) return;
+  const list=document.getElementById('sugg');
+  let t=null, items=[], hi=-1, seq=0;
+  const close=()=>{ list.hidden=true; inp.setAttribute('aria-expanded','false'); hi=-1; };
+  const position=()=>{
+    const r=inp.getBoundingClientRect();
+    const spaceBelow=innerHeight-r.bottom, spaceAbove=r.top, maxH=260;
+    const openUp = spaceBelow<maxH+8 && spaceAbove>spaceBelow;
+    list.style.position='fixed'; list.style.left=r.left+'px'; list.style.width=r.width+'px';
+    if (openUp){ list.style.bottom=(innerHeight-r.top+6)+'px'; list.style.top='auto'; list.style.maxHeight=Math.min(spaceAbove-8,maxH)+'px'; }
+    else { list.style.top=(r.bottom+6)+'px'; list.style.bottom='auto'; list.style.maxHeight=Math.min(spaceBelow-8,maxH)+'px'; }
+  };
+  const paint=()=>{
+    list.innerHTML=items.map((r,i)=>`<li role="option" data-k="${i}" aria-selected="${i===hi}"><span class="sugg-main">${esc(r.mainText||r.label)}</span>${r.secondaryText?`<span class="sugg-sec">${esc(r.secondaryText)}</span>`:''}</li>`).join('')
+      + (items.length?`<li class="sugg-credit" aria-hidden="true">Powered by Google</li>`:'');
+    list.hidden=!items.length;
+    inp.setAttribute('aria-expanded',String(!!items.length));
+    if(items.length) position();
+  };
+  const choose=i=>{ applyPlace({...items[i].place, address:items[i].label}); _placesToken=null; close(); };
+  list.onmousedown=e=>{ const li=e.target.closest('li[data-k]'); if(li){ e.preventDefault(); choose(+li.dataset.k); } };
+  inp.addEventListener('input',()=>{
+    S.f.ccode=null; S.f.city=''; S.f.country=''; clearTimeout(t);
+    const q=inp.value.trim(); if(q.length<2){ close(); return; }
+    t=setTimeout(async()=>{
+      const my=++seq;
+      try{
+        const data=await lookup(q); if(my!==seq) return;
+        items=data; hi=-1; paint();
+      }catch(e){ if(my!==seq) return; items=[]; close(); }
+    },400);
+  });
+  addEventListener('scroll',()=>{ if(!list.hidden) position(); },true);
+  addEventListener('resize',()=>{ if(!list.hidden) position(); });
+  inp.addEventListener('keydown',e=>{
+    if (list.hidden) return;
+    if (e.key==='ArrowDown'||e.key==='ArrowUp'){ e.preventDefault(); hi=(hi+(e.key==='ArrowDown'?1:-1)+items.length)%items.length; paint(); }
+    else if (e.key==='Enter' && hi>=0){ e.preventDefault(); e.stopPropagation(); choose(hi); }
+    else if (e.key==='Escape') close();
+  },true);
+  inp.addEventListener('blur',()=>setTimeout(close,150));
+}
+
+/* ===== Behaviour ===== */
+function validate(id){
+  const n=N[id], g=x=>document.getElementById(x);
+  const err=m=>{g('err').textContent=m; return false;};
+  switch(n.type){
+    case 'name': S.f.name=g('f-name').value.trim(); return S.f.name.length>1||err('Please enter your name.');
+    case 'venue': S.f.address=g('f-address').value.trim();
+      if (S.f.address.length<4) return err('Please enter your venue’s name or address.');
+      if (!S.f.country){ const last=S.f.address.split(',').pop().trim(); if (countryCode(last)){ S.f.country=last; } }
+      return true;
+    case 'email': S.f.email=g('f-email').value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(S.f.email)) return err('Check the email. It needs an @ and a domain.');
+      return true;
+    case 'phone': S.f.cc=g('f-cc').value; S.f.phone=g('f-phone').value.trim();
+      { const d=S.f.phone.replace(/\D/g,''); if(d.length<7||d.length>13) return err('Enter a number with 7–13 digits.'); }
+      return true;
+    case 'comm':
+      if (!S.f.mode) return err('Pick how you would like us to reach you.');
+      if (S.f.mode!=='Call') return true;
+      if (!S.f.dayISO) return err('Pick a day for the call.');
+      if (!dayOptions().some(d=>d.iso===S.f.dayISO)){ delete S.f.dayISO; delete S.f.dayShort; delete S.f.time; render(); return err('That day is no longer available. Pick another day.'); }
+      if (!S.f.time) return err('Pick a time for the call.');
+      if (!slotsFor(S.f.dayISO).some(x=>x.k===S.f.time)){ delete S.f.time; render(); return err('That time has passed. Pick another time.'); }
+      return true;
+  }
+  return true;
+}
+function next(){
+  const id=cur(), n=N[id];
+  if (n.type==='end') return;
+  if (n.opts){ if(S.a[id]==null) return; goTo(n.opts[S.a[id]].next); return; }
+  if (!validate(id)) return;
+  goTo(n.next);
+}
+function pick(i){
+  const id=cur(); S.a[id]=i;
+  stage.querySelectorAll('[data-i]').forEach(b=>{const on=+b.dataset.i===i; b.setAttribute('aria-pressed',on); b.setAttribute('aria-checked',on);});
+  clearTimeout(timer); timer=setTimeout(next,300);
+}
+const commDone=()=> !!S.f.mode && (S.f.mode!=='Call' || (!!S.f.dayISO && !!S.f.time));
+function autoNext(){ if (commDone()){ clearTimeout(timer); timer=setTimeout(next,350); } }
+function pickMode(k){
+  const was=S.f.mode; S.f.mode=k;
+  if (k==='Call' && was!=='Call') render();
+  else stage.querySelectorAll('[data-mode]').forEach(b=>{const on=b.dataset.mode===k; b.setAttribute('aria-pressed',on); b.setAttribute('aria-checked',on);});
+  autoNext();
+}
+function bindChips(){
+  stage.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{
+    S.f.dayISO=b.dataset.day; S.f.dayShort=b.dataset.short;
+    if (!slotsFor(S.f.dayISO).some(x=>x.k===S.f.time)) delete S.f.time;
+    stage.querySelectorAll('[data-day]').forEach(c=>c.setAttribute('aria-pressed',c.dataset.day===S.f.dayISO));
+    document.getElementById('timechips').innerHTML=timeChips();
+    bindChips(); clearErr(); updateTools(); autoNext();
+  });
+  stage.querySelectorAll('[data-time]').forEach(b=>b.onclick=()=>{
+    S.f.time=b.dataset.time;
+    stage.querySelectorAll('[data-time]').forEach(c=>c.setAttribute('aria-pressed',c.dataset.time===S.f.time));
+    clearErr(); updateTools(); autoNext();
+  });
+}
+function bind(){
+  stage.querySelectorAll('[data-next]').forEach(b=>b.onclick=next);
+  stage.querySelectorAll('[data-back]').forEach(b=>b.onclick=back);
+  stage.querySelectorAll('[data-restart]').forEach(b=>b.onclick=restart);
+  stage.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>pick(+b.dataset.i));
+  bindChips();
+  const sc=document.getElementById('savecontact'); if (sc) sc.onclick=saveContact;
+  stage.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>pickMode(b.dataset.mode));
+  bindVenue();
+  stage.querySelectorAll('input').forEach(el=>el.addEventListener('input',()=>{const e=document.getElementById('err'); if(e) e.textContent='';}));
+}
+document.addEventListener('keydown',e=>{
+  if (document.getElementById('formview').hidden) return;
+  const n=N[cur()];
+  if (e.key==='Enter' && !e.shiftKey){
+    if (e.target.matches('button') && !e.target.hasAttribute('data-next')) return;
+    e.preventDefault(); next(); return;
+  }
+
+});
+
+/* ===== Internal tools ===== */
+function updateTools(){
+  const r=route();
+  document.getElementById('iscore').textContent=S.set.segment||'—';
+  const p=document.getElementById('itier'); p.className='pill '+ROUTE[r][0]; p.textContent=ROUTE[r][1];
+  document.getElementById('trail').textContent=S.hist.join(' → ');
+  const answers={};
+  for (const id of S.hist){ const n=N[id]; if(n.opts && S.a[id]!=null) answers[id]={q:(n.qPlain||txt(n)).replace(/<[^>]+>/g,''), a:n.opts[S.a[id]].label}; }
+  document.getElementById('payload').textContent=JSON.stringify({
+    status:r==='done'?'Form completed':'In progress',
+    segment:S.set.segment||null, space_status:S.set.space||null, region:S.f.country?regionOf():null, budget:S.set.budget||null,
+    name:S.f.name||null, address:S.f.address||null, city:S.f.city||null, country:S.f.country||null, email:S.f.email||null,
+    phone:S.f.phone?`${S.f.cc} ${S.f.phone}`:null, contact_mode:S.f.mode||null,
+    call_day:S.f.mode==='Call'?(S.f.dayISO==='next-week'?'Next week (any day, Mon–Fri)':(S.f.dayISO||null)):null, call_time:S.f.mode==='Call'?(slotOf()?.label||null):null,
+    path:S.hist, answers
+  },null,2);
+}
+document.getElementById('ptoggle').onclick=function(){
+  const pre=document.getElementById('payload'); pre.hidden=!pre.hidden; this.setAttribute('aria-expanded',!pre.hidden);
+};
+
+/* ===== Flow map ===== */
+function buildMap(){
+  const lanes=['Start','Questions','Endings'];
+  const name=id=>{const n=N[id]; return (n.qPlain||txt(n)).replace(/<[^>]+>/g,'');};
+  const link=id=>{
+    const n=N[id];
+    if (n.type==='end') return `<span class="exit">End: ${esc(name(id))}</span>`;
+    return `<a href="#node-${id}" data-jump="${id}">${esc(name(id))}</a>`;
+  };
+  let html=`<div class="map-intro">
+      <h2>How the questions run</h2>
+      <p>Everyone answers the same pages in order: who they are, venue location (with address search), free floor space, budget, name, email, phone and how they want to be reached. Everyone sees the budget page after floor space: the USA and Canada see $75K, every other country sees $40K to $60K. The country comes from the venue location. Only “Call” asks for a day and time. The last page says thank you, starts the brochure download by itself and offers a Save-to-contacts card.</p>
+    </div>`;
+  for (const lane of lanes){
+    const ids=Object.keys(N).filter(k=>N[k].branch===lane && k!=='intro');
+    if (!ids.length) continue;
+    html+=`<div class="lane"><h3>${lane}</h3><div class="nodes">`;
+    for (const id of ids){
+      const n=N[id];
+      let body='';
+      if (n.opts) body=n.opts.map(x=>`<div class="edge"><span class="el">${esc(x.label)}${x.desc?`<span class="ed">${esc(x.desc)}</span>`:''}</span><span class="ep"></span><span class="et">→ ${link(x.next)}</span></div>`).join('');
+      else if (n.type==='router') body=`<div class="rule">${esc(n.rule||'')}</div>`+n.to.map(t=>`<div class="edge"><span class="el">Possible next</span><span class="ep"></span><span class="et">→ ${link(t)}</span></div>`).join('');
+      else if (n.next) body=`<div class="edge"><span class="el">Next</span><span class="ep"></span><span class="et">→ ${link(n.next)}</span></div>`;
+      else if (id==='end') body=`<div class="rule">Thank-you message depends on the chosen way to reach them. The brochure downloads by itself on this page, with a small “tap here” link if it does not start. Save-to-contacts card.</div>`;
+      html+=`<div class="node" id="node-${id}"><span class="nid">${id}${n.type==='router'?' · automatic rule':''}</span><div class="nq">${esc(name(id))}</div>${body}${n.note?`<div class="rule">${esc(n.note)}</div>`:''}</div>`;
+    }
+    html+=`</div></div>`;
+  }
+  html+=`<div class="map-intro"><p>Before launch, replace the sales number (${esc(CONFIG.salesNumber)}) and add the brochure link in <code>CONFIG</code> at the top of the script.</p></div>`;
+  document.getElementById('map').innerHTML=html;
+  document.getElementById('map').querySelectorAll('[data-jump]').forEach(a=>a.onclick=e=>{
+    e.preventDefault();
+    const el=document.getElementById('node-'+a.dataset.jump); if(!el) return;
+    el.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});
+    el.classList.add('flash'); setTimeout(()=>el.classList.remove('flash'),1400);
+  });
+}
+
+const vb=document.getElementById('viewbtn');
+function setView(v){
+  const map=v==='map';
+  document.getElementById('formview').hidden=map;
+  document.getElementById('mapview').hidden=!map;
+  document.getElementById('tools').hidden=map;
+  document.getElementById('pct').hidden=map;
+  document.getElementById('bar').hidden=map;
+  document.getElementById('payload').hidden=true;
+  vb.textContent=map?'Back to form':'Flow map';
+  window.scrollTo(0,0);
+}
+vb.onclick=()=>setView(document.getElementById('mapview').hidden?'map':'form');
+// Flow map is kept in the code but hidden from the page; to bring it back, remove the three `hidden` attributes (pct, viewbtn, tools) and re-enable the next line.
+// if (location.hash==='#map') setView('map');
+
+buildMap();
+render();
+
+/* keep the focused field above the on-screen keyboard (mobile) */
+(function(){
+  const vv=window.visualViewport, root=document.documentElement;
+  const lift=()=>{
+    const el=document.activeElement;
+    if(!el||!/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)) return;
+    const r=el.getBoundingClientRect(), h=vv?vv.height:innerHeight, top=vv?vv.offsetTop:0;
+    if(r.bottom+90>top+h || r.top<top+60){
+      const y=window.scrollY+r.top-(h*0.28);
+      window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
+    }
+  };
+  const setKb=()=>{
+    if(!vv) return;
+    const kb=Math.max(0,innerHeight-vv.height-vv.offsetTop);
+    root.style.setProperty('--kb',(kb>80?kb:0)+'px');
+  };
+  if(vv){ vv.addEventListener('resize',()=>{setKb();setTimeout(lift,60);}); vv.addEventListener('scroll',setKb); }
+  document.addEventListener('focusin',e=>{
+    if(/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)){ setTimeout(lift,50); setTimeout(lift,350); }
+  });
+  document.addEventListener('focusout',()=>setTimeout(()=>{ if(!/^(INPUT|TEXTAREA)$/.test((document.activeElement||{}).tagName||'')) root.style.setProperty('--kb','0px'); },100));
+})();
+</script>
