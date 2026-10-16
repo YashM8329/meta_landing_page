@@ -597,18 +597,37 @@ function render(){
   const first=stage.querySelector('input.inp');
   if (first) first.focus({preventScroll:true});
   reportHeight();
+  reportStep();
 }
-/* Tells the parent page (when embedded via iframe, e.g. on /asia) how tall this
-   step actually is, so the iframe can resize instead of leaving dead space or
-   clipping content. No-op outside an iframe. */
+/* Tells the parent page (when embedded via iframe on /asia) whether this flow
+   currently has a previous question to go back to, so the parent can route
+   the browser/mobile back button into back() instead of navigating away. */
+function reportStep(){
+  if (window===window.parent) return;
+  try{ window.parent.postMessage({source:'hg-asia-widget', type:'step', canGoBack:S.hist.length>1}, window.location.origin); }catch(e){}
+}
+/* Reports content height to the parent page (when embedded via iframe on /asia)
+   so it can size the iframe to fit. Debounced and only re-reports on an actual
+   height change, so the parent resizing the iframe (which itself fires a
+   resize event inside this document) can't bounce back into a feedback loop
+   that makes the box visibly expand then contract. */
+let _lastReportedHeight=0, _reportTimer=null;
 function reportHeight(){
   if (window===window.parent) return;
-  requestAnimationFrame(()=>{
+  clearTimeout(_reportTimer);
+  _reportTimer=setTimeout(()=>{
     const h=document.querySelector('.app').scrollHeight;
+    if (Math.abs(h-_lastReportedHeight)<2) return;
+    _lastReportedHeight=h;
     try{ window.parent.postMessage({source:'hg-asia-widget', type:'height', height:h}, window.location.origin); }catch(e){}
-  });
+  },60);
 }
-addEventListener('resize',reportHeight);
+let _lastViewportWidth=innerWidth;
+addEventListener('resize',()=>{
+  if (innerWidth===_lastViewportWidth) return; // ignore height-only resizes caused by the parent sizing this iframe
+  _lastViewportWidth=innerWidth;
+  reportHeight();
+});
 const backBtn=()=> S.hist.length>1 ? `<button class="link" data-back>← Back</button>` : '';
 const navOK=(label)=>`<div class="nav">${backBtn()}<span class="spacer"></span><button class="btn" data-next>${label} ${I.arrow}</button></div>`;
 
@@ -923,7 +942,17 @@ vb.onclick=()=>setView(document.getElementById('mapview').hidden?'map':'form');
 buildMap();
 render();
 
+/* Lets the parent page (e.g. /asia) drive this flow's own back() when the
+   visitor presses the browser/mobile back button while this widget is the
+   thing on screen. See reportStep() for the canGoBack half of this. */
+addEventListener('message',e=>{
+  if (e.origin!==location.origin) return;
+  if (!e.data || e.data.source!=='hg-asia-parent') return;
+  if (e.data.type==='go-back') back();
+});
+
 /* keep the focused field above the on-screen keyboard (mobile) */
+const EMBEDDED=window!==window.parent;
 (function(){
   const vv=window.visualViewport, root=document.documentElement;
   const lift=()=>{
@@ -940,6 +969,25 @@ render();
     const kb=Math.max(0,innerHeight-vv.height-vv.offsetTop);
     root.style.setProperty('--kb',(kb>80?kb:0)+'px');
   };
+  /* Embedded on /asia: the iframe's own window/visualViewport don't reflect the
+     real device keyboard the way a top-level page's does, so scrolling our own
+     document does nothing useful — the PARENT page needs to scroll instead.
+     Tell it where the focused field sits in our box; it does the real scroll. */
+  const liftParent=()=>{
+    const el=document.activeElement;
+    if(!el||!/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)) return;
+    const r=el.getBoundingClientRect();
+    try{ window.parent.postMessage({source:'hg-asia-widget', type:'focus-field', fieldTop:r.top, fieldBottom:r.bottom}, window.location.origin); }catch(e){}
+  };
+  if (EMBEDDED){
+    document.addEventListener('focusin',e=>{
+      if(/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)){ setTimeout(liftParent,50); setTimeout(liftParent,350); }
+    });
+    document.addEventListener('focusout',()=>{
+      try{ window.parent.postMessage({source:'hg-asia-widget', type:'focus-field-blur'}, window.location.origin); }catch(e){}
+    });
+    return;
+  }
   if(vv){ vv.addEventListener('resize',()=>{setKb();setTimeout(lift,60);}); vv.addEventListener('scroll',setKb); }
   document.addEventListener('focusin',e=>{
     if(/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)){ setTimeout(lift,50); setTimeout(lift,350); }
