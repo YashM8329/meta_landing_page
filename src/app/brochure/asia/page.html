@@ -61,9 +61,10 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;pa
 main{flex:1;scroll-padding-bottom:24px;display:flex;align-items:center;justify-content:center;padding-inline:24px;padding-block:8px 32px}
 .stage{width:100%;max-width:640px}
 .q{display:flex;flex-direction:column;gap:20px;animation:rise .4s cubic-bezier(.2,.8,.2,1)}
+.intro-q h1{margin-bottom:4px}
 .end-q{align-items:center;text-align:center}
 .end-q .sub{max-width:44ch}
-.end-q .savecard{justify-content:center;text-align:left}
+.end-q .end-list{align-self:stretch}
 @keyframes rise{from{opacity:.001;transform:translateY(16px)}to{opacity:1;transform:none}}
 .crumb{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.04em}
 .crumb .branch{color:var(--muted);font-weight:600;letter-spacing:0}
@@ -127,6 +128,30 @@ kbd{font-family:var(--font);font-weight:700;font-size:12.5px;border:1px solid va
 .savecard span{font-size:14.5px;color:var(--muted);font-variant-numeric:tabular-nums}
 .savebtn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:15px;border:1.5px solid var(--accent);color:var(--accent);background:var(--surface);border-radius:10px;padding:9px 14px;cursor:pointer}
 .savebtn:hover{background:var(--accent-soft)}
+
+/* ---------- thank-you action list ---------- */
+.end-list{display:flex;flex-direction:column;gap:10px;width:100%;text-align:left;margin-top:4px}
+.end-group-label{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:6px 2px 0}
+.end-row{display:flex;align-items:center;gap:14px;width:100%;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;cursor:pointer;text-align:left;font:inherit;color:var(--ink);transition:border-color .15s,background .15s,transform .15s}
+.end-row:hover{transform:translateY(-1px)}
+.end-row:active{transform:scale(.99)}
+.end-row-icon{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center}
+.end-row-text{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.end-row-text b{font-size:16px;font-weight:700}
+.end-row-text span{font-size:13.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.end-row-action{flex:none;opacity:.8}
+.end-row.violet{border-color:color-mix(in srgb, #8B5CF6 35%, var(--line))}
+.end-row.violet .end-row-icon{background:color-mix(in srgb, #8B5CF6 18%, var(--surface));color:#8B5CF6}
+.end-row.violet .end-row-action{color:#8B5CF6}
+.end-row.blue{border-color:color-mix(in srgb, var(--accent) 35%, var(--line))}
+.end-row.blue .end-row-icon{background:var(--accent-soft);color:var(--accent)}
+.end-row.blue .end-row-action{color:var(--accent)}
+.end-row.green{border-color:color-mix(in srgb, var(--hot) 35%, var(--line))}
+.end-row.green .end-row-icon{background:var(--hot-soft);color:var(--hot)}
+.end-row.green .end-row-action{color:var(--hot)}
+.end-row.orange{border-color:color-mix(in srgb, var(--warm) 35%, var(--line))}
+.end-row.orange .end-row-icon{background:var(--warm-soft);color:var(--warm)}
+.end-row.orange .end-row-action{color:var(--warm)}
 
 .unit{display:inline-grid;vertical-align:baseline;text-align:center;white-space:nowrap;padding:0 .3em;margin:0 .05em;border-radius:.3em;background:var(--accent-soft);color:var(--accent)}
 .unit .u{grid-area:1/1;opacity:0;transition:opacity .3s ease-in-out}
@@ -218,13 +243,23 @@ pre.payload{margin:0 24px 12px;font-family:var(--mono);font-size:12px;line-heigh
 <script>
 /* ===== Edit before going live ===== */
 const CONFIG = {
-  salesNumber: "[+91 sales number]",   // used for the “Save to contacts” card too
-  salesContactName: "HyperGrid Sales Team",
   floorArea: "15 to 25 m²",
   floorAreaFt: "160 to 270 sq ft",        // shown alternating with the m² figure
   analyticsUrl: "",                  // optional: your own endpoint that accepts JSON POSTs of each event
   analyticsDebug: false,               // true = also print every event in the browser console
   brochureUrl: "",                     // paste the brochure PDF link here (https://…)
+  distributor: {
+    name: "Tommy Nasser",
+    email: "sales@bandainamco.co.uk",   // placeholder — replace before going live
+    phone: "+44 7917 877297",            // placeholder — replace before going live
+    org: "Bandai Namco",
+  },
+  manufacturer: {
+    name: "Vishal Mehta",
+    org: "FOG Technologies",
+    whatsapp: "+91 00000 00000",         // placeholder — replace before going live
+    whatsappMessage: "Hi Vishal, I just requested the HyperGrid brochure and would like to know more.",
+  },
 };
 
 const I = {
@@ -235,6 +270,10 @@ const I = {
   user:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="4"/><path d="M2.5 21a7.5 7.5 0 0 1 15 0M19 8v6M16 11h6"/></svg>',
   mail:'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
   play:'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l5.5-3.5z"/></svg>',
+  book:'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5v13z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-3"/></svg>',
+  chat:'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>',
+  dl:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5"/><path d="M4 18v1.5A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5V18"/></svg>',
+  ext:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>',
 };
 
 /* ===== The tree =====
@@ -245,6 +284,34 @@ const o=(label,next,extra={})=>({label,next,...extra});
 const REGIONS = {
   europe: ['AL','AD','AT','BY','BE','BA','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','XK','LV','LI','LT','LU','MT','MD','MC','ME','NL','MK','NO','PL','PT','RO','RU','SM','RS','SK','SI','ES','SE','CH','UA','GB','VA'],
   na: ['US','CA'],
+};
+
+/* Same country list, codes and expected national-number digit counts as the main brochure form (BrochureForm.tsx) */
+const COUNTRY_PHONE_SPECS = {
+  'India': { code: '+91', length: 10 },
+  'United States': { code: '+1', length: 10 },
+  'Canada': { code: '+1', length: 10 },
+  'UAE': { code: '+971', length: 9 },
+  'United Kingdom': { code: '+44', length: [10, 11] },
+  'Australia': { code: '+61', length: 9 },
+  'Germany': { code: '+49', length: [10, 11] },
+  'France': { code: '+33', length: 9 },
+  'Singapore': { code: '+65', length: 8 },
+  'Saudi Arabia': { code: '+966', length: 9 },
+  'Qatar': { code: '+974', length: 8 },
+  'Kuwait': { code: '+965', length: 8 },
+  'Oman': { code: '+968', length: 8 },
+  'Bahrain': { code: '+973', length: 8 },
+  'New Zealand': { code: '+64', length: [8, 9, 10] },
+  'South Africa': { code: '+27', length: 9 },
+  'Japan': { code: '+81', length: [9, 10] },
+  'China': { code: '+86', length: 11 },
+  'Brazil': { code: '+55', length: [10, 11] },
+  'Mexico': { code: '+52', length: 10 },
+  'Ireland': { code: '+353', length: 9 },
+  'Netherlands': { code: '+31', length: 9 },
+  'Spain': { code: '+34', length: 9 },
+  'Italy': { code: '+39', length: [9, 10] },
 };
 const COUNTRY_ALIASES = { 'uk':'GB','u.k.':'GB','britain':'GB','great britain':'GB','england':'GB','scotland':'GB','wales':'GB','northern ireland':'GB','usa':'US','u.s.':'US','u.s.a.':'US','us':'US','united states of america':'US','america':'US','holland':'NL','czechia':'CZ' };
 let _names=null;
@@ -450,10 +517,10 @@ function render(){
   let h='';
 
   if (n.type==='intro'){
-    h=`<div class="q">
+    h=`<div class="q intro-q">
       <div class="crumb">About 1 minute</div>
       <h1>Get HyperGrid brochure and Revenue reports</h1>
-      <div class="nav"><span class="spacer"></span><button class="btn" data-next>Start ${I.arrow}</button></div>
+      <div class="nav" style="margin-top:12px"><span class="spacer"></span><button class="btn" data-next>Start ${I.arrow}</button></div>
     </div>`;
   }
   else if (n.opts){
@@ -480,10 +547,10 @@ function render(){
       <div class="err" id="err"></div>${navOK('Next')}</div>`;
   }
   else if (n.type==='phone'){
-    const codes=['+91','+971','+966','+974','+1','+44','+61','+64','+65','+60','+62','+66','+63','+84','+81','+82','+27'];
+    const cur=S.f.ccName||'India';
     h=`<div class="q">${head}<div class="fields">
       <div class="phone">
-        <select class="inp" id="f-cc" aria-label="Country code">${codes.map(c=>`<option ${c===(S.f.cc||'+91')?'selected':''}>${c}</option>`).join('')}</select>
+        <select class="inp" id="f-cc" aria-label="Country code">${Object.keys(COUNTRY_PHONE_SPECS).map(name=>`<option value="${esc(name)}" ${name===cur?'selected':''}>${esc(COUNTRY_PHONE_SPECS[name].code)} ${esc(name)}</option>`).join('')}</select>
         <input class="inp" id="f-phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="98765 43210" value="${esc(S.f.phone)}">
       </div>
     </div><div class="err" id="err"></div>${navOK('Next')}</div>`;
@@ -509,7 +576,6 @@ function render(){
   stage.innerHTML=h;
   bind();
   updateTools();
-  if (n.type==='end') autoDownload();
   startUnit();
   const first=stage.querySelector('input.inp');
   if (first) first.focus({preventScroll:true});
@@ -519,15 +585,28 @@ const navOK=(label)=>`<div class="nav">${backBtn()}<span class="spacer"></span><
 
 function endScreen(id){
   const hasLink=/^https?:\/\//.test(CONFIG.brochureUrl);
-  return `<div class="q end-q"><div class="endicon hot">${I.check}</div>
-    <h1>Thank you, your brochure is being downloaded!</h1>
+  const d=CONFIG.distributor, m=CONFIG.manufacturer;
+  const waNum=m.whatsapp.replace(/[^\d]/g,'');
+  const waHref=`https://wa.me/${waNum}?text=${encodeURIComponent(m.whatsappMessage)}`;
+  const row=(opts)=>`<button class="end-row ${opts.tone}" type="button" ${opts.id?`id="${opts.id}"`:''} ${opts.href?`data-href="${esc(opts.href)}" data-ext="${opts.ext?1:0}"`:''}>
+    <span class="end-row-icon">${opts.icon}</span>
+    <span class="end-row-text"><b>${esc(opts.title)}</b><span>${esc(opts.sub)}</span></span>
+    <span class="end-row-action">${opts.action}</span>
+  </button>`;
+  return `<div class="q end-q">
+    <h1>Thank you, your brochure request is confirmed!</h1>
     <p class="sub">Our team will reach out to you with more details within 24 hours.</p>
-    ${hasLink?`<div class="hint" id="dlnote"><a href="${esc(CONFIG.brochureUrl)}" target="_blank" rel="noopener" download>Download didn’t start? Tap here.</a></div>`:''}
-    ${S.f.mode==='Email'?'':`<div class="savecard" style="margin-top:20px">
-      <div><b>${esc(CONFIG.salesContactName)}</b><span>${esc(CONFIG.salesNumber)}</span></div>
-      <button class="savebtn" id="savecontact" type="button">${I.user} Save to contacts</button>
+    ${!hasLink?'':''}
+    <div class="end-list">
+      ${row({tone:'violet', id:'dlBrochure', icon:I.book, title:'Download Brochure', sub:'View the complete product overview', action:I.dl})}
+      <div class="end-group-label">Distributor</div>
+      ${row({tone:'blue', href:`mailto:${d.email}`, ext:true, icon:I.mail, title:'Email Distributor', sub:d.email, action:I.ext})}
+      ${row({tone:'blue', id:'saveDistributor', icon:I.user, title:'Save Distributor Contact', sub:`${d.name} · ${d.phone}`, action:I.dl})}
+      <div class="end-group-label">Manufacturer</div>
+      ${row({tone:'green', href:waHref, ext:true, icon:I.chat, title:'WhatsApp Manufacturer', sub:`Start a prewritten chat with ${m.name.split(' ')[0]}`, action:I.ext})}
+      ${row({tone:'orange', id:'saveManufacturer', icon:I.user, title:'Save Manufacturer Contact', sub:`Save ${m.name} · ${m.org}`, action:I.dl})}
     </div>
-    <div class="hint" id="savenote" aria-live="polite"></div>`}
+    <div class="hint" id="savenote" aria-live="polite"></div>
     </div>`;
 }
 
@@ -537,27 +616,28 @@ function autoDownload(){
   document.body.appendChild(a); a.click(); a.remove();
 }
 
-/* ===== Save sales contact (vCard) =====
+/* ===== Save a contact as a vCard =====
    On the live site this downloads a .vcf file; phones open it in the Contacts
    app with the name and number filled in, and the visitor taps Save.
    Inside the Claude preview, file downloads are blocked, so it copies the number instead. */
-function vcard(){
-  const tel=CONFIG.salesNumber.replace(/[^\d+]/g,'');
-  return ['BEGIN:VCARD','VERSION:3.0',`N:;${CONFIG.salesContactName};;;`,`FN:${CONFIG.salesContactName}`,'ORG:FOG Technologies',`TEL;TYPE=WORK,VOICE:${tel}`,'NOTE:HyperGrid sales, FOG Technologies','END:VCARD'].join('\r\n');
+function vcard(person){
+  const tel=(person.phone||person.whatsapp||'').replace(/[^\d+]/g,'');
+  return ['BEGIN:VCARD','VERSION:3.0',`N:;${person.name};;;`,`FN:${person.name}`,`ORG:${person.org||''}`,`TEL;TYPE=WORK,VOICE:${tel}`,'NOTE:HyperGrid brochure follow-up','END:VCARD'].join('\r\n');
 }
 const isMobileDevice = ()=> /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints>1 && /Mac/i.test(navigator.userAgent));
-async function saveContact(){
+async function saveContact(person){
   const note=document.getElementById('savenote');
   const inPreview = !!(window.claude && typeof window.claude.use==='function');
+  const dialTel=person.phone||person.whatsapp||'';
   if (!inPreview){
-    const blob=new Blob([vcard()],{type:'text/vcard'});
-    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='HyperGrid-Sales-Team.vcf';
+    const blob=new Blob([vcard(person)],{type:'text/vcard'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`${person.name.replace(/\s+/g,'-')}.vcf`;
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000);
     if (isMobileDevice()) note.textContent='Opening your contacts. Tap Save to keep the number.';
     else note.textContent='Contact card downloaded. Open the downloaded .vcf file to add it to your contacts app (or scan the brochure on your phone to save it there instead).';
     return;
   }
-  try{ await navigator.clipboard.writeText(CONFIG.salesNumber); note.textContent='Preview only: number copied. On the live site this button opens your phone’s contacts with the number filled in.'; }
+  try{ await navigator.clipboard.writeText(dialTel); note.textContent='Preview only: number copied. On the live site this button opens your phone’s contacts with the number filled in.'; }
   catch(e){ note.textContent='Preview only: on the live site this button opens your phone’s contacts with the number filled in.'; }
 }
 
@@ -623,7 +703,7 @@ function bindVenue(){
         items=data; hi=-1; paint();
       }catch(e){ if(my!==seq) return; items=[]; close(); }
       finally{ if(my===seq) spin.hidden=true; }
-    },400);
+    },200);
   });
   addEventListener('scroll',()=>{ if(!list.hidden) position(); },true);
   addEventListener('resize',()=>{ if(!list.hidden) position(); });
@@ -649,8 +729,13 @@ function validate(id){
     case 'email': S.f.email=g('f-email').value.trim();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(S.f.email)) return err('Check the email. It needs an @ and a domain.');
       return true;
-    case 'phone': S.f.cc=g('f-cc').value; S.f.phone=g('f-phone').value.trim();
-      { const d=S.f.phone.replace(/\D/g,''); if(d.length<7||d.length>13) return err('Enter a number with 7–13 digits.'); }
+    case 'phone': S.f.ccName=g('f-cc').value; S.f.cc=COUNTRY_PHONE_SPECS[S.f.ccName].code; S.f.phone=g('f-phone').value.trim();
+      { const spec=COUNTRY_PHONE_SPECS[S.f.ccName];
+        const d=S.f.phone.replace(/\D/g,'');
+        const lens=Array.isArray(spec.length)?spec.length:[spec.length];
+        if (!d.length) return err('Please enter your phone number.');
+        if (!lens.includes(d.length)) return err(`Enter a ${lens.join(' or ')}-digit number for ${S.f.ccName}.`);
+      }
       return true;
     case 'comm':
       if (!S.f.mode) return err('Pick how you would like us to reach you.');
@@ -703,7 +788,10 @@ function bind(){
   stage.querySelectorAll('[data-restart]').forEach(b=>b.onclick=restart);
   stage.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>pick(+b.dataset.i));
   bindChips();
-  const sc=document.getElementById('savecontact'); if (sc) sc.onclick=saveContact;
+  const dlBtn=document.getElementById('dlBrochure'); if (dlBtn) dlBtn.onclick=()=>{ autoDownload(); dlBtn.querySelector('.end-row-text span').textContent = /^https?:\/\//.test(CONFIG.brochureUrl) ? 'Download started' : 'Preview only: no brochure file configured yet'; };
+  const sd=document.getElementById('saveDistributor'); if (sd) sd.onclick=()=>saveContact({name:CONFIG.distributor.name, org:CONFIG.distributor.org, phone:CONFIG.distributor.phone});
+  const sm=document.getElementById('saveManufacturer'); if (sm) sm.onclick=()=>saveContact({name:CONFIG.manufacturer.name, org:CONFIG.manufacturer.org, phone:CONFIG.manufacturer.whatsapp});
+  stage.querySelectorAll('.end-row[data-href]').forEach(b=>b.onclick=()=>{ window.open(b.dataset.href, b.dataset.ext==='1' ? '_blank' : '_self', 'noopener'); });
   stage.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>pickMode(b.dataset.mode));
   bindVenue();
   stage.querySelectorAll('input').forEach(el=>el.addEventListener('input',()=>{const e=document.getElementById('err'); if(e) e.textContent='';}));
