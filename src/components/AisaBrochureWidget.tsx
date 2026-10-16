@@ -21,8 +21,8 @@ import { useRouter } from "next/navigation";
  * - Scrolling the real page so a focused field inside the iframe clears the
  *   on-screen keyboard (the iframe's own viewport isn't the real one).
  * - Routing the browser/mobile back button into the flow's own back() while
- *   the widget is on screen and has a previous question, via one shared
- *   history entry instead of letting back leave /asia entirely.
+ *   it has a previous question, by keeping one pushed history entry per
+ *   outstanding step instead of letting back leave /asia entirely.
  */
 const MIN_HEIGHT = 420;
 
@@ -32,7 +32,13 @@ export default function AisaBrochureWidget() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [height, setHeight] = useState(MIN_HEIGHT);
   const canGoBackRef = useRef(false);
-  const historyArmedRef = useRef(false);
+  // Number of history entries we've pushed for the widget's own steps that
+  // haven't been consumed by a back-press yet. Keeping the browser's history
+  // depth in lockstep with the widget's internal step depth means every back
+  // press while mid-flow is intercepted deterministically, with no reliance
+  // on scroll position — so back never falls through to a real navigation
+  // (and the resulting page reload/scroll-to-top) while progress remains.
+  const pushedCountRef = useRef(0);
 
   useEffect(() => {
     router.prefetch("/asia/thankyou-q");
@@ -68,9 +74,14 @@ export default function AisaBrochureWidget() {
         scrollFieldIntoView(e.data.fieldTop, e.data.fieldBottom);
       } else if (e.data.type === "step") {
         canGoBackRef.current = !!e.data.canGoBack;
-        if (!historyArmedRef.current) {
+        // Keep exactly one pushed history entry per widget step currently
+        // available to "undo" via back. On the very first step there's
+        // nothing to go back to yet (canGoBack is false), so nothing is
+        // pushed; from the second step onward each new step pushes one more
+        // entry, and each intercepted back press (below) consumes one.
+        if (canGoBackRef.current && pushedCountRef.current === 0) {
           history.pushState({ hgAsiaWidget: true }, "");
-          historyArmedRef.current = true;
+          pushedCountRef.current += 1;
         }
       }
     }
@@ -78,25 +89,26 @@ export default function AisaBrochureWidget() {
     return () => window.removeEventListener("message", onMessage);
   }, [router]);
 
-  // While the widget is in view and has a previous question, route the
-  // browser/mobile back button into the flow instead of leaving /asia.
+  // While the widget still has a pushed history entry outstanding (i.e. it
+  // has a previous question to go back to), route the browser/mobile back
+  // button into the flow's own back() instead of leaving /asia. This is
+  // gated purely on pushedCountRef, not on scroll/viewport position, since
+  // the widget's height (and therefore its on-screen position) changes
+  // across steps and an in-view check can miss the widget entirely.
   useEffect(() => {
-    function isWidgetInView() {
-      const el = containerRef.current;
-      if (!el) return false;
-      const rect = el.getBoundingClientRect();
-      return rect.top < window.innerHeight && rect.bottom > 0;
-    }
-
     function onPopState() {
-      if (historyArmedRef.current && canGoBackRef.current && isWidgetInView()) {
-        history.pushState({ hgAsiaWidget: true }, "");
+      if (pushedCountRef.current > 0) {
+        pushedCountRef.current -= 1;
         iframeRef.current?.contentWindow?.postMessage(
           { source: "hg-asia-parent", type: "go-back" },
           window.location.origin
         );
+        // The widget replies with a new "step" message; if that step still
+        // has a previous question, the handler above re-arms one entry so
+        // the next back press is intercepted again too.
       }
-      // Otherwise let the browser's default back navigation proceed.
+      // Otherwise (no widget steps left to undo) let the browser's default
+      // back navigation proceed.
     }
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
