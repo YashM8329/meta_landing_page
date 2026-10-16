@@ -24,7 +24,7 @@ export default function AisaBrochureWidget() {
   useEffect(() => {
     function onMessage(e: MessageEvent) {
       if (e.origin !== window.location.origin) return;
-      if (!e.data || e.data.source !== "hg-aisa-widget") return;
+      if (!e.data || e.data.source !== "hg-asia-widget") return;
       if (e.data.type === "positive-lead") {
         router.push("/thank-you");
       } else if (e.data.type === "height" && typeof e.data.height === "number") {
@@ -38,7 +38,7 @@ export default function AisaBrochureWidget() {
   return (
     <iframe
       ref={iframeRef}
-      src="/aisa/widget.html"
+      src="/asia/widget.html"
       title="Get the HyperGrid brochure"
       className="w-full rounded-2xl border border-line transition-[height] duration-200"
       style={{ height, colorScheme: "normal" }}

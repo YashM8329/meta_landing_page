@@ -22,7 +22,7 @@ import { CTAProvider } from "@/lib/CTAContext";
 
 /* Identical to LandingPage.tsx, except the brochure-form slot renders the
    embedded multi-step HyperGrid flow (AisaBrochureSection) instead of
-   BrochureForm. Used only by /aisa. Keep in sync with LandingPage.tsx for
+   BrochureForm. Used only by /asia. Keep in sync with LandingPage.tsx for
    everything above/below the form. */
 
 const venueReels: ReelItem[] = [

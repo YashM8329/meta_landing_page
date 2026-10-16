@@ -7,7 +7,7 @@ import AisaBrochureWidget from "@/components/AisaBrochureWidget";
  * Same outer layout/left-column context panel as BrochureForm, used on the
  * homepage's regular brochure form — but the right column is the embedded
  * multi-step HyperGrid brochure flow (AisaBrochureWidget) instead of the
- * single-step React form. Used only on /aisa.
+ * single-step React form. Used only on /asia.
  */
 export default function AisaBrochureSection() {
   const { t } = useTranslation();

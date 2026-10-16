@@ -409,7 +409,7 @@ let _pixelLoaded=false;
    custom event, so it never counts as a Lead conversion. */
 function firePixel(){
   if (isPositiveLead()){
-    try{ window.parent.postMessage({source:'hg-aisa-widget', type:'positive-lead'}, window.location.origin); }catch(e){}
+    try{ window.parent.postMessage({source:'hg-asia-widget', type:'positive-lead'}, window.location.origin); }catch(e){}
     return;
   }
   if (!CONFIG.metaPixelId || _pixelLoaded) return;
@@ -598,14 +598,14 @@ function render(){
   if (first) first.focus({preventScroll:true});
   reportHeight();
 }
-/* Tells the parent page (when embedded via iframe, e.g. on /aisa) how tall this
+/* Tells the parent page (when embedded via iframe, e.g. on /asia) how tall this
    step actually is, so the iframe can resize instead of leaving dead space or
    clipping content. No-op outside an iframe. */
 function reportHeight(){
   if (window===window.parent) return;
   requestAnimationFrame(()=>{
     const h=document.querySelector('.app').scrollHeight;
-    try{ window.parent.postMessage({source:'hg-aisa-widget', type:'height', height:h}, window.location.origin); }catch(e){}
+    try{ window.parent.postMessage({source:'hg-asia-widget', type:'height', height:h}, window.location.origin); }catch(e){}
   });
 }
 addEventListener('resize',reportHeight);
