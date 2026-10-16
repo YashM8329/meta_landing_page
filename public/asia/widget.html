@@ -398,10 +398,11 @@ function derive(){
   }
 }
 function route(){ return S.hist.includes('end') ? 'done' : 'pending'; }
-/* Positive lead = said yes to both commitment questions (space AND budget).
-   Either "No" answer makes it a negative lead — those don't fire the Meta Pixel
-   Lead conversion, so ad optimization isn't skewed by low-intent form-fillers. */
-const isPositiveLead=()=> !!(S.set.space||'').startsWith('Can make') && !!(S.set.budget||'').startsWith('Ready');
+/* Negative lead = said no to BOTH commitment questions (space AND budget).
+   Saying yes to either one is enough to count as a positive lead; only a
+   double "No" doesn't fire the Meta Pixel Lead conversion, so ad optimization
+   isn't skewed by the lowest-intent form-fillers. */
+const isPositiveLead=()=> !((S.set.space||'').startsWith('Passed') && (S.set.budget||'').startsWith('Passed'));
 let _pixelLoaded=false;
 /* Embedded on the homepage: a positive lead is handed off to the parent page, which
    navigates to /thank-you (that page fires the real Meta Pixel "Lead" conversion itself —
@@ -604,7 +605,7 @@ function render(){
    the browser/mobile back button into back() instead of navigating away. */
 function reportStep(){
   if (window===window.parent) return;
-  try{ window.parent.postMessage({source:'hg-asia-widget', type:'step', canGoBack:S.hist.length>1}, window.location.origin); }catch(e){}
+  try{ window.parent.postMessage({source:'hg-asia-widget', type:'step', canGoBack:S.hist.length>1, depth:S.hist.length}, window.location.origin); }catch(e){}
 }
 /* Reports content height to the parent page (when embedded via iframe on /asia)
    so it can size the iframe to fit. Debounced and only re-reports on an actual

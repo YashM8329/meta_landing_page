@@ -32,13 +32,15 @@ export default function AisaBrochureWidget() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [height, setHeight] = useState(MIN_HEIGHT);
   const canGoBackRef = useRef(false);
-  // Number of history entries we've pushed for the widget's own steps that
-  // haven't been consumed by a back-press yet. Keeping the browser's history
-  // depth in lockstep with the widget's internal step depth means every back
-  // press while mid-flow is intercepted deterministically, with no reliance
-  // on scroll position — so back never falls through to a real navigation
-  // (and the resulting page reload/scroll-to-top) while progress remains.
+  // Number of history entries we've pushed so far to back the widget's
+  // current step depth. Kept in lockstep with the depth the iframe reports
+  // (one pushed entry per step beyond the first) so a back press always has
+  // exactly one of our own entries to consume per step, however deep the
+  // flow goes — no re-arm timing to get wrong, no dependence on scroll
+  // position, and no real navigation (with its page reload) while any
+  // progress remains.
   const pushedCountRef = useRef(0);
+  const goingBackRef = useRef(false);
 
   useEffect(() => {
     router.prefetch("/asia/thankyou-q");
@@ -74,15 +76,24 @@ export default function AisaBrochureWidget() {
         scrollFieldIntoView(e.data.fieldTop, e.data.fieldBottom);
       } else if (e.data.type === "step") {
         canGoBackRef.current = !!e.data.canGoBack;
-        // Keep exactly one pushed history entry per widget step currently
-        // available to "undo" via back. On the very first step there's
-        // nothing to go back to yet (canGoBack is false), so nothing is
-        // pushed; from the second step onward each new step pushes one more
-        // entry, and each intercepted back press (below) consumes one.
-        if (canGoBackRef.current && pushedCountRef.current === 0) {
-          history.pushState({ hgAsiaWidget: true }, "");
-          pushedCountRef.current += 1;
+        // Target depth beyond the first question (depth 1 = nothing to push
+        // for yet). This is reported by the iframe directly instead of being
+        // inferred, so it stays correct no matter how many questions deep
+        // the flow has gone.
+        const depth = typeof e.data.depth === "number" ? e.data.depth : canGoBackRef.current ? 2 : 1;
+        const targetPushed = Math.max(0, depth - 1);
+        // A back press already popped one browser entry itself; don't push
+        // a replacement for that pop here, onPopState does it once instead
+        // (avoids double-counting depth vs. the handler the browser already
+        // ran for us).
+        if (!goingBackRef.current) {
+          while (pushedCountRef.current < targetPushed) {
+            history.pushState({ hgAsiaWidget: true }, "");
+            pushedCountRef.current += 1;
+          }
         }
+        pushedCountRef.current = targetPushed;
+        goingBackRef.current = false;
       }
     }
     window.addEventListener("message", onMessage);
@@ -99,13 +110,14 @@ export default function AisaBrochureWidget() {
     function onPopState() {
       if (pushedCountRef.current > 0) {
         pushedCountRef.current -= 1;
+        goingBackRef.current = true;
         iframeRef.current?.contentWindow?.postMessage(
           { source: "hg-asia-parent", type: "go-back" },
           window.location.origin
         );
-        // The widget replies with a new "step" message; if that step still
-        // has a previous question, the handler above re-arms one entry so
-        // the next back press is intercepted again too.
+        // The widget replies with a "step" message reporting its new depth;
+        // the handler above syncs pushedCountRef to it without pushing a
+        // replacement entry for the one the browser just popped for us.
       }
       // Otherwise (no widget steps left to undo) let the browser's default
       // back navigation proceed.
