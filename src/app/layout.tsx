@@ -9,7 +9,7 @@ import { I18nProvider } from "@/lib/useTranslation";
 const urbanist = Urbanist({
   variable: "--font-urbanist",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: "variable",
   display: "swap",
   preload: true,
 });
