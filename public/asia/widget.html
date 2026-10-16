@@ -277,17 +277,6 @@ const I = {
    Router node: decides the next step silently from earlier answers.        */
 const o=(label,next,extra={})=>({label,next,...extra});
 
-/* Real on-screen-keyboard height, read from the --kb CSS var. On the standalone
-   page (/brochure/asia) that var is set from this document's own visualViewport.
-   Embedded (/asia) it's set from a kb-height message the parent posts, since our
-   own innerHeight never shrinks for a keyboard that's really covering the parent
-   page's viewport, not ours. */
-function currentKbHeight(){
-  const v=getComputedStyle(document.documentElement).getPropertyValue('--kb').trim();
-  const n=parseFloat(v);
-  return Number.isFinite(n) ? n : 0;
-}
-
 const REGIONS = {
   europe: ['AL','AD','AT','BY','BE','BA','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','XK','LV','LI','LT','LU','MT','MD','MC','ME','NL','MK','NO','PL','PT','RO','RU','SM','RS','SK','SI','ES','SE','CH','UA','GB','VA'],
   na: ['US','CA'],
@@ -746,12 +735,7 @@ function bindVenue(){
   const position=()=>{
     const r=inp.getBoundingClientRect();
     const creditH=28, wantH=Math.min(items.length,VISIBLE_ROWS)*ROW_H+creditH;
-    /* currentKbHeight() is the real on-screen-keyboard height, reported by the parent
-       page when embedded (the iframe's own innerHeight never shrinks for the keyboard
-       on its own), or the local --kb var on the standalone page. Treat that much of
-       the bottom of our own box as unusable so the dropdown never opens under it. */
-    const availBottom=innerHeight-currentKbHeight();
-    const spaceBelow=availBottom-r.bottom, spaceAbove=r.top;
+    const spaceBelow=innerHeight-r.bottom, spaceAbove=r.top;
     const openUp = spaceBelow<wantH+8 && spaceAbove>spaceBelow;
     list.style.position='fixed'; list.style.left=r.left+'px'; list.style.width=r.width+'px';
     if (openUp){ list.style.bottom=(innerHeight-r.top+6)+'px'; list.style.top='auto'; list.style.maxHeight=Math.min(spaceAbove-8,wantH)+'px'; }
@@ -781,7 +765,6 @@ function bindVenue(){
   });
   addEventListener('scroll',()=>{ if(!list.hidden) position(); },true);
   addEventListener('resize',()=>{ if(!list.hidden) position(); });
-  addEventListener('hg-kb-changed',()=>{ if(!list.hidden) position(); });
   inp.addEventListener('keydown',e=>{
     if (list.hidden) return;
     if (e.key==='ArrowDown'||e.key==='ArrowUp'){ e.preventDefault(); hi=(hi+(e.key==='ArrowDown'?1:-1)+items.length)%items.length; paint(); }
@@ -961,20 +944,11 @@ render();
 
 /* Lets the parent page (e.g. /asia) drive this flow's own back() when the
    visitor presses the browser/mobile back button while this widget is the
-   thing on screen. See reportStep() for the canGoBack half of this.
-   It also reports the real on-screen-keyboard height, since our own
-   innerHeight never shrinks for a keyboard that's really overlapping the
-   parent page — currentKbHeight()/bindVenue() use this so the address
-   suggestion dropdown never opens underneath it. */
+   thing on screen. See reportStep() for the canGoBack half of this. */
 addEventListener('message',e=>{
   if (e.origin!==location.origin) return;
   if (!e.data || e.data.source!=='hg-asia-parent') return;
   if (e.data.type==='go-back') back();
-  else if (e.data.type==='kb-height' && typeof e.data.height==='number'){
-    document.documentElement.style.setProperty('--kb', Math.max(0,e.data.height)+'px');
-    const openList=document.getElementById('sugg');
-    if (openList && !openList.hidden) dispatchEvent(new Event('hg-kb-changed'));
-  }
 });
 
 /* keep the focused field above the on-screen keyboard (mobile) */
@@ -1003,13 +977,11 @@ const EMBEDDED=window!==window.parent;
     const el=document.activeElement;
     if(!el||!/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)) return;
     const r=el.getBoundingClientRect();
-    const navEl=stage.querySelector('.nav');
-    const navBottom=navEl ? navEl.getBoundingClientRect().bottom : r.bottom;
-    try{ window.parent.postMessage({source:'hg-asia-widget', type:'focus-field', fieldTop:r.top, fieldBottom:r.bottom, navBottom}, window.location.origin); }catch(e){}
+    try{ window.parent.postMessage({source:'hg-asia-widget', type:'focus-field', fieldTop:r.top, fieldBottom:r.bottom}, window.location.origin); }catch(e){}
   };
   if (EMBEDDED){
     document.addEventListener('focusin',e=>{
-      if(/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)){ setTimeout(liftParent,50); setTimeout(liftParent,350); setTimeout(liftParent,600); }
+      if(/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)){ setTimeout(liftParent,50); setTimeout(liftParent,350); }
     });
     document.addEventListener('focusout',()=>{
       try{ window.parent.postMessage({source:'hg-asia-widget', type:'focus-field-blur'}, window.location.origin); }catch(e){}
