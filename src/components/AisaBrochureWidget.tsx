@@ -38,22 +38,64 @@ export default function AisaBrochureWidget() {
     router.prefetch("/asia/thankyou-q");
   }, [router]);
 
+  // Real on-screen-keyboard height (0 when no keyboard is open), tracked from
+  // the parent's own visualViewport — the iframe's own viewport never shrinks
+  // for a keyboard that's really covering the parent page. Posted to the
+  // iframe continuously so its suggestion dropdown and bottom padding can
+  // account for the actual obscured region, not a guess.
+  const kbHeightRef = useRef(0);
+  const postToIframe = (data: unknown) => {
+    iframeRef.current?.contentWindow?.postMessage(data, window.location.origin);
+  };
+
   useEffect(() => {
-    function scrollFieldIntoView(fieldTop: number, fieldBottom: number) {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    function reportKbHeight() {
+      const kb = Math.max(0, window.innerHeight - vv!.height - vv!.offsetTop);
+      const next = kb > 80 ? kb : 0;
+      if (next === kbHeightRef.current) return;
+      kbHeightRef.current = next;
+      postToIframe({ source: "hg-asia-parent", type: "kb-height", height: next });
+    }
+    vv.addEventListener("resize", reportKbHeight);
+    vv.addEventListener("scroll", reportKbHeight);
+    return () => {
+      vv.removeEventListener("resize", reportKbHeight);
+      vv.removeEventListener("scroll", reportKbHeight);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Waits for the real keyboard to finish opening (kbHeightRef settling)
+    // before measuring, so we scroll based on actual obscured space instead
+    // of the pre-keyboard viewport. fieldBottom + navBottom covers both the
+    // focused input and the Next button that follows it, so neither ends up
+    // under the keyboard.
+    function scrollFieldIntoView(fieldTop: number, navBottom: number) {
       const iframe = iframeRef.current;
       if (!iframe) return;
-      const rect = iframe.getBoundingClientRect();
-      const vv = window.visualViewport;
-      const viewportHeight = vv ? vv.height : window.innerHeight;
-      const viewportTop = vv ? vv.offsetTop : 0;
-      const absoluteFieldTop = rect.top + fieldTop;
-      const absoluteFieldBottom = rect.top + fieldBottom;
-      const safeBottom = viewportTop + viewportHeight - 24;
-      const safeTop = viewportTop + 24;
-      if (absoluteFieldBottom > safeBottom || absoluteFieldTop < safeTop) {
-        const target = window.scrollY + absoluteFieldTop - viewportHeight * 0.3;
-        window.scrollTo({ top: Math.max(0, target), behavior: "smooth" });
-      }
+      let attempts = 0;
+      const tryScroll = () => {
+        attempts++;
+        const rect = iframe.getBoundingClientRect();
+        const vv = window.visualViewport;
+        const viewportHeight = vv ? vv.height : window.innerHeight;
+        const viewportTop = vv ? vv.offsetTop : 0;
+        const absoluteFieldTop = rect.top + fieldTop;
+        const absoluteNavBottom = rect.top + navBottom;
+        const safeBottom = viewportTop + viewportHeight - 16;
+        const safeTop = viewportTop + 16;
+        const needsScroll = absoluteNavBottom > safeBottom || absoluteFieldTop < safeTop;
+        if (needsScroll) {
+          const target = window.scrollY + absoluteFieldTop - viewportHeight * 0.25;
+          window.scrollTo({ top: Math.max(0, target), behavior: "smooth" });
+        }
+        // Keyboard animates open over a few hundred ms; re-check once more
+        // after it's likely settled in case the first pass measured early.
+        if (attempts < 2) setTimeout(tryScroll, 300);
+      };
+      tryScroll();
     }
 
     function onMessage(e: MessageEvent) {
@@ -65,7 +107,8 @@ export default function AisaBrochureWidget() {
       } else if (e.data.type === "height" && typeof e.data.height === "number") {
         setHeight(Math.max(MIN_HEIGHT, Math.ceil(e.data.height)));
       } else if (e.data.type === "focus-field") {
-        scrollFieldIntoView(e.data.fieldTop, e.data.fieldBottom);
+        const navBottom = typeof e.data.navBottom === "number" ? e.data.navBottom : e.data.fieldBottom;
+        scrollFieldIntoView(e.data.fieldTop, navBottom);
       } else if (e.data.type === "step") {
         canGoBackRef.current = !!e.data.canGoBack;
         if (!historyArmedRef.current) {

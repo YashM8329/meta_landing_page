@@ -171,7 +171,7 @@ export default function ThankYouQContent() {
       </div>
 
       <Link
-        href="/"
+        href="/asia"
         className="inline-flex items-center gap-2 h-[52px] px-8 rounded-full bg-accent text-white text-[15px] font-semibold tracking-[-0.01em] hover:bg-accent-deep transition-colors duration-150"
       >
         {t.form.backHome}
