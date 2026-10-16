@@ -247,7 +247,8 @@ const CONFIG = {
   floorAreaFt: "160 to 270 sq ft",        // shown alternating with the m² figure
   analyticsUrl: "",                  // optional: your own endpoint that accepts JSON POSTs of each event
   analyticsDebug: false,               // true = also print every event in the browser console
-  brochureUrl: "",                     // paste the brochure PDF link here (https://…)
+  brochureUrl: "/brochure/hypergrid-brochure.pdf",
+  metaPixelId: "1079278694629302",     // same Pixel ID used on the main site's thank-you page
   distributor: {
     name: "Tommy Nasser",
     email: "sales@bandainamco.co.uk",   // placeholder — replace before going live
@@ -402,6 +403,19 @@ function derive(){
   }
 }
 function route(){ return S.hist.includes('end') ? 'done' : 'pending'; }
+/* Positive lead = said yes to both commitment questions (space AND budget).
+   Either "No" answer makes it a negative lead — those don't fire the Meta Pixel
+   Lead conversion, so ad optimization isn't skewed by low-intent form-fillers. */
+const isPositiveLead=()=> !!(S.set.space||'').startsWith('Can make') && !!(S.set.budget||'').startsWith('Ready');
+let _pixelLoaded=false;
+function firePixel(){
+  if (!CONFIG.metaPixelId || _pixelLoaded) return;
+  _pixelLoaded=true;
+  (function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)})(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  window.fbq('init', CONFIG.metaPixelId);
+  if (isPositiveLead()) window.fbq('track', 'Lead');
+  else window.fbq('trackCustom', 'HG_LowIntentThankYou');
+}
 const ROUTE = {done:['hot','Lead captured'], pending:['pending','In progress']};
 
 function goTo(id){
@@ -576,6 +590,7 @@ function render(){
   stage.innerHTML=h;
   bind();
   updateTools();
+  if (n.type==='end') firePixel();
   startUnit();
   const first=stage.querySelector('input.inp');
   if (first) first.focus({preventScroll:true});
@@ -584,7 +599,6 @@ const backBtn=()=> S.hist.length>1 ? `<button class="link" data-back>← Back</b
 const navOK=(label)=>`<div class="nav">${backBtn()}<span class="spacer"></span><button class="btn" data-next>${label} ${I.arrow}</button></div>`;
 
 function endScreen(id){
-  const hasLink=/^https?:\/\//.test(CONFIG.brochureUrl);
   const d=CONFIG.distributor, m=CONFIG.manufacturer;
   const waNum=m.whatsapp.replace(/[^\d]/g,'');
   const waHref=`https://wa.me/${waNum}?text=${encodeURIComponent(m.whatsappMessage)}`;
@@ -596,7 +610,6 @@ function endScreen(id){
   return `<div class="q end-q">
     <h1>Thank you, your brochure request is confirmed!</h1>
     <p class="sub">Our team will reach out to you with more details within 24 hours.</p>
-    ${!hasLink?'':''}
     <div class="end-list">
       ${row({tone:'violet', id:'dlBrochure', icon:I.book, title:'Download Brochure', sub:'View the complete product overview', action:I.dl})}
       <div class="end-group-label">Distributor</div>
@@ -610,9 +623,10 @@ function endScreen(id){
     </div>`;
 }
 
+const hasBrochureUrl=()=> /^(https?:\/\/|\/)/.test(CONFIG.brochureUrl||'');
 function autoDownload(){
-  if (!/^https?:\/\//.test(CONFIG.brochureUrl)) return;
-  const a=document.createElement('a'); a.href=CONFIG.brochureUrl; a.download=''; a.rel='noopener'; a.style.display='none';
+  if (!hasBrochureUrl()) return;
+  const a=document.createElement('a'); a.href=CONFIG.brochureUrl; a.download='HyperGrid Brochure - FOG.pdf'; a.rel='noopener'; a.style.display='none';
   document.body.appendChild(a); a.click(); a.remove();
 }
 
@@ -788,7 +802,7 @@ function bind(){
   stage.querySelectorAll('[data-restart]').forEach(b=>b.onclick=restart);
   stage.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>pick(+b.dataset.i));
   bindChips();
-  const dlBtn=document.getElementById('dlBrochure'); if (dlBtn) dlBtn.onclick=()=>{ autoDownload(); dlBtn.querySelector('.end-row-text span').textContent = /^https?:\/\//.test(CONFIG.brochureUrl) ? 'Download started' : 'Preview only: no brochure file configured yet'; };
+  const dlBtn=document.getElementById('dlBrochure'); if (dlBtn) dlBtn.onclick=()=>{ autoDownload(); dlBtn.querySelector('.end-row-text span').textContent = hasBrochureUrl() ? 'Download started' : 'Preview only: no brochure file configured yet'; };
   const sd=document.getElementById('saveDistributor'); if (sd) sd.onclick=()=>saveContact({name:CONFIG.distributor.name, org:CONFIG.distributor.org, phone:CONFIG.distributor.phone});
   const sm=document.getElementById('saveManufacturer'); if (sm) sm.onclick=()=>saveContact({name:CONFIG.manufacturer.name, org:CONFIG.manufacturer.org, phone:CONFIG.manufacturer.whatsapp});
   stage.querySelectorAll('.end-row[data-href]').forEach(b=>b.onclick=()=>{ window.open(b.dataset.href, b.dataset.ext==='1' ? '_blank' : '_self', 'noopener'); });
