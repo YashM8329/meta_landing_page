@@ -607,17 +607,20 @@ function endScreen(id){
     <span class="end-row-text"><b>${esc(opts.title)}</b><span>${esc(opts.sub)}</span></span>
     <span class="end-row-action">${opts.action}</span>
   </button>`;
+  let contactRows='';
+  if (S.f.mode==='Call'){
+    contactRows=row({tone:'blue', id:'saveDistributor', icon:I.user, title:'Save sales person contact', sub:`${d.name} · ${d.phone}`, action:I.dl});
+  } else if (S.f.mode==='Email'){
+    contactRows=row({tone:'blue', href:`mailto:${d.email}`, ext:true, icon:I.mail, title:'Sales email', sub:d.email, action:I.ext});
+  } else if (S.f.mode==='WhatsApp'){
+    contactRows=row({tone:'green', href:waHref, ext:true, icon:I.chat, title:'WhatsApp Manufacturer', sub:`Start a prewritten chat with ${m.name.split(' ')[0]}`, action:I.ext});
+  }
   return `<div class="q end-q">
     <h1>Thank you, your brochure request is confirmed!</h1>
     <p class="sub">Our team will reach out to you with more details within 24 hours.</p>
     <div class="end-list">
       ${row({tone:'violet', id:'dlBrochure', icon:I.book, title:'Download Brochure', sub:'View the complete product overview', action:I.dl})}
-      <div class="end-group-label">Distributor</div>
-      ${row({tone:'blue', href:`mailto:${d.email}`, ext:true, icon:I.mail, title:'Email Distributor', sub:d.email, action:I.ext})}
-      ${row({tone:'blue', id:'saveDistributor', icon:I.user, title:'Save Distributor Contact', sub:`${d.name} · ${d.phone}`, action:I.dl})}
-      <div class="end-group-label">Manufacturer</div>
-      ${row({tone:'green', href:waHref, ext:true, icon:I.chat, title:'WhatsApp Manufacturer', sub:`Start a prewritten chat with ${m.name.split(' ')[0]}`, action:I.ext})}
-      ${row({tone:'orange', id:'saveManufacturer', icon:I.user, title:'Save Manufacturer Contact', sub:`Save ${m.name} · ${m.org}`, action:I.dl})}
+      ${contactRows}
     </div>
     <div class="hint" id="savenote" aria-live="polite"></div>
     </div>`;
