@@ -10,9 +10,10 @@ import { useRouter } from "next/navigation";
  * the homepage's Tailwind design system.
  *
  * On a positive lead the widget posts a message up to this wrapper, which then
- * navigates the whole page to /thank-you — that page fires the real Meta Pixel
- * "Lead" conversion itself. Negative leads stay inside the iframe and never
- * trigger that conversion event.
+ * navigates the whole page to /asia/thankyou-q — that page fires the real Meta
+ * Pixel "Lead" conversion itself. Negative leads stay inside the iframe and
+ * never trigger that conversion event. Both end states show the same
+ * Download Brochure + contact-card content; the only difference is the pixel.
  */
 const MIN_HEIGHT = 420;
 
@@ -26,7 +27,8 @@ export default function AisaBrochureWidget() {
       if (e.origin !== window.location.origin) return;
       if (!e.data || e.data.source !== "hg-asia-widget") return;
       if (e.data.type === "positive-lead") {
-        router.push("/thank-you");
+        const mode = typeof e.data.mode === "string" ? e.data.mode : "";
+        router.push(`/asia/thankyou-q${mode ? `?mode=${encodeURIComponent(mode)}` : ""}`);
       } else if (e.data.type === "height" && typeof e.data.height === "number") {
         setHeight(Math.max(MIN_HEIGHT, Math.ceil(e.data.height)));
       }

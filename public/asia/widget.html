@@ -409,7 +409,7 @@ let _pixelLoaded=false;
    custom event, so it never counts as a Lead conversion. */
 function firePixel(){
   if (isPositiveLead()){
-    try{ window.parent.postMessage({source:'hg-asia-widget', type:'positive-lead'}, window.location.origin); }catch(e){}
+    try{ window.parent.postMessage({source:'hg-asia-widget', type:'positive-lead', mode:S.f.mode||''}, window.location.origin); }catch(e){}
     return;
   }
   if (!CONFIG.metaPixelId || _pixelLoaded) return;
