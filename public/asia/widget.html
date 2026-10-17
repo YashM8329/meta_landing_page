@@ -336,7 +336,7 @@ function regionOf(){
 const N = {
   intro:{type:'intro', branch:'Start', q:'Get the HyperGrid brochure', next:'role'},
 
-  role:{branch:'Questions', q:'What best describes you?', opts:[
+  role:{branch:'Questions', q:'What describes you best?', opts:[
     o('I operate multiple venues','loc',{set:{segment:'Operates multiple venues'}}),
     o('I operate one venue','loc',{set:{segment:'Operates one venue'}}),
     o('I’m building my first venue','loc',{set:{segment:'Building first venue', kind:'building'}}),
