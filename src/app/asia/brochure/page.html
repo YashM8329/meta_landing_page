@@ -336,7 +336,7 @@ function regionOf(){
 const N = {
   intro:{type:'intro', branch:'Start', q:'Get the HyperGrid brochure', next:'role'},
 
-  role:{branch:'Questions', q:'What best describes you?', opts:[
+  role:{branch:'Questions', q:'What describes you best?', opts:[
     o('I operate multiple venues','loc',{set:{segment:'Operates multiple venues'}}),
     o('I operate one venue','loc',{set:{segment:'Operates one venue'}}),
     o('I’m building my first venue','loc',{set:{segment:'Building first venue', kind:'building'}}),
@@ -373,7 +373,7 @@ const N = {
 };
 
 /* ===== State ===== */
-const S = { hist:['intro'], a:{}, set:{}, reason:null, f:{} };
+const S = { hist:['role'], a:{}, set:{}, reason:null, f:{} };
 const cur = ()=> S.hist[S.hist.length-1];
 const txt = (n,k='q')=> typeof n[k]==='function'? n[k]() : n[k];
 const esc = s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -428,7 +428,7 @@ function back(){
   while (S.hist.length>1 && N[cur()].type==='router') S.hist.pop();
   derive(); render();
 }
-function restart(){ S.hist=['intro']; S.a={}; S.f={}; derive(); render(); }
+function restart(){ S.hist=['role']; S.a={}; S.f={}; derive(); render(); }
 
 /* ===== Call day and time =====
    Day choices follow the visitor’s own clock: “Today” appears only when 5+ hours of the day are left
@@ -585,7 +585,14 @@ function render(){
       </div>`:''}
       <div class="err" id="err"></div><div class="nav">${backBtn()}</div></div>`;
   }
-  else if (n.type==='end'){ h=endScreen(id); }
+  else if (n.type==='end'){
+    if (isPositiveLead()){
+      const mode=S.f.mode||'';
+      location.href=`/asia/brochure/thankyou-q${mode?`?mode=${encodeURIComponent(mode)}`:''}`;
+      return;
+    }
+    h=endScreen(id);
+  }
 
   stage.innerHTML=h;
   bind();

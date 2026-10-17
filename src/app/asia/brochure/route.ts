@@ -2,7 +2,7 @@ import { readFileSync } from "fs";
 import path from "path";
 import { NextResponse } from "next/server";
 
-const html = readFileSync(path.join(process.cwd(), "src/app/brochure/asia/page.html"), "utf8");
+const html = readFileSync(path.join(process.cwd(), "src/app/asia/brochure/page.html"), "utf8");
 
 export function GET() {
   return new NextResponse(html, {
