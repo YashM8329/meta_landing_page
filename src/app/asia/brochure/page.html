@@ -621,25 +621,16 @@ const backBtn=()=> S.hist.length>1 ? `<button class="link" data-back>← Back</b
 const navOK=(label)=>`<div class="nav">${backBtn()}<span class="spacer"></span><button class="btn" data-next>${label} ${I.arrow}</button></div>`;
 
 function endScreen(id){
-  const d=CONFIG.distributor, m=CONFIG.manufacturer;
-  const waNum=m.whatsapp.replace(/[^\d]/g,'');
-  const waHref=`https://wa.me/${waNum}?text=${encodeURIComponent(m.whatsappMessage)}`;
+  const d=CONFIG.distributor;
   const row=(opts)=>`<button class="end-row ${opts.tone}" type="button" ${opts.id?`id="${opts.id}"`:''} ${opts.href?`data-href="${esc(opts.href)}" data-ext="${opts.ext?1:0}"`:''}>
     <span class="end-row-icon">${opts.icon}</span>
     <span class="end-row-text"><b>${esc(opts.title)}</b><span>${esc(opts.sub)}</span></span>
     <span class="end-row-action">${opts.action}</span>
   </button>`;
-  let contactRows='';
-  if (S.f.mode==='Call'){
-    contactRows=row({tone:'blue', id:'saveDistributor', icon:I.user, title:'Save sales person contact', sub:`${d.name} · ${d.phone}`, action:I.dl});
-  } else if (S.f.mode==='Email'){
-    contactRows=row({tone:'blue', href:`mailto:${d.email}`, ext:true, icon:I.mail, title:'Sales email', sub:d.email, action:I.ext});
-  } else if (S.f.mode==='WhatsApp'){
-    contactRows=row({tone:'green', href:waHref, ext:true, icon:I.chat, title:'WhatsApp Manufacturer', sub:`Start a prewritten chat with ${m.name.split(' ')[0]}`, action:I.ext});
-  }
+  const contactRows=row({tone:'blue', id:'saveDistributor', icon:I.user, title:'Save sales person contact', sub:`${d.name} · ${d.phone}`, action:I.dl});
   return `<div class="q end-q">
-    <h1>Thank you, your brochure request is confirmed!</h1>
-    <p class="sub">Your brochure download has started. Our team will reach out to you with more details within 24 hours.</p>
+    <h1>Your Brochure is being downloaded</h1>
+    <p class="sub">We will reach you within 24 hours.</p>
     <div class="end-list">
       ${contactRows}
     </div>
@@ -663,16 +654,16 @@ function vcard(person){
   return ['BEGIN:VCARD','VERSION:3.0',`N:;${person.name};;;`,`FN:${person.name}`,`ORG:${person.org||''}`,`TEL;TYPE=WORK,VOICE:${tel}`,'NOTE:HyperGrid brochure follow-up','END:VCARD'].join('\r\n');
 }
 const isMobileDevice = ()=> /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints>1 && /Mac/i.test(navigator.userAgent));
+const VCARD_URL='https://vcard.link/card/IG2c.vcf';
 async function saveContact(person){
   const note=document.getElementById('savenote');
   const inPreview = !!(window.claude && typeof window.claude.use==='function');
   const dialTel=person.phone||person.whatsapp||'';
   if (!inPreview){
-    const blob=new Blob([vcard(person)],{type:'text/vcard'});
-    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`${person.name.replace(/\s+/g,'-')}.vcf`;
-    document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+    const a=document.createElement('a'); a.href=VCARD_URL; a.rel='noopener';
+    document.body.appendChild(a); a.click(); a.remove();
     if (isMobileDevice()) note.textContent='Opening your contacts. Tap Save to keep the number.';
-    else note.textContent='Contact card downloaded. Open the downloaded .vcf file to add it to your contacts app (or scan the brochure on your phone to save it there instead).';
+    else note.textContent='Contact card downloaded. Open the downloaded .vcf file to add it to your contacts app.';
     return;
   }
   try{ await navigator.clipboard.writeText(dialTel); note.textContent='Preview only: number copied. On the live site this button opens your phone’s contacts with the number filled in.'; }

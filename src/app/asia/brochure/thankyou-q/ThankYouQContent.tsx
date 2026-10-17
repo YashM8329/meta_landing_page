@@ -2,33 +2,19 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useTranslation } from "@/lib/useTranslation";
 
-/* Same sales/manufacturer placeholders used by the /asia embedded widget
+/* Same sales placeholder used by the /asia embedded widget
    (public/asia/widget.html CONFIG). Keep these two in sync. */
 const DISTRIBUTOR = {
   name: "Tommy Nasser",
   email: "sales@thefutureofgaming.tech",
   phone: "+44 7917 877297",
 };
-const MANUFACTURER = {
-  name: "Vishal Mehta",
-  whatsapp: "+91 00000 00000",
-  whatsappMessage: "Hi Vishal, I just requested the HyperGrid brochure and would like to know more.",
-};
 
 const BROCHURE_URL = "/brochure/hypergrid-brochure.pdf";
 
-function MailIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="3" y="5" width="18" height="14" rx="2" />
-      <path d="M3 7l9 6 9-6" />
-    </svg>
-  );
-}
 function UserPlusIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -37,14 +23,6 @@ function UserPlusIcon() {
     </svg>
   );
 }
-function ChatIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-    </svg>
-  );
-}
-
 const rowClass = "flex items-center gap-4 w-full bg-white border border-line rounded-2xl px-4 py-3.5 text-left hover:border-accent/40 hover:-translate-y-px transition-all duration-150";
 function RowBody({ icon, title, sub }: { icon: React.ReactNode; title: string; sub: string }) {
   return (
@@ -57,44 +35,18 @@ function RowBody({ icon, title, sub }: { icon: React.ReactNode; title: string; s
     </>
   );
 }
-function ActionRow({ icon, title, sub, href, download, filename }: {
-  icon: React.ReactNode; title: string; sub: string;
-  href: string; download?: boolean; filename?: string;
-}) {
-  return (
-    <a
-      href={href}
-      {...(download ? { download: filename ?? true } : { target: "_blank", rel: "noopener" })}
-      className={rowClass}
-    >
-      <RowBody icon={icon} title={title} sub={sub} />
-    </a>
-  );
-}
+const VCARD_URL = "https://vcard.link/card/IG2c.vcf";
 
-function vcard(person: { name: string; org?: string; phone: string }) {
-  const tel = person.phone.replace(/[^\d+]/g, "");
-  return [
-    "BEGIN:VCARD", "VERSION:3.0",
-    `N:;${person.name};;;`, `FN:${person.name}`,
-    `ORG:${person.org ?? ""}`, `TEL;TYPE=WORK,VOICE:${tel}`,
-    "NOTE:HyperGrid brochure follow-up", "END:VCARD",
-  ].join("\r\n");
-}
-
-function SaveContactRow({ icon, title, sub, person }: {
+function SaveContactRow({ icon, title, sub }: {
   icon: React.ReactNode; title: string; sub: string;
-  person: { name: string; org?: string; phone: string };
 }) {
   const handleSave = () => {
-    const blob = new Blob([vcard(person)], { type: "text/vcard" });
     const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `${person.name.replace(/\s+/g, "-")}.vcf`;
+    a.href = VCARD_URL;
+    a.rel = "noopener";
     document.body.appendChild(a);
     a.click();
     a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
   };
   return (
     <button type="button" onClick={handleSave} className={rowClass}>
@@ -105,11 +57,6 @@ function SaveContactRow({ icon, title, sub, person }: {
 
 export default function ThankYouQContent() {
   const { t } = useTranslation();
-  const searchParams = useSearchParams();
-  const mode = searchParams.get("mode");
-
-  const waNum = MANUFACTURER.whatsapp.replace(/[^\d]/g, "");
-  const waHref = `https://wa.me/${waNum}?text=${encodeURIComponent(MANUFACTURER.whatsappMessage)}`;
 
   useEffect(() => {
     const a = document.createElement("a");
@@ -136,35 +83,16 @@ export default function ThankYouQContent() {
       </div>
 
       <h1 className="text-[clamp(26px,4.5vw,40px)] font-extrabold tracking-[-0.03em] text-ink leading-[1.25] max-w-[680px] mb-3">
-        {t.form.followUp}
+        Your Brochure is being downloaded
       </h1>
-      <p className="text-[15px] text-ink-faint mb-5">Your brochure download has started.</p>
+      <p className="text-[15px] text-ink-faint mb-5">We will reach you within 24 hours.</p>
 
       <div className="flex flex-col gap-3 w-full max-w-[420px] mt-2 mb-8">
-        {mode === "Call" && (
-          <SaveContactRow
-            icon={<UserPlusIcon />}
-            title="Save sales person contact"
-            sub={`${DISTRIBUTOR.name} · ${DISTRIBUTOR.phone}`}
-            person={{ name: DISTRIBUTOR.name, phone: DISTRIBUTOR.phone }}
-          />
-        )}
-        {mode === "Email" && (
-          <ActionRow
-            icon={<MailIcon />}
-            title="Sales email"
-            sub={DISTRIBUTOR.email}
-            href={`mailto:${DISTRIBUTOR.email}`}
-          />
-        )}
-        {mode === "WhatsApp" && (
-          <ActionRow
-            icon={<ChatIcon />}
-            title="WhatsApp Manufacturer"
-            sub={`Start a prewritten chat with ${MANUFACTURER.name.split(" ")[0]}`}
-            href={waHref}
-          />
-        )}
+        <SaveContactRow
+          icon={<UserPlusIcon />}
+          title="Save sales person contact"
+          sub={`${DISTRIBUTOR.name} · ${DISTRIBUTOR.phone}`}
+        />
       </div>
 
       <Link
