@@ -9,7 +9,7 @@ import { useTranslation } from "@/lib/useTranslation";
    (public/asia/widget.html CONFIG). Keep these two in sync. */
 const DISTRIBUTOR = {
   name: "Tommy Nasser",
-  email: "sales@bandainamco.co.uk",
+  email: "sales@thefutureofgaming.tech",
   phone: "+44 7917 877297",
 };
 const MANUFACTURER = {
