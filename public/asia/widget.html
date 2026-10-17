@@ -47,8 +47,8 @@ button{font:inherit}
 
 /* ---------- shell ---------- */
 .app{padding-bottom:var(--kb,0px);min-height:100%;display:flex;flex-direction:column}
-.progress{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;height:5px;background:var(--line)}
-.fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.progress{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;height:8px;background:var(--line);border-radius:0 0 4px 4px;overflow:hidden}
+.fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .5s cubic-bezier(.2,.8,.2,1);border-radius:0 4px 4px 0;box-shadow:0 0 6px color-mix(in srgb,var(--accent) 55%,transparent)}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 24px;flex-wrap:wrap}
 .logo{display:flex;align-items:baseline;gap:10px}
 .logo b{font-weight:800;letter-spacing:.16em;font-size:15px}
