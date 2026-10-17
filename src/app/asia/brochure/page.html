@@ -235,10 +235,10 @@ const CONFIG = {
   brochureUrl: "/brochure/hypergrid-brochure.pdf",
   metaPixelId: "1079278694629302",     // same Pixel ID used on the main site's thank-you page
   distributor: {
-    name: "Tommy Nasser",
-    email: "sales@bandainamco.co.uk",   // placeholder — replace before going live
-    phone: "+44 7917 877297",            // placeholder — replace before going live
-    org: "Bandai Namco",
+    name: "Vishal Mehta",
+    email: "sales@thefutureofgaming.tech",
+    phone: "+91 7984489771",
+    org: "FOG Technologies",
   },
   manufacturer: {
     name: "Vishal Mehta",
@@ -582,6 +582,7 @@ function render(){
   }
   else if (n.type==='end'){
     if (isPositiveLead()){
+      collapseHistoryDepth();
       const mode=S.f.mode||'';
       location.href=`/asia/brochure/thankyou-q${mode?`?mode=${encodeURIComponent(mode)}`:''}`;
       return;
@@ -592,7 +593,7 @@ function render(){
   stage.innerHTML=h;
   bind();
   updateTools();
-  if (n.type==='end'){ firePixel(); autoDownload(); }
+  if (n.type==='end'){ firePixel(); autoDownload(); collapseHistoryDepth(); }
   else syncHistoryDepth();
   startUnit();
   const first=stage.querySelector('input.inp');
@@ -602,9 +603,11 @@ function render(){
    Keeps one pushed history entry per question beyond the first, so pressing
    back always steps back one question at a time instead of leaving the page
    — until the first question, where it falls through to real navigation.
-   Not armed on the thank-you screen (n.type==='end'): back there should
-   leave the page normally for both positive and negative leads. */
-let _pushedDepth=0, _goingBack=false;
+   On reaching the thank-you screen (n.type==='end'), every pushed entry is
+   collapsed away in one jump, so a single back press there always leaves the
+   page immediately — for both positive and negative leads — instead of
+   re-entering the flow or needing an extra press to clear a stale entry. */
+let _pushedDepth=0, _goingBack=false, _collapsing=false;
 function syncHistoryDepth(){
   const target=Math.max(0, S.hist.length-1);
   if (!_goingBack){
@@ -613,7 +616,14 @@ function syncHistoryDepth(){
   _pushedDepth=target;
   _goingBack=false;
 }
+function collapseHistoryDepth(){
+  if (_pushedDepth<=0) return;
+  _collapsing=true;
+  history.go(-_pushedDepth);
+  _pushedDepth=0;
+}
 addEventListener('popstate',()=>{
+  if (_collapsing){ _collapsing=false; return; }
   if (N[cur()].type==='end') return;
   if (_pushedDepth>0){ _pushedDepth--; _goingBack=true; back(); }
 });
@@ -627,14 +637,15 @@ function endScreen(id){
     <span class="end-row-text"><b>${esc(opts.title)}</b><span>${esc(opts.sub)}</span></span>
     <span class="end-row-action">${opts.action}</span>
   </button>`;
-  const contactRows=row({tone:'blue', id:'saveDistributor', icon:I.user, title:'Save sales person contact', sub:`${d.name} · ${d.phone}`, action:I.dl});
+  const contactRows=row({tone:'blue', id:'saveDistributor', icon:I.user, title:'Save contact', sub:`${d.name} · ${d.phone}`, action:I.dl});
   return `<div class="q end-q">
-    <h1>Your Brochure is being downloaded</h1>
+    <h1>Thank you, your brochure is being downloaded</h1>
     <p class="sub">We will reach you within 24 hours.</p>
     <div class="end-list">
       ${contactRows}
     </div>
     <div class="hint" id="savenote" aria-live="polite"></div>
+    <div class="nav" style="margin-top:8px"><span class="spacer"></span><a class="btn" href="/asia" style="text-decoration:none">Back to Home</a></div>
     </div>`;
 }
 

@@ -8,9 +8,9 @@ import { useTranslation } from "@/lib/useTranslation";
 /* Same sales placeholder used by the /asia embedded widget
    (public/asia/widget.html CONFIG). Keep these two in sync. */
 const DISTRIBUTOR = {
-  name: "Tommy Nasser",
+  name: "Vishal Mehta",
   email: "sales@thefutureofgaming.tech",
-  phone: "+44 7917 877297",
+  phone: "+91 7984489771",
 };
 
 const BROCHURE_URL = "/brochure/hypergrid-brochure.pdf";
@@ -83,14 +83,14 @@ export default function ThankYouQContent() {
       </div>
 
       <h1 className="text-[clamp(26px,4.5vw,40px)] font-extrabold tracking-[-0.03em] text-ink leading-[1.25] max-w-[680px] mb-3">
-        Your Brochure is being downloaded
+        Thank you, your brochure is being downloaded
       </h1>
       <p className="text-[15px] text-ink-faint mb-5">We will reach you within 24 hours.</p>
 
       <div className="flex flex-col gap-3 w-full max-w-[420px] mt-2 mb-8">
         <SaveContactRow
           icon={<UserPlusIcon />}
-          title="Save sales person contact"
+          title="Save contact"
           sub={`${DISTRIBUTOR.name} · ${DISTRIBUTOR.phone}`}
         />
       </div>
