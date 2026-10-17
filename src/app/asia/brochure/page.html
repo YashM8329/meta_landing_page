@@ -591,7 +591,7 @@ function render(){
   stage.innerHTML=h;
   bind();
   updateTools();
-  if (n.type==='end') firePixel();
+  if (n.type==='end'){ firePixel(); autoDownload(); }
   startUnit();
   const first=stage.querySelector('input.inp');
   if (first) first.focus({preventScroll:true});
@@ -618,9 +618,8 @@ function endScreen(id){
   }
   return `<div class="q end-q">
     <h1>Thank you, your brochure request is confirmed!</h1>
-    <p class="sub">Our team will reach out to you with more details within 24 hours.</p>
+    <p class="sub">Your brochure download has started. Our team will reach out to you with more details within 24 hours.</p>
     <div class="end-list">
-      ${row({tone:'violet', id:'dlBrochure', icon:I.book, title:'Download Brochure', sub:'View the complete product overview', action:I.dl})}
       ${contactRows}
     </div>
     <div class="hint" id="savenote" aria-live="polite"></div>
@@ -806,7 +805,6 @@ function bind(){
   stage.querySelectorAll('[data-restart]').forEach(b=>b.onclick=restart);
   stage.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>pick(+b.dataset.i));
   bindChips();
-  const dlBtn=document.getElementById('dlBrochure'); if (dlBtn) dlBtn.onclick=()=>{ autoDownload(); dlBtn.querySelector('.end-row-text span').textContent = hasBrochureUrl() ? 'Download started' : 'Preview only: no brochure file configured yet'; };
   const sd=document.getElementById('saveDistributor'); if (sd) sd.onclick=()=>saveContact({name:CONFIG.distributor.name, org:CONFIG.distributor.org, phone:CONFIG.distributor.phone});
   const sm=document.getElementById('saveManufacturer'); if (sm) sm.onclick=()=>saveContact({name:CONFIG.manufacturer.name, org:CONFIG.manufacturer.org, phone:CONFIG.manufacturer.whatsapp});
   stage.querySelectorAll('.end-row[data-href]').forEach(b=>b.onclick=()=>{ window.open(b.dataset.href, b.dataset.ext==='1' ? '_blank' : '_self', 'noopener'); });

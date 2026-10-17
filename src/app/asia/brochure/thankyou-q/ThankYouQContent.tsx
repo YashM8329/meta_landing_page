@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { useTranslation } from "@/lib/useTranslation";
 
 /* Same sales/manufacturer placeholders used by the /asia embedded widget
@@ -20,14 +21,6 @@ const MANUFACTURER = {
 
 const BROCHURE_URL = "/brochure/hypergrid-brochure.pdf";
 
-function DownloadIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5" />
-      <path d="M4 18v1.5A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5V18" />
-    </svg>
-  );
-}
 function MailIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -118,6 +111,17 @@ export default function ThankYouQContent() {
   const waNum = MANUFACTURER.whatsapp.replace(/[^\d]/g, "");
   const waHref = `https://wa.me/${waNum}?text=${encodeURIComponent(MANUFACTURER.whatsappMessage)}`;
 
+  useEffect(() => {
+    const a = document.createElement("a");
+    a.href = BROCHURE_URL;
+    a.download = "HyperGrid Brochure - FOG.pdf";
+    a.rel = "noopener";
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }, []);
+
   return (
     <motion.main
       className="min-h-dvh bg-white flex flex-col items-center justify-center px-6 py-16 text-center"
@@ -131,19 +135,12 @@ export default function ThankYouQContent() {
         </svg>
       </div>
 
-      <h1 className="text-[clamp(26px,4.5vw,40px)] font-extrabold tracking-[-0.03em] text-ink leading-[1.25] max-w-[680px] mb-4">
+      <h1 className="text-[clamp(26px,4.5vw,40px)] font-extrabold tracking-[-0.03em] text-ink leading-[1.25] max-w-[680px] mb-3">
         {t.form.followUp}
       </h1>
+      <p className="text-[15px] text-ink-faint mb-5">Your brochure download has started.</p>
 
       <div className="flex flex-col gap-3 w-full max-w-[420px] mt-2 mb-8">
-        <ActionRow
-          icon={<DownloadIcon />}
-          title="Download Brochure"
-          sub="View the complete product overview"
-          href={BROCHURE_URL}
-          download
-          filename="HyperGrid Brochure - FOG.pdf"
-        />
         {mode === "Call" && (
           <SaveContactRow
             icon={<UserPlusIcon />}
