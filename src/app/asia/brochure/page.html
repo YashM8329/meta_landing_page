@@ -388,10 +388,19 @@ function derive(){
   }
 }
 function route(){ return S.hist.includes('end') ? 'done' : 'pending'; }
-/* Positive lead = said yes to both commitment questions (space AND budget).
-   Either "No" answer makes it a negative lead — those don't fire the Meta Pixel
+/* Positive lead, weighted by role:
+   - Existing operators (multiple or one venue) already show real intent, so
+     either commitment question alone (space OR budget) is enough.
+   - Everyone else (building first venue / just exploring) needs both space
+     AND budget to be Yes — no shortcut, since role alone doesn't prove intent.
+   Anything short of that is a negative lead and doesn't fire the Meta Pixel
    Lead conversion, so ad optimization isn't skewed by low-intent form-fillers. */
-const isPositiveLead=()=> !!(S.set.space||'').startsWith('Can make') && !!(S.set.budget||'').startsWith('Ready');
+const isPositiveLead=()=>{
+  const spaceYes=(S.set.space||'').startsWith('Can make');
+  const budgetYes=(S.set.budget||'').startsWith('Ready');
+  const isOperator=S.set.segment==='Operates multiple venues' || S.set.segment==='Operates one venue';
+  return isOperator ? (spaceYes || budgetYes) : (spaceYes && budgetYes);
+};
 let _pixelLoaded=false;
 function firePixel(){
   if (!CONFIG.metaPixelId || _pixelLoaded) return;
