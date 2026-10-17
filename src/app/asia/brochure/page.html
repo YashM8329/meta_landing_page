@@ -7,31 +7,16 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
 <style>
 :root{
-  --bg:#F3F5F9; --grid:rgba(40,60,110,.055); --surface:#FFFFFF; --surface-2:#F7F9FC;
-  --ink:#10162A; --muted:#667085; --line:#E1E6EF;
-  --accent:#3E6BE6; --accent-2:#5D82F2; --btn-ink:#FFFFFF; --accent-soft:#E9EFFD;
+  color-scheme:light;
+  /* Matches the main site's design tokens (src/app/globals.css @theme) —
+     always light, regardless of the visitor's OS color-scheme preference. */
+  --bg:#F6F7F9; --grid:rgba(10,14,26,.05); --surface:#F8F8F8; --surface-2:#EEF1F5;
+  --ink:#0A0A0A; --muted:#5B6472; --line:#E9EBEF;
+  --accent:#1D6CEF; --accent-2:#5B93F5; --btn-ink:#FFFFFF; --accent-soft:#E9EFFD;
   --hot:#138A43; --hot-soft:#E3F5EA; --warm:#B86A06; --warm-soft:#FCF0DD; --cold:#5B6678; --cold-soft:#ECEFF4;
   --danger:#C2362B;
   --font:"Urbanist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    color-scheme:dark;
-    --bg:#0D1220; --grid:rgba(140,165,230,.06); --surface:#151C2E; --surface-2:#1A2338;
-    --ink:#E9EDF6; --muted:#98A3BA; --line:#27314A;
-    --accent:#6A8CF6; --accent-2:#86A2FA; --btn-ink:#0B1020; --accent-soft:#1D2A4F;
-    --hot:#4CC985; --hot-soft:#143325; --warm:#F0A94A; --warm-soft:#3A2A12; --cold:#A3AEC2; --cold-soft:#232C40;
-    --danger:#F07A70;
-  }
-}
-:root[data-theme="dark"]{
-  color-scheme:dark;
-  --bg:#0D1220; --grid:rgba(140,165,230,.06); --surface:#151C2E; --surface-2:#1A2338;
-  --ink:#E9EDF6; --muted:#98A3BA; --line:#27314A;
-  --accent:#6A8CF6; --accent-2:#86A2FA; --btn-ink:#0B1020; --accent-soft:#1D2A4F;
-  --hot:#4CC985; --hot-soft:#143325; --warm:#F0A94A; --warm-soft:#3A2A12; --cold:#A3AEC2; --cold-soft:#232C40;
-  --danger:#F07A70;
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
