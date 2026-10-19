@@ -83,7 +83,7 @@ export default function AisaLandingPage() {
         </noscript>
 
         <SmoothScroll />
-        <NavBar />
+        <NavBar brochureHref="/asia/brochure" />
 
         <main className="page-canvas min-h-screen relative">
           <HeroSection brochureHref="/asia/brochure" stackBrochureBelowVideo />

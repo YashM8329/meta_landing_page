@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { useTranslation } from "@/lib/useTranslation";
 import { useCTA } from "@/lib/CTAContext";
 
-export default function NavBar() {
+export default function NavBar({ brochureHref = "#brochure-form" }: { brochureHref?: string } = {}) {
   const { t } = useTranslation();
   const { showCTA } = useCTA();
   const [visible, setVisible] = useState(false);
@@ -92,7 +92,7 @@ export default function NavBar() {
           </div>
           {showCTA && (
             <a
-              href="#brochure-form"
+              href={brochureHref}
               className="relative text-white text-[14px] font-semibold px-5 py-2.5 rounded-lg flex items-center justify-center gap-1.5 overflow-hidden shadow-md select-none bg-gradient-to-r from-[#1D6CEF] via-[#2f74e6] to-[#1D6CEF] hover:brightness-105 active:scale-[0.98] transition-all duration-150"
             >
               <div 
