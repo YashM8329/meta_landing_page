@@ -402,14 +402,28 @@ const isPositiveLead=()=>{
   const isOperator=S.set.segment==='Operates multiple venues' || S.set.segment==='Operates one venue' || S.set.segment==='Building first venue';
   return isOperator ? (spaceYes || budgetYes) : (spaceYes && budgetYes);
 };
+/* The real "Lead" conversion is sent server-side only (see /api/meta-capi,
+   called from the positive-lead branch in render() below) so it can never
+   double-fire and never fires for a disqualified (negative-lead) visitor.
+   This client pixel only ever marks low-intent thank-yous with a custom
+   event that's excluded from ad optimization. */
 let _pixelLoaded=false;
 function firePixel(){
   if (!CONFIG.metaPixelId || _pixelLoaded) return;
   _pixelLoaded=true;
   (function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)})(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
   window.fbq('init', CONFIG.metaPixelId);
-  if (isPositiveLead()) window.fbq('track', 'Lead');
-  else window.fbq('trackCustom', 'HG_LowIntentThankYou');
+  window.fbq('trackCustom', 'HG_LowIntentThankYou');
+}
+function sendServerLead(){
+  try{
+    fetch('/api/meta-capi',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ email:S.f.email||'', phone: S.f.phone?`${S.f.cc||''}${S.f.phone}`:'', eventSourceUrl: location.href }),
+      keepalive:true,
+    }).catch(()=>{});
+  }catch(e){}
 }
 const ROUTE = {done:['hot','Lead captured'], pending:['pending','In progress']};
 
@@ -582,6 +596,7 @@ function render(){
   }
   else if (n.type==='end'){
     if (isPositiveLead()){
+      sendServerLead();
       collapseHistoryDepth();
       const mode=S.f.mode||'';
       location.href=`/asia/brochure/thankyou-q${mode?`?mode=${encodeURIComponent(mode)}`:''}`;

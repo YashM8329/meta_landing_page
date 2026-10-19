@@ -11,7 +11,9 @@ export const metadata: Metadata = {
 export default function ThankYouQPage() {
   return (
     <>
-      {/* Meta Pixel — positive-lead confirmation (Lead conversion) */}
+      {/* Meta Pixel — standard PageView only. The real "Lead" conversion for
+          this positive-lead page is sent server-side from /asia/brochure's
+          submit handler via /api/meta-capi, never fired client-side here. */}
       <Script
         id="meta-pixel-thankyou-q"
         strategy="afterInteractive"
@@ -26,15 +28,10 @@ export default function ThankYouQPage() {
             s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
             fbq('init', '1079278694629302');
-            fbq('track', 'Lead');
+            fbq('track', 'PageView');
           `,
         }}
       />
-      <noscript>
-        <img height="1" width="1" style={{ display: "none" }}
-          src="https://www.facebook.com/tr?id=1079278694629302&ev=Lead&noscript=1"
-        />
-      </noscript>
 
       <Suspense fallback={null}>
         <ThankYouQContent />

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { appendLead } from "@/lib/googleSheets";
+import { sendLeadEvent, clientIpFromHeaders } from "@/lib/metaCapi";
 
 export async function POST(request: Request) {
   try {
@@ -134,6 +135,23 @@ export async function POST(request: Request) {
     } catch (err: any) {
       console.error("[Sheets] Failed to append lead:", err.message);
       // Never block the response — sheet failure is non-critical
+    }
+
+    // Server-side Meta "Lead" conversion. Every submission through this form
+    // is treated as qualified (no disqualifying questions exist here), so
+    // this always fires — unlike /asia/brochure which gates on its own
+    // space/budget qualification before calling the shared CAPI helper.
+    try {
+      await sendLeadEvent({
+        email,
+        phone,
+        eventSourceUrl: request.headers.get("referer") || request.url,
+        clientIp: clientIpFromHeaders(request.headers),
+        userAgent: request.headers.get("user-agent") || undefined,
+      });
+    } catch (err) {
+      console.error("[meta-capi] Failed to send Lead event:", err);
+      // Never block the response — CAPI failure is non-critical
     }
 
     return NextResponse.json({ success: true, data });

@@ -10,7 +10,9 @@ export const metadata: Metadata = {
 export default function ThankYouPage() {
   return (
     <>
-      {/* Meta Pixel — Thank You Page (Lead conversion) */}
+      {/* Meta Pixel — standard PageView only. The real "Lead" conversion is
+          sent server-side from /api/send-email via /api/meta-capi, never
+          fired client-side here. */}
       <Script
         id="meta-pixel-thankyou"
         strategy="afterInteractive"
@@ -25,15 +27,10 @@ export default function ThankYouPage() {
             s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
             fbq('init', '1079278694629302');
-            fbq('track', 'Lead');
+            fbq('track', 'PageView');
           `,
         }}
       />
-      <noscript>
-        <img height="1" width="1" style={{ display: "none" }}
-          src="https://www.facebook.com/tr?id=1079278694629302&ev=Lead&noscript=1"
-        />
-      </noscript>
 
       <ThankYouContent />
     </>
