@@ -6,7 +6,13 @@ import { motion, AnimatePresence, useReducedMotion, type Variants } from "framer
 import { useTranslation } from "@/lib/useTranslation";
 import { useCTA } from "@/lib/CTAContext";
 
-export default function HeroSection() {
+export default function HeroSection({
+  brochureHref = "#brochure-form",
+  stackBrochureBelowVideo = false,
+}: {
+  brochureHref?: string;
+  stackBrochureBelowVideo?: boolean;
+} = {}) {
   const { t } = useTranslation();
   const { showCTA } = useCTA();
   const reduce = useReducedMotion();
@@ -112,11 +118,44 @@ export default function HeroSection() {
             dangerouslySetInnerHTML={{ __html: t.hero.mobileDescription }}
           />
 
-          <motion.div variants={item} className="flex items-center gap-4">
-            {showCTA && (
+          <motion.div variants={item} className={stackBrochureBelowVideo ? "flex flex-col items-start gap-4" : "flex items-center gap-4"}>
+            <div className="flex items-center gap-4">
+              {showCTA && !stackBrochureBelowVideo && (
+                <a
+                  href={brochureHref}
+                  className="btn-glass-accent text-white font-semibold text-[18px] lg:text-[22px] px-8 py-4 rounded-xl flex items-center gap-2.5"
+                >
+                  <motion.span
+                    className="flex items-center justify-center gap-2.5"
+                    animate={{ scale: [1, 1, 1.05, 1, 1] }}
+                    transition={{
+                      times: [0, 0.14, 0.20, 0.26, 1.0],
+                      duration: 3.5,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  >
+                    {t.hero.requestBrochure}
+                    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </motion.span>
+                </a>
+              )}
+              <button
+                onClick={() => setIsOpen(true)}
+                className="btn-glass-light text-ink font-semibold text-[17px] lg:text-[21px] px-7 py-4 rounded-xl flex items-center gap-2.5 cursor-pointer"
+              >
+                {t.hero.watchVideo}
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M6 4L12 8L6 12V4Z" fill="currentColor" />
+                </svg>
+              </button>
+            </div>
+            {showCTA && stackBrochureBelowVideo && (
               <a
-                href="#brochure-form"
-                className="btn-glass-accent text-white font-semibold text-[18px] lg:text-[22px] px-8 py-4 rounded-xl flex items-center gap-2.5"
+                href={brochureHref}
+                className="btn-glass-light text-ink font-semibold text-[18px] lg:text-[22px] px-8 py-4 rounded-xl flex items-center gap-2.5"
               >
                 <motion.span
                   className="flex items-center justify-center gap-2.5"
@@ -135,15 +174,6 @@ export default function HeroSection() {
                 </motion.span>
               </a>
             )}
-            <button
-              onClick={() => setIsOpen(true)}
-              className="btn-glass-light text-ink font-semibold text-[17px] lg:text-[21px] px-7 py-4 rounded-xl flex items-center gap-2.5 cursor-pointer"
-            >
-              {t.hero.watchVideo}
-              <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path d="M6 4L12 8L6 12V4Z" fill="currentColor" />
-              </svg>
-            </button>
           </motion.div>
 
           {/* Stats row — desktop only */}
@@ -243,11 +273,44 @@ export default function HeroSection() {
             </motion.div>
           </motion.div>
 
-          <motion.div variants={item} className="flex items-center gap-4 mt-2">
-            {showCTA && (
+          <motion.div variants={item} className={stackBrochureBelowVideo ? "flex flex-col items-start gap-4 mt-2" : "flex items-center gap-4 mt-2"}>
+            <div className="flex items-center gap-4">
+              {showCTA && !stackBrochureBelowVideo && (
+                <a
+                  href={brochureHref}
+                  className="btn-glass-accent text-white font-semibold text-[18px] px-8 py-4 rounded-xl flex items-center gap-2.5"
+                >
+                  <motion.span
+                    className="flex items-center justify-center gap-2.5"
+                    animate={{ scale: [1, 1, 1.05, 1, 1] }}
+                    transition={{
+                      times: [0, 0.14, 0.20, 0.26, 1.0],
+                      duration: 3.5,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  >
+                    {t.hero.requestBrochure}
+                    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </motion.span>
+                </a>
+              )}
+              <button
+                onClick={() => setIsOpen(true)}
+                className="btn-glass-light text-ink font-semibold text-[17px] px-7 py-4 rounded-xl flex items-center gap-2.5 cursor-pointer"
+              >
+                {t.hero.watchVideo}
+                <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M6 4L12 8L6 12V4Z" fill="currentColor" />
+                </svg>
+              </button>
+            </div>
+            {showCTA && stackBrochureBelowVideo && (
               <a
-                href="#brochure-form"
-                className="btn-glass-accent text-white font-semibold text-[18px] px-8 py-4 rounded-xl flex items-center gap-2.5"
+                href={brochureHref}
+                className="btn-glass-light text-ink font-semibold text-[18px] px-8 py-4 rounded-xl flex items-center gap-2.5"
               >
                 <motion.span
                   className="flex items-center justify-center gap-2.5"
@@ -266,15 +329,6 @@ export default function HeroSection() {
                 </motion.span>
               </a>
             )}
-            <button
-              onClick={() => setIsOpen(true)}
-              className="btn-glass-light text-ink font-semibold text-[17px] px-7 py-4 rounded-xl flex items-center gap-2.5 cursor-pointer"
-            >
-              {t.hero.watchVideo}
-              <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path d="M6 4L12 8L6 12V4Z" fill="currentColor" />
-              </svg>
-            </button>
           </motion.div>
 
           {/* Stats row */}
@@ -378,6 +432,31 @@ export default function HeroSection() {
               </svg>
             </button>
           </motion.div>
+
+          {showCTA && stackBrochureBelowVideo && (
+            <motion.div variants={item} className="w-full mt-4">
+              <a
+                href={brochureHref}
+                className="btn-glass-light text-ink font-semibold text-[17px] px-7 py-4 rounded-xl flex items-center justify-center gap-2.5 w-full"
+              >
+                <motion.span
+                  className="flex items-center justify-center gap-2.5"
+                  animate={{ scale: [1, 1, 1.05, 1, 1] }}
+                  transition={{
+                    times: [0, 0.14, 0.20, 0.26, 1.0],
+                    duration: 3.5,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  {t.hero.requestBrochure}
+                  <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </motion.span>
+              </a>
+            </motion.div>
+          )}
 
           {/* Mobile-only Stats Grid matching mockup */}
           <motion.div

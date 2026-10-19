@@ -10,7 +10,6 @@ import InstagramCarousel, { ReelItem } from "@/components/InstagramCarousel";
 import ProofSection from "@/components/ProofSection";
 import ROICalculator from "@/components/ROICalculator";
 import CaseStudy from "@/components/CaseStudy";
-import AisaBrochureSection from "@/components/AisaBrochureSection";
 import { CarouselCard } from "@/components/CardCarousel";
 import StickyFooterCTA from "@/components/StickyFooterCTA";
 import SmoothScroll from "@/components/SmoothScroll";
@@ -87,8 +86,7 @@ export default function AisaLandingPage() {
         <NavBar />
 
         <main className="page-canvas min-h-screen relative">
-          <HeroSection />
-          <AisaBrochureSection />
+          <HeroSection brochureHref="/asia/brochure" stackBrochureBelowVideo />
           <KeyFeaturesSection cards={featureCards} />
           <MomentsSection cards={momentsCards} />
           <ProofSection />
