@@ -11,6 +11,24 @@ export interface LeadRow {
   utmParams?: string;
 }
 
+export interface BrochureLeadRow {
+  segment: string;        // "What describes you best?" answer
+  venueAddress: string;   // venue name/address as typed or picked from autocomplete
+  city: string;
+  country: string;
+  spaceAnswer: string;    // floor-space Yes/No question
+  budgetAnswer: string;   // budget Yes/No question
+  fullName: string;
+  email: string;
+  phone: string;          // includes country dial code
+  contactMode: string;    // Email / WhatsApp / Call
+  callDay?: string;
+  callTime?: string;
+  leadQuality: "Positive" | "Negative";
+  sourceUrl?: string;
+  utmParams?: string;
+}
+
 const SHEET_HEADERS = [
   "Date & Time",       // A
   "Source URL",        // B
@@ -31,6 +49,32 @@ const SHEET_HEADERS = [
 
 // A=Date & Time, B=Source URL, C=utm_source, D=utm_medium, E=utm_campaign, F=utm_content, G=Full Name, H=Contact Number, I=Email, J=Country, K=Venue Status, L=Venue Address, M=Lead Status, N=Assigned to, O=Notes
 const STATUS_COLUMN = 13; // 1-indexed, column M
+
+const BROCHURE_SHEET_HEADERS = [
+  "Date & Time",            // A
+  "Source URL",             // B
+  "utm_source",             // C
+  "utm_medium",             // D
+  "utm_campaign",           // E
+  "utm_content",            // F
+  "What describes you best?", // G
+  "Venue Name / Address",   // H
+  "City",                   // I
+  "Country",                // J
+  "Can make space?",        // K
+  "Ready to invest budget?", // L
+  "Full Name",               // M
+  "Email",                   // N
+  "Contact Number",          // O
+  "Preferred Contact Mode",  // P
+  "Call Day",                // Q
+  "Call Time",                // R
+  "Lead Quality",             // S
+  "Lead Status",              // T
+  "Assigned to",               // U
+  "Notes",                      // V
+];
+const BROCHURE_STATUS_COLUMN = 20; // 1-indexed, column T
 
 function getAuth() {
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
@@ -64,17 +108,62 @@ async function ensureHeaders(sheets: ReturnType<typeof google.sheets>, spreadshe
   }
 }
 
+/** Finds a tab's sheetId by name, or null if no tab with that name exists yet. */
+async function findSheetIdByName(
+  sheets: ReturnType<typeof google.sheets>,
+  spreadsheetId: string,
+  sheetName: string
+): Promise<number | null> {
+  const meta = await sheets.spreadsheets.get({ spreadsheetId });
+  const match = meta.data.sheets?.find((s) => s.properties?.title === sheetName);
+  return match?.properties?.sheetId ?? null;
+}
+
 async function getSheetId(sheets: ReturnType<typeof google.sheets>, spreadsheetId: string): Promise<number> {
   const meta = await sheets.spreadsheets.get({ spreadsheetId });
   return meta.data.sheets?.[0]?.properties?.sheetId ?? 0;
 }
 
+/** Creates the tab if it doesn't exist yet, then ensures its header row is set. Returns the tab's sheetId. */
+async function ensureSheetWithHeaders(
+  sheets: ReturnType<typeof google.sheets>,
+  spreadsheetId: string,
+  sheetName: string,
+  headers: string[]
+): Promise<number> {
+  let sheetId = await findSheetIdByName(sheets, spreadsheetId, sheetName);
+  if (sheetId === null) {
+    const addResult = await sheets.spreadsheets.batchUpdate({
+      spreadsheetId,
+      requestBody: { requests: [{ addSheet: { properties: { title: sheetName } } }] },
+    });
+    sheetId = addResult.data.replies?.[0]?.addSheet?.properties?.sheetId ?? 0;
+  }
+
+  const lastCol = String.fromCharCode(64 + headers.length); // A..Z for up to 26 columns
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    range: `${sheetName}!A1:${lastCol}1`,
+  });
+  const firstRow = response.data.values?.[0];
+  if (!firstRow || firstRow.length === 0) {
+    await sheets.spreadsheets.values.update({
+      spreadsheetId,
+      range: `${sheetName}!A1`,
+      valueInputOption: "RAW",
+      requestBody: { values: [headers] },
+    });
+  }
+  return sheetId;
+}
+
 async function setRowDataValidation(
   sheets: ReturnType<typeof google.sheets>,
   spreadsheetId: string,
-  rowIndex: number // 1-indexed row number
+  rowIndex: number, // 1-indexed row number
+  sheetId: number = 0,
+  statusColumn: number = STATUS_COLUMN
 ): Promise<void> {
-  const sheetId = await getSheetId(sheets, spreadsheetId);
   await sheets.spreadsheets.batchUpdate({
     spreadsheetId,
     requestBody: {
@@ -85,8 +174,8 @@ async function setRowDataValidation(
               sheetId,
               startRowIndex: rowIndex - 1, // 0-indexed
               endRowIndex: rowIndex,       // 0-indexed exclusive
-              startColumnIndex: STATUS_COLUMN - 1, // col I (0-indexed = 8)
-              endColumnIndex: STATUS_COLUMN,
+              startColumnIndex: statusColumn - 1,
+              endColumnIndex: statusColumn,
             },
             rule: {
               condition: {
@@ -195,6 +284,106 @@ export async function appendLead(lead: LeadRow): Promise<{ duplicate: boolean }>
   });
 
   await setRowDataValidation(sheets, spreadsheetId, nextRow);
+
+  return { duplicate: false };
+}
+
+const BROCHURE_SHEET_NAME = "Sheet2";
+// Column N (14th) holds Email, matching BROCHURE_SHEET_HEADERS above.
+const BROCHURE_EMAIL_COLUMN_LETTER = "N";
+
+async function isBrochureDuplicate(sheets: ReturnType<typeof google.sheets>, spreadsheetId: string, email: string): Promise<boolean> {
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    range: `${BROCHURE_SHEET_NAME}!${BROCHURE_EMAIL_COLUMN_LETTER}:${BROCHURE_EMAIL_COLUMN_LETTER}`,
+  });
+
+  const emails = response.data.values?.flat() ?? [];
+  return emails.slice(1).some((e) => e?.toLowerCase() === email.toLowerCase());
+}
+
+/**
+ * Appends a /asia/brochure (node-based brochure) submission to its own
+ * "Sheet2" tab in the same spreadsheet Sheet1 already uses, with columns
+ * matching every question that flow asks. Sheet1 and appendLead() above are
+ * completely untouched by this — Sheet2 is created automatically (with its
+ * header row) the first time this runs if it doesn't already exist.
+ */
+export async function appendBrochureLead(lead: BrochureLeadRow): Promise<{ duplicate: boolean }> {
+  const spreadsheetId = process.env.GOOGLE_SHEET_ID;
+  if (!spreadsheetId) {
+    throw new Error("GOOGLE_SHEET_ID is not configured.");
+  }
+
+  const auth = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+
+  const sheetId = await ensureSheetWithHeaders(sheets, spreadsheetId, BROCHURE_SHEET_NAME, BROCHURE_SHEET_HEADERS);
+
+  const duplicate = await isBrochureDuplicate(sheets, spreadsheetId, lead.email);
+  if (duplicate) {
+    return { duplicate: true };
+  }
+
+  const now = new Date(Date.now() + 5.5 * 60 * 60 * 1000); // shift to IST (UTC+5:30)
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const dd = String(now.getUTCDate()).padStart(2, "0");
+  const mon = months[now.getUTCMonth()];
+  const yyyy = now.getUTCFullYear();
+  const hh = String(now.getUTCHours()).padStart(2, "0");
+  const mm = String(now.getUTCMinutes()).padStart(2, "0");
+  const formattedDate = `${dd}-${mon}-${yyyy} ${hh}:${mm} IST`;
+
+  // Parse UTM params string into individual columns (skip if direct)
+  const utmMap: Record<string, string> = {};
+  if (lead.utmParams && lead.utmParams !== "direct") {
+    lead.utmParams.split("&").forEach((part) => {
+      const [k, v] = part.split("=");
+      if (k && v) utmMap[k] = decodeURIComponent(v);
+    });
+  }
+
+  const row = [
+    formattedDate,                     // A - Date & Time
+    lead.sourceUrl ?? "",              // B - Source URL
+    utmMap["utm_source"] ?? "",        // C - utm_source
+    utmMap["utm_medium"] ?? "",        // D - utm_medium
+    utmMap["utm_campaign"] ?? "",      // E - utm_campaign
+    utmMap["utm_content"] ?? "",       // F - utm_content
+    lead.segment,                      // G - What describes you best?
+    lead.venueAddress,                 // H - Venue Name / Address
+    lead.city,                         // I - City
+    lead.country,                      // J - Country
+    lead.spaceAnswer,                  // K - Can make space?
+    lead.budgetAnswer,                 // L - Ready to invest budget?
+    lead.fullName,                     // M - Full Name
+    lead.email,                        // N - Email
+    lead.phone,                        // O - Contact Number
+    lead.contactMode,                  // P - Preferred Contact Mode
+    lead.callDay ?? "",                // Q - Call Day
+    lead.callTime ?? "",               // R - Call Time
+    lead.leadQuality,                  // S - Lead Quality
+    "New",                             // T - Lead Status
+    "",                                // U - Assigned to
+    "",                                // V - Notes
+  ];
+
+  const lastCol = String.fromCharCode(64 + BROCHURE_SHEET_HEADERS.length);
+  const existing = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    range: `${BROCHURE_SHEET_NAME}!A:${lastCol}`,
+  });
+  const lastRow = existing.data.values?.length ?? 1;
+  const nextRow = lastRow + 1;
+
+  await sheets.spreadsheets.values.update({
+    spreadsheetId,
+    range: `${BROCHURE_SHEET_NAME}!A${nextRow}:${lastCol}${nextRow}`,
+    valueInputOption: "RAW",
+    requestBody: { values: [row] },
+  });
+
+  await setRowDataValidation(sheets, spreadsheetId, nextRow, sheetId, BROCHURE_STATUS_COLUMN);
 
   return { duplicate: false };
 }

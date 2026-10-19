@@ -425,6 +425,41 @@ function sendServerLead(){
     }).catch(()=>{});
   }catch(e){}
 }
+/* Logs every completed submission (positive and negative lead alike) to the
+   Sheet2 tab in the same Google Sheet Sheet1 already uses, with one column
+   per question this flow asks. */
+let _sheetLeadSent=false;
+function sendSheetLead(){
+  if (_sheetLeadSent) return;
+  _sheetLeadSent=true;
+  try{
+    const utmParams=Object.keys(UTM).length
+      ? Object.entries(UTM).map(([k,v])=>`${k}=${encodeURIComponent(v)}`).join('&')
+      : 'direct';
+    fetch('/api/asia-brochure-lead',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        segment:S.set.segment||'',
+        venueAddress:S.f.address||'',
+        city:S.f.city||'',
+        country:S.f.country||'',
+        spaceAnswer:S.set.space||'',
+        budgetAnswer:S.set.budget||'',
+        fullName:S.f.name||'',
+        email:S.f.email||'',
+        phone:S.f.phone?`${S.f.cc||''} ${S.f.phone}`:'',
+        contactMode:S.f.mode||'',
+        callDay:S.f.mode==='Call'?(S.f.dayISO==='next-week'?'Next week (any day, Mon–Fri)':(S.f.dayShort||'')):'',
+        callTime:S.f.mode==='Call'?(slotOf()?.label||''):'',
+        leadQuality:isPositiveLead()?'Positive':'Negative',
+        sourceUrl:location.href,
+        utmParams,
+      }),
+      keepalive:true,
+    }).catch(()=>{});
+  }catch(e){}
+}
 const ROUTE = {done:['hot','Lead captured'], pending:['pending','In progress']};
 
 function goTo(id){
@@ -597,11 +632,13 @@ function render(){
   else if (n.type==='end'){
     if (isPositiveLead()){
       sendServerLead();
+      sendSheetLead();
       collapseHistoryDepth();
       const mode=S.f.mode||'';
       location.href=`/asia/brochure/thankyou-q${mode?`?mode=${encodeURIComponent(mode)}`:''}`;
       return;
     }
+    sendSheetLead();
     h=endScreen(id);
   }
 
