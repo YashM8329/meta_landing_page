@@ -20,8 +20,9 @@ import { CTAProvider } from "@/lib/CTAContext";
 
 /* Identical to LandingPage.tsx, except the brochure-form slot renders the
    embedded multi-step HyperGrid flow (AisaBrochureSection) instead of
-   BrochureForm. Used only by /asia. Keep in sync with LandingPage.tsx for
-   everything above/below the form. */
+   BrochureForm. Used by both /asia and /northamerica (via brochureBasePath,
+   defaulting to /asia). Keep in sync with LandingPage.tsx for everything
+   above/below the form. */
 
 const venueReels: ReelItem[] = [
   { videoSrc: "/video/social_media/1.mp4", account: "Timezone", caption: "The crowd reaction says it all! Watch players step onto the LED floor and start moving. ⚡🔥 #activegaming #hypergrid", likes: "2.4K", comments: "112", gameZone: "New Zealand" },
@@ -33,8 +34,12 @@ const venueReels: ReelItem[] = [
   { videoSrc: "/video/social_media/8.mp4", account: "The Zone Dubai", caption: "Another packed weekend! Watch our game grid attract massive queues. 📈💰 #operatorgoals #amusements", likes: "2.7K", comments: "89", gameZone: "Dubai" },
 ];
 
-export default function AisaLandingPage() {
+export default function AisaLandingPage({
+  brochureBasePath = "/asia",
+  heroImageSrc,
+}: { brochureBasePath?: string; heroImageSrc?: string } = {}) {
   const { t } = useTranslation();
+  const brochureHref = `${brochureBasePath}/brochure`;
 
   const featureCards: CarouselCard[] = [
     { label: t.features.cards.unattended.label, sublabel: t.features.cards.unattended.sublabel, gradient: "linear-gradient(160deg,#0a1838 0%,#11317a 55%,#1d6cef 100%)", accentGlow: "rgba(29,108,239,0.45)", image: "/features/unmanned.png" },
@@ -82,16 +87,16 @@ export default function AisaLandingPage() {
         </noscript>
 
         <SmoothScroll />
-        <NavBar brochureHref="/asia/brochure" />
+        <NavBar brochureHref={brochureHref} />
 
         <main className="page-canvas min-h-screen relative">
-          <HeroSection brochureHref="/asia/brochure" stackBrochureBelowVideo />
-          <KeyFeaturesSection cards={featureCards} brochureHref="/asia/brochure" />
-          <MomentsSection cards={momentsCards} brochureHref="/asia/brochure" />
-          <ProofSection brochureHref="/asia/brochure" />
-          <ROICalculator brochureHref="/asia/brochure" />
-          <CaseStudy brochureHref="/asia/brochure" />
-          <InstagramCarousel items={venueReels} title={t.venues.title} sectionId="locations" brochureHref="/asia/brochure" />
+          <HeroSection brochureHref={brochureHref} stackBrochureBelowVideo heroImageSrc={heroImageSrc} />
+          <KeyFeaturesSection cards={featureCards} brochureHref={brochureHref} />
+          <MomentsSection cards={momentsCards} brochureHref={brochureHref} />
+          <ProofSection brochureHref={brochureHref} />
+          <ROICalculator brochureHref={brochureHref} />
+          <CaseStudy brochureHref={brochureHref} />
+          <InstagramCarousel items={venueReels} title={t.venues.title} sectionId="locations" brochureHref={brochureHref} />
         </main>
 
         <Footer />

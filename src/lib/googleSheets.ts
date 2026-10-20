@@ -292,10 +292,10 @@ const BROCHURE_SHEET_NAME = "Sheet2";
 // Column N (14th) holds Email, matching BROCHURE_SHEET_HEADERS above.
 const BROCHURE_EMAIL_COLUMN_LETTER = "N";
 
-async function isBrochureDuplicate(sheets: ReturnType<typeof google.sheets>, spreadsheetId: string, email: string): Promise<boolean> {
+async function isBrochureDuplicate(sheets: ReturnType<typeof google.sheets>, spreadsheetId: string, email: string, sheetName: string): Promise<boolean> {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: `${BROCHURE_SHEET_NAME}!${BROCHURE_EMAIL_COLUMN_LETTER}:${BROCHURE_EMAIL_COLUMN_LETTER}`,
+    range: `${sheetName}!${BROCHURE_EMAIL_COLUMN_LETTER}:${BROCHURE_EMAIL_COLUMN_LETTER}`,
   });
 
   const emails = response.data.values?.flat() ?? [];
@@ -303,13 +303,15 @@ async function isBrochureDuplicate(sheets: ReturnType<typeof google.sheets>, spr
 }
 
 /**
- * Appends a /asia/brochure (node-based brochure) submission to its own
- * "Sheet2" tab in the same spreadsheet Sheet1 already uses, with columns
- * matching every question that flow asks. Sheet1 and appendLead() above are
- * completely untouched by this — Sheet2 is created automatically (with its
- * header row) the first time this runs if it doesn't already exist.
+ * Appends a node-based-brochure-flow submission to its own tab in the same
+ * spreadsheet Sheet1 already uses, with columns matching every question
+ * that flow asks. Defaults to "Sheet2" (/asia/brochure's existing tab,
+ * unchanged); pass sheetName to target a different tab (e.g. "Sheet3" for
+ * /northamerica/brochure) without touching Sheet1 or Sheet2 in any way —
+ * the target tab is created automatically (with its header row) the first
+ * time this runs against it if it doesn't already exist.
  */
-export async function appendBrochureLead(lead: BrochureLeadRow): Promise<{ duplicate: boolean }> {
+export async function appendBrochureLead(lead: BrochureLeadRow, sheetName: string = BROCHURE_SHEET_NAME): Promise<{ duplicate: boolean }> {
   const spreadsheetId = process.env.GOOGLE_SHEET_ID;
   if (!spreadsheetId) {
     throw new Error("GOOGLE_SHEET_ID is not configured.");
@@ -318,9 +320,9 @@ export async function appendBrochureLead(lead: BrochureLeadRow): Promise<{ dupli
   const auth = getAuth();
   const sheets = google.sheets({ version: "v4", auth });
 
-  const sheetId = await ensureSheetWithHeaders(sheets, spreadsheetId, BROCHURE_SHEET_NAME, BROCHURE_SHEET_HEADERS);
+  const sheetId = await ensureSheetWithHeaders(sheets, spreadsheetId, sheetName, BROCHURE_SHEET_HEADERS);
 
-  const duplicate = await isBrochureDuplicate(sheets, spreadsheetId, lead.email);
+  const duplicate = await isBrochureDuplicate(sheets, spreadsheetId, lead.email, sheetName);
   if (duplicate) {
     return { duplicate: true };
   }
@@ -371,14 +373,14 @@ export async function appendBrochureLead(lead: BrochureLeadRow): Promise<{ dupli
   const lastCol = String.fromCharCode(64 + BROCHURE_SHEET_HEADERS.length);
   const existing = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: `${BROCHURE_SHEET_NAME}!A:${lastCol}`,
+    range: `${sheetName}!A:${lastCol}`,
   });
   const lastRow = existing.data.values?.length ?? 1;
   const nextRow = lastRow + 1;
 
   await sheets.spreadsheets.values.update({
     spreadsheetId,
-    range: `${BROCHURE_SHEET_NAME}!A${nextRow}:${lastCol}${nextRow}`,
+    range: `${sheetName}!A${nextRow}:${lastCol}${nextRow}`,
     valueInputOption: "RAW",
     requestBody: { values: [row] },
   });
