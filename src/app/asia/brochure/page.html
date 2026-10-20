@@ -11,7 +11,7 @@
   /* Matches the main site's design tokens (src/app/globals.css @theme) —
      always light, regardless of the visitor's OS color-scheme preference. */
   --bg:#F6F7F9; --grid:rgba(10,14,26,.05); --surface:#F8F8F8; --surface-2:#EEF1F5;
-  --ink:#0A0A0A; --muted:#5B6472; --line:#E9EBEF;
+  --ink:#0A0A0A; --muted:#5B6472; --line:#E9EBEF; --opt-border:#C7CCD6;
   --accent:#1D6CEF; --accent-2:#5B93F5; --btn-ink:#FFFFFF; --accent-soft:#E9EFFD;
   --hot:#138A43; --hot-soft:#E3F5EA; --warm:#B86A06; --warm-soft:#FCF0DD; --cold:#5B6678; --cold-soft:#ECEFF4;
   --danger:#C2362B;
@@ -57,7 +57,7 @@ h1{font-size:clamp(28px,5.4vw,40px);line-height:1.12;margin:0;font-weight:700;le
 .sub{margin:-8px 0 0;color:var(--muted);font-size:17px;max-width:52ch}
 
 .opts{display:flex;flex-direction:column;gap:9px}
-.opt{text-align:left;display:flex;align-items:center;gap:12px;background:var(--surface);border:1.5px solid var(--line);color:var(--ink);border-radius:12px;padding:12px 14px;cursor:pointer;font-size:17px;font-weight:500;transition:border-color .15s,background .15s,transform .15s}
+.opt{text-align:left;display:flex;align-items:center;gap:12px;background:var(--surface);border:2px solid var(--opt-border);color:var(--ink);border-radius:12px;padding:12px 14px;cursor:pointer;font-size:17px;font-weight:500;transition:border-color .15s,background .15s,transform .15s}
 .opt:hover{border-color:var(--accent-2)}
 .opt:active{transform:scale(.99)}
 .opt .key{flex:none;width:26px;height:26px;border-radius:7px;border:1.5px solid var(--line);display:grid;place-items:center;font-size:12.5px;font-weight:800;color:var(--muted);background:var(--surface-2)}
