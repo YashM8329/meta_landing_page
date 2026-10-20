@@ -470,33 +470,33 @@ export default function HeroSection({
             className={`grid grid-cols-12 gap-2 ${stackBrochureBelowVideo ? "mt-8" : "mt-4"} w-full`}
           >
             {/* Row 1: Venues (col-3), Countries (col-3), ROI (col-6) */}
-            <div className="col-span-3 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-2xl py-2.5 px-2 flex flex-col justify-center border-[3px] border-accent shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
+            <div className="col-span-3 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">150+</p>
               <p className="text-[10px] sm:text-[11px] font-bold text-[#0A0A0A] mt-1 leading-tight text-center">{t.hero.stats.venues}</p>
             </div>
 
-            <div className="col-span-3 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-2xl py-2.5 px-2 flex flex-col justify-center border-[3px] border-accent shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
+            <div className="col-span-3 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">15+</p>
               <p className="text-[10px] sm:text-[11px] font-bold text-[#0A0A0A] mt-1 leading-tight text-center">{t.hero.stats.countries}</p>
             </div>
 
-            <div className="col-span-6 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-xl py-2 px-3.5 flex flex-col justify-center border-[3px] border-accent shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
+            <div className="col-span-6 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-xl py-2 px-3.5 flex flex-col justify-center shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[18px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">{t.hero.stats.avgPaybackValue}</p>
               <p className="text-[10px] sm:text-[10px] font-bold text-[#0A0A0A] mt-1 leading-tight text-center">{t.hero.stats.avgPayback}</p>
             </div>
 
             {/* Row 2: Gameplay (col-6), Players (col-3), Age (col-3) */}
-            <div className="col-span-6 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-xl py-2 px-3.5 flex flex-col justify-center border-[3px] border-accent shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
+            <div className="col-span-6 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-xl py-2 px-3.5 flex flex-col justify-center shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[18px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">{t.hero.stats.gameplayValue}</p>
               <p className="text-[10px] sm:text-[10px] font-bold text-[#0A0A0A] mt-1 leading-tight text-center">{t.hero.stats.gameplay}</p>
             </div>
 
-            <div className="col-span-3 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-2xl py-2.5 px-2 flex flex-col justify-center border-[3px] border-accent shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
+            <div className="col-span-3 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">1-6</p>
               <p className="text-[10px] sm:text-[11px] font-bold text-[#0A0A0A] mt-1 leading-tight text-center">{t.hero.stats.players}</p>
             </div>
 
-            <div className="col-span-3 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-2xl py-2.5 px-2 flex flex-col justify-center border-[3px] border-accent shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
+            <div className="col-span-3 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
               <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">4+</p>
               <p className="text-[10px] sm:text-[11px] font-bold text-[#0A0A0A] mt-1 leading-tight text-center">{t.hero.stats.age}</p>
             </div>
