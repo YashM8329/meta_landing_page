@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import MobileBrochureCTA from "./MobileBrochureCTA";
+import SectionBrochureCTA from "./SectionBrochureCTA";
 import { useTranslation } from "@/lib/useTranslation";
 
 
@@ -128,7 +129,7 @@ function MobileTestimonialCard({ t }: { t: Testimonial }) {
   );
 }
 
-export default function ProofSection() {
+export default function ProofSection({ brochureHref }: { brochureHref?: string } = {}) {
   const { t } = useTranslation();
   const trackRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -185,9 +186,12 @@ export default function ProofSection() {
       aria-label="Operator testimonials"
     >
       <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0">
-        <motion.h2 {...rise()} className="px-0 lg:px-0 mb-6 text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink text-left w-full">
-          {t.proof.heading}
-        </motion.h2>
+        <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <motion.h2 {...rise()} className="px-0 lg:px-0 text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink text-left">
+            {t.proof.heading}
+          </motion.h2>
+          <SectionBrochureCTA href={brochureHref} />
+        </div>
 
         {/* Mobile: horizontal scroll carousel */}
         <div className="md:hidden">
@@ -236,7 +240,7 @@ export default function ProofSection() {
           ))}
         </motion.div>
       </div>
-      <MobileBrochureCTA />
+      <MobileBrochureCTA brochureHref={brochureHref} />
     </section>
   );
 }

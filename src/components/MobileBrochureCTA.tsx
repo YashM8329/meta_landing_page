@@ -4,13 +4,17 @@ import { motion } from "framer-motion";
 import { useTranslation } from "@/lib/useTranslation";
 import { useCTA } from "@/lib/CTAContext";
 
-export default function MobileBrochureCTA() {
+export default function MobileBrochureCTA({ brochureHref }: { brochureHref?: string } = {}) {
   const { t } = useTranslation();
   const { showCTA } = useCTA();
 
   if (!showCTA) return null;
 
   const handleClick = () => {
+    if (brochureHref) {
+      window.location.href = brochureHref;
+      return;
+    }
     const el = document.getElementById("brochure-form");
     if (el) {
       el.scrollIntoView({ behavior: "smooth" });
@@ -19,7 +23,7 @@ export default function MobileBrochureCTA() {
 
   return (
     <div className="w-full px-6 mt-8 md:hidden flex justify-center select-none">
-      <button 
+      <button
         onClick={handleClick}
         className="relative w-full max-w-[340px] h-[52px] text-white font-bold text-[16px] rounded-lg flex items-center justify-center gap-2 overflow-hidden shadow-lg bg-gradient-to-r from-[#1D6CEF] via-[#2f74e6] to-[#1D6CEF] active:scale-[0.98] transition-all duration-150 border border-white/10"
       >

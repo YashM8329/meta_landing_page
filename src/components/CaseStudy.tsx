@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useCurrency } from "@/lib/useCurrency";
 import { useTranslation } from "@/lib/useTranslation";
 import { useCTA } from "@/lib/CTAContext";
+import SectionBrochureCTA from "./SectionBrochureCTA";
 
 // Lucide icon approximations
 const GamepadIcon = ({ className }: { className?: string }) => (
@@ -135,7 +136,7 @@ const CHAINS_DATA: ChainData[] = [
   },
 ];
 
-export default function CaseStudy() {
+export default function CaseStudy({ brochureHref }: { brochureHref?: string } = {}) {
   const reduce = useReducedMotion();
   const { t } = useTranslation();
   const { showCTA } = useCTA();
@@ -208,11 +209,14 @@ export default function CaseStudy() {
         {/* Eyebrow and Title */}
         <motion.div {...rise()} className="mb-6">
           {/* <p className="text-[11px] font-extrabold tracking-[0.2em] text-accent uppercase mb-2">Case Studies</p> */}
-          <h2 className="text-[clamp(32px,5.5vw,48px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-ink mb-3">
-            {t.caseStudy.heading.split("\n").map((line, i) => (
-              <span key={i}>{line}{i === 0 && <><br className="md:hidden" /></>}</span>
-            ))}
-          </h2>
+          <div className="flex items-start justify-between gap-4 flex-wrap mb-3">
+            <h2 className="text-[clamp(32px,5.5vw,48px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-ink">
+              {t.caseStudy.heading.split("\n").map((line, i) => (
+                <span key={i}>{line}{i === 0 && <><br className="md:hidden" /></>}</span>
+              ))}
+            </h2>
+            <SectionBrochureCTA href={brochureHref} />
+          </div>
           <p className="text-[15px] sm:text-[16px] lg:text-[24px] text-ink-soft font-medium leading-relaxed max-w-[550px]">
             {t.caseStudy.subtitle}
           </p>

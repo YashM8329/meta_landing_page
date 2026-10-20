@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import InstagramEmbed from "./InstagramEmbed";
 import MobileBrochureCTA from "./MobileBrochureCTA";
+import SectionBrochureCTA from "./SectionBrochureCTA";
 
 export interface ReelItem {
   videoSrc: string;
@@ -18,9 +19,10 @@ interface Props {
   eyebrow?: string;
   title: string;
   sectionId?: string;
+  brochureHref?: string;
 }
 
-export default function InstagramCarousel({ items, eyebrow, title, sectionId }: Props) {
+export default function InstagramCarousel({ items, eyebrow, title, sectionId, brochureHref }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Ensure the track has enough items to exceed the screen width
@@ -195,9 +197,12 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
           {eyebrow && (
             <p className="text-[13px] lg:text-[19px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-1">{eyebrow}</p>
           )}
-          <h2 className="text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">
-            {title}
-          </h2>
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <h2 className="text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">
+              {title}
+            </h2>
+            <SectionBrochureCTA href={brochureHref} />
+          </div>
         </div>
 
         <div className="marquee-container py-4 select-none">
@@ -223,7 +228,7 @@ export default function InstagramCarousel({ items, eyebrow, title, sectionId }: 
           </div>
         </div>
       </div>
-      <MobileBrochureCTA />
+      <MobileBrochureCTA brochureHref={brochureHref} />
     </section>
   );
 }

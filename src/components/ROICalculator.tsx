@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useCurrency } from "@/lib/useCurrency";
 import MobileBrochureCTA from "./MobileBrochureCTA";
+import SectionBrochureCTA from "./SectionBrochureCTA";
 import { useTranslation } from "@/lib/useTranslation";
 
 /* Defaults + assumptions: 4,500 players/month, $65k install, 25 sqm. */
@@ -91,7 +92,7 @@ function formatMoney(usd: number, symbol: string, rate: number): string {
   return `${symbol}${v.toLocaleString()}`;
 }
 
-export default function ROICalculator() {
+export default function ROICalculator({ brochureHref }: { brochureHref?: string } = {}) {
   const [players, setPlayers] = useState(DEFAULT_PLAYERS);
   const reduce = useReducedMotion();
   const { t } = useTranslation();
@@ -169,9 +170,12 @@ export default function ROICalculator() {
           className="mb-6"
         >
           {/* <p className="text-[13px] font-semibold tracking-[0.2em] text-ink-faint uppercase mb-1">Revenue calculator</p> */}
-          <h2 className="text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">
-            {t.roi.heading}
-          </h2>
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <h2 className="text-[clamp(30px,8.5vw,48px)] leading-[1.0] font-extrabold tracking-[-0.03em] text-ink">
+              {t.roi.heading}
+            </h2>
+            <SectionBrochureCTA href={brochureHref} />
+          </div>
           {/* Currency indicator dropdown */}
           <p className="text-[15px] lg:text-[22px] text-ink-faint mt-2 flex flex-wrap items-center gap-1.5 select-none">
             <span>{t.roi.showing}</span>
@@ -341,7 +345,7 @@ export default function ROICalculator() {
           </div>
         </div>
       </div>
-      <MobileBrochureCTA />
+      <MobileBrochureCTA brochureHref={brochureHref} />
     </section>
   );
 }

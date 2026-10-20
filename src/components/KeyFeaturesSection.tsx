@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import CardCarousel, { CarouselCard } from "./CardCarousel";
 import MobileBrochureCTA from "./MobileBrochureCTA";
+import SectionBrochureCTA from "./SectionBrochureCTA";
 import { useTranslation } from "@/lib/useTranslation";
 
 const specs = [
@@ -49,7 +50,7 @@ const specs = [
   },
 ];
 
-export default function KeyFeaturesSection({ cards }: { cards: CarouselCard[] }) {
+export default function KeyFeaturesSection({ cards, brochureHref }: { cards: CarouselCard[]; brochureHref?: string }) {
   const { t } = useTranslation();
   const reduce = useReducedMotion();
   const rise = (delay = 0) => ({
@@ -66,19 +67,22 @@ export default function KeyFeaturesSection({ cards }: { cards: CarouselCard[] })
       aria-label={t.features.heading}
     >
       <div className="max-w-[1440px] mx-auto w-full px-6 xl:px-0">
-        <motion.h2
-          {...rise()}
-          className="mb-8 text-[clamp(32px,9vw,48px)] leading-[0.98] font-extrabold tracking-[-0.03em] text-ink"
-        >
-          {t.features.heading}
-        </motion.h2>
+        <div className="flex items-center justify-between gap-4 mb-8 flex-wrap">
+          <motion.h2
+            {...rise()}
+            className="text-[clamp(32px,9vw,48px)] leading-[0.98] font-extrabold tracking-[-0.03em] text-ink"
+          >
+            {t.features.heading}
+          </motion.h2>
+          <SectionBrochureCTA href={brochureHref} />
+        </div>
 
         <div className="w-full">
           <CardCarousel cards={cards} />
         </div>
       </div>
 
-      <MobileBrochureCTA />
+      <MobileBrochureCTA brochureHref={brochureHref} />
 
         {/* Specs Grid */}
         {/* <motion.div 

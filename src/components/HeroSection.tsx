@@ -437,7 +437,7 @@ export default function HeroSection({
             <motion.div variants={item} className="w-full mt-4">
               <a
                 href={brochureHref}
-                className="btn-glass-accent text-white font-semibold text-[17px] px-7 py-4 rounded-xl flex items-center justify-center gap-2.5 w-full"
+                className="btn-glass-light text-ink font-semibold text-[17px] px-7 py-4 rounded-xl flex items-center justify-center gap-2.5 w-full border-2 border-accent/50 shadow-[0_0_0_4px_rgba(29,108,239,0.08)]"
               >
                 <motion.span
                   className="flex items-center justify-center gap-2.5"

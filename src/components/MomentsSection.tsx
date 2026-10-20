@@ -95,7 +95,7 @@ const steps = [
   },
 ];
 
-export default function MomentsSection({ cards }: { cards?: any } = {}) {
+export default function MomentsSection({ cards, brochureHref }: { cards?: any; brochureHref?: string } = {}) {
   const { t } = useTranslation();
   const reduce = useReducedMotion();
 
@@ -378,7 +378,7 @@ export default function MomentsSection({ cards }: { cards?: any } = {}) {
           </div>
         </div>
       </div>
-      <MobileBrochureCTA />
+      <MobileBrochureCTA brochureHref={brochureHref} />
     </section>
   );
 }

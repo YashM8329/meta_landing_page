@@ -11,7 +11,6 @@ import ProofSection from "@/components/ProofSection";
 import ROICalculator from "@/components/ROICalculator";
 import CaseStudy from "@/components/CaseStudy";
 import { CarouselCard } from "@/components/CardCarousel";
-import StickyFooterCTA from "@/components/StickyFooterCTA";
 import SmoothScroll from "@/components/SmoothScroll";
 import Footer from "@/components/Footer";
 import { useTranslation } from "@/lib/useTranslation";
@@ -87,16 +86,15 @@ export default function AisaLandingPage() {
 
         <main className="page-canvas min-h-screen relative">
           <HeroSection brochureHref="/asia/brochure" stackBrochureBelowVideo />
-          <KeyFeaturesSection cards={featureCards} />
-          <MomentsSection cards={momentsCards} />
-          <ProofSection />
-          <ROICalculator />
-          <CaseStudy />
-          <InstagramCarousel items={venueReels} title={t.venues.title} sectionId="locations" />
+          <KeyFeaturesSection cards={featureCards} brochureHref="/asia/brochure" />
+          <MomentsSection cards={momentsCards} brochureHref="/asia/brochure" />
+          <ProofSection brochureHref="/asia/brochure" />
+          <ROICalculator brochureHref="/asia/brochure" />
+          <CaseStudy brochureHref="/asia/brochure" />
+          <InstagramCarousel items={venueReels} title={t.venues.title} sectionId="locations" brochureHref="/asia/brochure" />
         </main>
 
         <Footer />
-        <StickyFooterCTA brochureHref="/asia/brochure" />
         <SlowConnectionToast />
       </VideoLoadProvider>
     </CTAProvider>
