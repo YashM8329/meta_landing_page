@@ -139,9 +139,8 @@ kbd{font-family:var(--font);font-weight:700;font-size:12.5px;border:1px solid va
 .end-row.orange .end-row-action{color:var(--warm)}
 
 .unit{display:inline-grid;vertical-align:baseline;text-align:center;white-space:nowrap;padding:0 .3em;margin:0 .05em;border-radius:.3em;background:var(--accent-soft);color:var(--accent)}
-.unit .u{grid-area:1/1;opacity:0;transition:opacity .3s ease-in-out}
+.unit .u{grid-area:1/1;opacity:0}
 .unit .u.on{opacity:1}
-@media (prefers-reduced-motion: reduce){.unit .u{transition:none}}
 .sw{position:relative;display:block}
 .sw-spin{position:absolute;right:2px;top:50%;transform:translateY(-50%);color:var(--accent);pointer-events:none;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:translateY(-50%) rotate(360deg)}}
@@ -561,11 +560,10 @@ document.addEventListener('visibilitychange',()=>{ if (document.visibilityState=
 /* ===== Render ===== */
 const stage=document.getElementById('stage');
 let timer=null, unitTimer=null;
-function startUnit(){
-  const el=document.getElementById('unit'); if(!el) return;
-  const [a,b]=el.querySelectorAll('.u');
-  unitTimer=setInterval(()=>{ a.classList.toggle('on'); b.classList.toggle('on'); },1800);
-}
+/* Unit cycling (m² <-> sq ft) removed per feedback — the hold-then-swap
+   animation felt sluggish as a CTA-adjacent element. The label now stays
+   on whichever unit is marked "on" in the markup, with no timer. */
+function startUnit(){}
 
 function render(){
   clearTimeout(timer); clearInterval(unitTimer);

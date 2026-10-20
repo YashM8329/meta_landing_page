@@ -96,6 +96,7 @@ export default function AisaLandingPage() {
         </main>
 
         <Footer />
+        <StickyFooterCTA brochureHref="/asia/brochure" />
         <SlowConnectionToast />
       </VideoLoadProvider>
     </CTAProvider>

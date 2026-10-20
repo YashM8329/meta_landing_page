@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useTranslation } from "@/lib/useTranslation";
 import { useCTA } from "@/lib/CTAContext";
 
-export default function StickyFooterCTA() {
+export default function StickyFooterCTA({ brochureHref = "#brochure-form" }: { brochureHref?: string } = {}) {
   const { t } = useTranslation();
   const { showCTA } = useCTA();
 
@@ -18,12 +18,12 @@ export default function StickyFooterCTA() {
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
-        className="relative max-w-[460px] mx-auto px-4 pb-4 pt-2"
+        className="relative max-w-[460px] lg:max-w-[560px] mx-auto px-4 pb-4 pt-2"
       >
         <a
-          href="#brochure-form"
-          className="btn-glass-accent flex items-center justify-center gap-2 text-white font-semibold text-[18px] h-[54px] rounded-lg w-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-          aria-label="Request brochure — scroll to form"
+          href={brochureHref}
+          className="btn-glass-accent flex items-center justify-center gap-2 text-white font-semibold text-[18px] lg:text-[19px] h-[54px] lg:h-[58px] rounded-lg w-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          aria-label="Request brochure"
         >
           <motion.span
             className="flex items-center justify-center gap-2"

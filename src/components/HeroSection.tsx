@@ -155,7 +155,7 @@ export default function HeroSection({
             {showCTA && stackBrochureBelowVideo && (
               <a
                 href={brochureHref}
-                className="btn-glass-light text-ink font-semibold text-[18px] lg:text-[22px] px-8 py-4 rounded-xl flex items-center gap-2.5"
+                className="btn-glass-accent text-white font-semibold text-[18px] lg:text-[22px] px-8 py-4 rounded-xl flex items-center gap-2.5"
               >
                 <motion.span
                   className="flex items-center justify-center gap-2.5"
@@ -310,7 +310,7 @@ export default function HeroSection({
             {showCTA && stackBrochureBelowVideo && (
               <a
                 href={brochureHref}
-                className="btn-glass-light text-ink font-semibold text-[18px] px-8 py-4 rounded-xl flex items-center gap-2.5"
+                className="btn-glass-accent text-white font-semibold text-[18px] px-8 py-4 rounded-xl flex items-center gap-2.5"
               >
                 <motion.span
                   className="flex items-center justify-center gap-2.5"
@@ -437,7 +437,7 @@ export default function HeroSection({
             <motion.div variants={item} className="w-full mt-4">
               <a
                 href={brochureHref}
-                className="btn-glass-light text-ink font-semibold text-[17px] px-7 py-4 rounded-xl flex items-center justify-center gap-2.5 w-full"
+                className="btn-glass-accent text-white font-semibold text-[17px] px-7 py-4 rounded-xl flex items-center justify-center gap-2.5 w-full"
               >
                 <motion.span
                   className="flex items-center justify-center gap-2.5"
