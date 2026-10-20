@@ -339,20 +339,16 @@ const N = {
     note:'Address search suggests places as the visitor types (Google Places, same source as the main brochure form) and fills address, city and country. They can also type everything by hand.'},
 
   space:{branch:'Questions', q:()=>`Can you set aside <span class="unit" id="unit" role="text" aria-label="${CONFIG.floorArea} (${CONFIG.floorAreaFt})"><span class="u on" aria-hidden="true">${CONFIG.floorArea}</span><span class="u" aria-hidden="true">${CONFIG.floorAreaFt}</span></span> of space for HyperGrid?`, qPlain:'Can you set aside 15 to 25 m² (160 to 270 sq ft) of space for HyperGrid?', opts:[
-    o('Yes, I can make space','r_budget',{set:{space:'Yes, I can make space'}}),
-    o('I’m tight on space, can try if numbers add up','r_budget',{set:{space:'I’m tight on space, can try if numbers add up'}}),
-    o('Not right now, but I’d like to know more','r_budget',{set:{space:'Not right now, but I’d like to know more'}}),
+    o('Yes, I can make space','budget',{set:{space:'Yes, I can make space'}}),
+    o('I’m tight on space, can try if numbers add up','budget',{set:{space:'I’m tight on space, can try if numbers add up'}}),
+    o('Not right now, but I’d like to know more','budget',{set:{space:'Not right now, but I’d like to know more'}}),
   ]},
 
-  r_budget:{type:'router', branch:'Questions', q:'Budget check (automatic, by country)', rule:'Uses the country from the venue location. The USA and Canada see the $75K question; every other country sees the $40K to $60K question.',
-    to:['budget_eu','budget_na'], fn:()=>regionOf()==='na' ? 'budget_na' : 'budget_eu'},
-  budget_eu:{branch:'Questions', q:'Are you ready to invest <span class="unit"><span class="u on">$40K to $60K</span></span> in a game with high returns?', qPlain:'Are you ready to invest $40K to $60K in a game with high returns?', opts:[
-    o('Yes, I’m ready to invest','name',{set:{budget:'Ready, $40K to $60K'}}),
-    o('No, I’ll miss out on the opportunity to earn $10,000 a month','name',{html:'No, I’ll miss out on the opportunity to earn <b>$10,000 a month</b>',set:{budget:'No, can’t invest $40K to $60K'}}),
-  ]},
-  budget_na:{branch:'Questions', q:'Are you ready to invest <span class="unit"><span class="u on">$75K</span></span> in a game with high returns?', qPlain:'Are you ready to invest $75K in a game with high returns?', opts:[
-    o('Yes, I’m ready to invest','name',{set:{budget:'Ready, $75K'}}),
-    o('No, I’ll miss out on the opportunity to earn $10,000 a month','name',{html:'No, I’ll miss out on the opportunity to earn <b>$10,000 a month</b>',set:{budget:'No, can’t invest $75K'}}),
+  budget:{branch:'Questions', q:'What’s your investment budget for new games this year?', opts:[
+    o('Over $100K','name',{set:{budget:'Over $100K'}}),
+    o('$50K–$100K','name',{set:{budget:'$50K–$100K'}}),
+    o('$25K–$50K','name',{set:{budget:'$25K–$50K'}}),
+    o('Under $25K','name',{set:{budget:'Under $25K'}}),
   ]},
 
   name:{type:'name', branch:'Questions', q:'Your name?', next:'email'},
@@ -405,7 +401,10 @@ function route(){ return S.hist.includes('end') ? 'done' : 'pending'; }
    Lead conversion, so ad optimization isn't skewed by low-intent form-fillers. */
 const isPositiveLead=()=>{
   const spaceYes=S.set.space==='Yes, I can make space' || S.set.space==='I’m tight on space, can try if numbers add up';
-  const budgetYes=(S.set.budget||'').startsWith('Ready');
+  const isNA = regionOf() === 'na';
+  const budgetYes = isNA
+    ? (S.set.budget==='Over $100K' || (S.set.budget||'').startsWith('$50K'))
+    : (S.set.budget==='Over $100K' || (S.set.budget||'').startsWith('$50K') || (S.set.budget||'').startsWith('$25K'));
   const isOperator=S.set.segment==='Operates multiple venues' || S.set.segment==='Operates one venue' || S.set.segment==='Building first venue';
   return isOperator ? (spaceYes || budgetYes) : (spaceYes && budgetYes);
 };
@@ -524,7 +523,7 @@ const clearErr=()=>{ const e=document.getElementById('err'); if(e) e.textContent
    step_complete, form_complete, form_exit (the page they left on). */
 const SID=(()=>{ try{ let v=sessionStorage.getItem('hg_sid'); if(!v){ v=Math.random().toString(36).slice(2,10)+Date.now().toString(36); sessionStorage.setItem('hg_sid',v); } return v; }catch(e){ return Math.random().toString(36).slice(2,10); } })();
 const UTM=(()=>{ const o={}; try{ const q=new URLSearchParams(location.search); ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','gclid'].forEach(k=>{ if(q.get(k)) o[k]=q.get(k); }); if(document.referrer) o.referrer=document.referrer; }catch(e){} return o; })();
-const STEP_NAME={intro:'start',role:'role',loc:'venue_location',space:'floor_space',budget_eu:'budget',budget_na:'budget',name:'name',email:'work_email',phone:'phone',comm:'contact_preference',end:'thank_you'};
+const STEP_NAME={intro:'start',role:'role',loc:'venue_location',space:'floor_space',budget:'budget',budget_eu:'budget',budget_na:'budget',name:'name',email:'work_email',phone:'phone',comm:'contact_preference',end:'thank_you'};
 const seenSteps=new Set(); let lastStep=null, completed=false, exited=false;
 function track(event, props={}){
   const data={event, form:'hypergrid-brochure', session_id:SID, ts:new Date().toISOString(), ...UTM, ...props};
