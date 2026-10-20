@@ -14,8 +14,8 @@ const fr: Translations = {
     heading2: "REVENUS FEC",
     heading3: "VERS DE NOUVEAUX PALIERS.",
     heading4: "SANS PERSONNEL.",
-    description: "Une attraction incontournable <strong>qui génère revenus et fréquentation</strong> pour tout exploitant de salle de divertissement. Rentabilisée en 6 mois.",
-    mobileDescription: "<strong>Attraction génératrice de revenus et de fréquentation</strong> pour tout exploitant de salle de divertissement. Rentabilisée en <strong>6 mois.</strong>",
+    description: "Une attraction incontournable <strong>qui génère revenus et fréquentation</strong> pour tout exploitant de salle de divertissement.",
+    mobileDescription: "<strong>Attraction génératrice de revenus et de fréquentation</strong> pour tout exploitant de salle de divertissement.",
     requestBrochure: "Demander la brochure",
     watchVideo: "Voir la vidéo",
     stats: {

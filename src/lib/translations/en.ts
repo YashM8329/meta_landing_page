@@ -12,8 +12,8 @@ const en = {
     heading2: "ARCADE REVENUE",
     heading3: "TO NEW HEIGHTS.",
     heading4: "ZERO STAFF.",
-    description: "A must-have <strong>high revenue and footfall driving attraction</strong> for every entertainment venue operator. Pays back in 6 months.",
-    mobileDescription: "<strong>High revenue and footfall driving attraction</strong> for every entertainment venue operator. Pay back in <strong>6 months.</strong>",
+    description: "A must-have <strong>high revenue and footfall driving attraction</strong> for every entertainment venue operator.",
+    mobileDescription: "<strong>High revenue and footfall driving attraction</strong> for every entertainment venue operator.",
     requestBrochure: "Request Brochure",
     watchVideo: "Watch Video",
     stats: {

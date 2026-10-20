@@ -14,8 +14,8 @@ const es: Translations = {
     heading2: "FEC ARCADE",
     heading3: "A NUEVAS ALTURAS.",
     heading4: "CERO PERSONAL.",
-    description: "Una atracción imprescindible <strong>generadora de ingresos y afluencia</strong> para todo operador de centro de ocio. Se amortiza en 6 meses.",
-    mobileDescription: "<strong>Atracción generadora de ingresos y afluencia</strong> para todo operador de centro de ocio. Se amortiza en <strong>6 meses.</strong>",
+    description: "Una atracción imprescindible <strong>generadora de ingresos y afluencia</strong> para todo operador de centro de ocio.",
+    mobileDescription: "<strong>Atracción generadora de ingresos y afluencia</strong> para todo operador de centro de ocio.",
     requestBrochure: "Solicitar folleto",
     watchVideo: "Ver vídeo",
     stats: {

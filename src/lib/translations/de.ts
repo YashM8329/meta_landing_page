@@ -14,8 +14,8 @@ const de: Translations = {
     heading2: "AUF EIN NEUES",
     heading3: "NIVEAU HEBEN.",
     heading4: "OHNE PERSONAL.",
-    description: "Die <strong>umsatzstärkste Attraktion</strong> für jeden Freizeitpark- und FEC-Betreiber — vollständig unbemannt und in 6 Monaten amortisiert.",
-    mobileDescription: "<strong>Umsatzstarke Attraktion</strong> für FEC- und Freizeitpark-Betreiber — in <strong>6 Monaten amortisiert.</strong>",
+    description: "Die <strong>umsatzstärkste Attraktion</strong> für jeden Freizeitpark- und FEC-Betreiber — vollständig unbemannt.",
+    mobileDescription: "<strong>Umsatzstarke Attraktion</strong> für FEC- und Freizeitpark-Betreiber.",
     requestBrochure: "Broschüre anfordern",
     watchVideo: "Video ansehen",
     stats: {

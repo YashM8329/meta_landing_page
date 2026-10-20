@@ -14,8 +14,8 @@ const it: Translations = {
     heading2: "FEC ARCADE",
     heading3: "A UN LIVELLO SUPERIORE.",
     heading4: "ZERO PERSONALE.",
-    description: "L'attrazione LED di punta <strong>ad alto rendimento e capace di generare traffico</strong> per ogni operatore di centri di intrattenimento. Si ripaga in 6 mesi.",
-    mobileDescription: "<strong>Attrazione ad alto rendimento e generatrice di traffico</strong> per ogni operatore di centri di intrattenimento. Si ripaga in <strong>6 mesi.</strong>",
+    description: "L'attrazione LED di punta <strong>ad alto rendimento e capace di generare traffico</strong> per ogni operatore di centri di intrattenimento.",
+    mobileDescription: "<strong>Attrazione ad alto rendimento e generatrice di traffico</strong> per ogni operatore di centri di intrattenimento.",
     requestBrochure: "Richiedi la brochure",
     watchVideo: "Guarda il video",
     stats: {
