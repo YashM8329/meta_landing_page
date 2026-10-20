@@ -411,14 +411,20 @@ const isPositiveLead=()=>{
 /* The real "Lead" conversion is sent server-side only (see /api/meta-capi,
    called from the positive-lead branch in render() below) so it can never
    double-fire and never fires for a disqualified (negative-lead) visitor.
-   This client pixel only ever marks low-intent thank-yous with a custom
-   event that's excluded from ad optimization. */
+   Client-side, standard events mark funnel progress for everyone: Subscribe
+   on landing here (= clicking Request Brochure), CompleteRegistration on
+   reaching the final step (either lead type). Negative leads additionally
+   get a custom low-intent marker, excluded from ad optimization. */
 let _pixelLoaded=false;
-function firePixel(){
+function loadPixel(){
   if (!CONFIG.metaPixelId || _pixelLoaded) return;
   _pixelLoaded=true;
   (function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)})(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
   window.fbq('init', CONFIG.metaPixelId);
+  window.fbq('track', 'Subscribe');
+}
+function firePixel(){
+  loadPixel();
   window.fbq('trackCustom', 'HG_LowIntentThankYou');
 }
 function sendServerLead(){
@@ -638,6 +644,8 @@ function render(){
       <div class="err" id="err"></div><div class="nav">${backBtn()}</div></div>`;
   }
   else if (n.type==='end'){
+    loadPixel();
+    window.fbq('track', 'CompleteRegistration');
     if (isPositiveLead()){
       sendServerLead();
       sendSheetLead();
@@ -981,6 +989,7 @@ vb.onclick=()=>setView(document.getElementById('mapview').hidden?'map':'form');
 // if (location.hash==='#map') setView('map');
 
 buildMap();
+loadPixel();
 render();
 
 /* keep the focused field above the on-screen keyboard (mobile) */
