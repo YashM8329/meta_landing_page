@@ -155,7 +155,7 @@ export default function HeroSection({
             {showCTA && stackBrochureBelowVideo && (
               <a
                 href={brochureHref}
-                className="btn-glass-accent text-white font-semibold text-[18px] lg:text-[22px] px-8 py-4 rounded-xl flex items-center gap-2.5"
+                className="btn-glass-light text-ink font-semibold text-[18px] lg:text-[22px] px-8 py-4 rounded-xl flex items-center gap-2.5 !border-[3px] !border-accent shadow-[0_0_0_6px_rgba(29,108,239,0.16),0_10px_30px_rgba(0,0,0,0.25)]"
               >
                 <motion.span
                   className="flex items-center justify-center gap-2.5"
@@ -177,7 +177,7 @@ export default function HeroSection({
           </motion.div>
 
           {/* Stats row — desktop only */}
-          <motion.div variants={item} className="flex items-stretch gap-5 mt-10 border-t border-white/10 pt-8 w-full">
+          <motion.div variants={item} className={`flex items-stretch gap-5 ${stackBrochureBelowVideo ? "mt-16" : "mt-10"} border-t border-white/10 pt-8 w-full`}>
             {[
               { value: "150+", label: t.hero.stats.venues },
               { value: "15+", label: t.hero.stats.countries },
@@ -310,7 +310,7 @@ export default function HeroSection({
             {showCTA && stackBrochureBelowVideo && (
               <a
                 href={brochureHref}
-                className="btn-glass-accent text-white font-semibold text-[18px] px-8 py-4 rounded-xl flex items-center gap-2.5"
+                className="btn-glass-light text-ink font-semibold text-[18px] px-8 py-4 rounded-xl flex items-center gap-2.5 !border-[3px] !border-accent shadow-[0_0_0_6px_rgba(29,108,239,0.16),0_10px_30px_rgba(0,0,0,0.25)]"
               >
                 <motion.span
                   className="flex items-center justify-center gap-2.5"
@@ -332,7 +332,7 @@ export default function HeroSection({
           </motion.div>
 
           {/* Stats row */}
-          <motion.div variants={item} className="flex items-stretch gap-4 mt-8 border-t border-white/10 pt-6 w-full justify-between">
+          <motion.div variants={item} className={`flex items-stretch gap-4 ${stackBrochureBelowVideo ? "mt-14" : "mt-8"} border-t border-white/10 pt-6 w-full justify-between`}>
             {[
               { value: "150+", label: t.hero.stats.venues },
               { value: "15+", label: t.hero.stats.countries },
@@ -437,7 +437,7 @@ export default function HeroSection({
             <motion.div variants={item} className="w-full mt-4">
               <a
                 href={brochureHref}
-                className="btn-glass-light text-ink font-semibold text-[17px] px-7 py-4 rounded-xl flex items-center justify-center gap-2.5 w-full border-2 border-accent/50 shadow-[0_0_0_4px_rgba(29,108,239,0.08)]"
+                className="btn-glass-light text-ink font-semibold text-[17px] px-7 py-4 rounded-xl flex items-center justify-center gap-2.5 w-full !border-[3px] !border-accent shadow-[0_0_0_6px_rgba(29,108,239,0.16),0_10px_30px_rgba(0,0,0,0.25)]"
               >
                 <motion.span
                   className="flex items-center justify-center gap-2.5"
@@ -461,7 +461,7 @@ export default function HeroSection({
           {/* Mobile-only Stats Grid matching mockup */}
           <motion.div
             variants={item}
-            className="grid grid-cols-12 gap-2 mt-4 w-full"
+            className={`grid grid-cols-12 gap-2 ${stackBrochureBelowVideo ? "mt-8" : "mt-4"} w-full`}
           >
             {/* Row 1: Venues (col-3), Countries (col-3), ROI (col-6) */}
             <div className="col-span-3 bg-white rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">

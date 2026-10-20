@@ -560,10 +560,13 @@ document.addEventListener('visibilitychange',()=>{ if (document.visibilityState=
 /* ===== Render ===== */
 const stage=document.getElementById('stage');
 let timer=null, unitTimer=null;
-/* Unit cycling (m² <-> sq ft) removed per feedback — the hold-then-swap
-   animation felt sluggish as a CTA-adjacent element. The label now stays
-   on whichever unit is marked "on" in the markup, with no timer. */
-function startUnit(){}
+/* Unit cycling (m² <-> sq ft): each unit holds for 3s, then swaps instantly
+   (no CSS transition — see .unit .u below) to the other unit. */
+function startUnit(){
+  const el=document.getElementById('unit'); if(!el) return;
+  const [a,b]=el.querySelectorAll('.u');
+  unitTimer=setInterval(()=>{ a.classList.toggle('on'); b.classList.toggle('on'); },3000);
+}
 
 function render(){
   clearTimeout(timer); clearInterval(unitTimer);
