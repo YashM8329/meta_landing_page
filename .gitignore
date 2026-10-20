@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# chat-automation sandbox app only lives on the ym-chat-automation branch —
+# ignored here so it never shows as untracked noise (or thousands of
+# node_modules files) in VS Code / git status while on main or any other
+# branch. Has no effect on files already tracked by git on that branch.
+/chat-automation/
