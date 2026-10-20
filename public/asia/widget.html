@@ -348,8 +348,9 @@ const N = {
     note:'Address search suggests places as the visitor types (Google Places, same source as the main brochure form) and fills address, city and country. They can also type everything by hand.'},
 
   space:{branch:'Questions', q:()=>`Can you set aside <span class="unit" id="unit" role="text" aria-label="${CONFIG.floorArea} (${CONFIG.floorAreaFt})"><span class="u on" aria-hidden="true">${CONFIG.floorArea}</span><span class="u" aria-hidden="true">${CONFIG.floorAreaFt}</span></span> of space for HyperGrid?`, qPlain:'Can you set aside 15 to 25 m² (160 to 270 sq ft) of space for HyperGrid?', opts:[
-    o('Yes, I can make space','r_budget',{set:{space:'Can make 15 to 25 m²'}}),
-    o('No, even for a proven high revenue per sqm attraction','r_budget',{set:{space:'Passed on space'}}),
+    o('Yes, I can make space','r_budget',{set:{space:'Yes, I can make space'}}),
+    o('I’m tight on space, can try if numbers add up','r_budget',{set:{space:'I’m tight on space, can try if numbers add up'}}),
+    o('Not right now, but I’d like to know more','r_budget',{set:{space:'Not right now, but I’d like to know more'}}),
   ]},
 
   r_budget:{type:'router', branch:'Questions', q:'Budget check (automatic, by country)', rule:'Uses the country from the venue location. The USA and Canada see the $75K question; every other country sees the $40K to $60K question.',
@@ -407,7 +408,7 @@ function route(){ return S.hist.includes('end') ? 'done' : 'pending'; }
    Saying yes to either one is enough to count as a positive lead; only a
    double "No" doesn't fire the Meta Pixel Lead conversion, so ad optimization
    isn't skewed by the lowest-intent form-fillers. */
-const isPositiveLead=()=> !((S.set.space||'').startsWith('Passed') && (S.set.budget||'').startsWith('Passed'));
+const isPositiveLead=()=> !((S.set.space==='Not right now, but I’d like to know more') && (S.set.budget||'').startsWith('Passed'));
 let _pixelLoaded=false;
 /* Embedded on the homepage: a positive lead is handed off to the parent page, which
    navigates to /thank-you (that page fires the real Meta Pixel "Lead" conversion itself —
