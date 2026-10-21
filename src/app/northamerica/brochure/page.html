@@ -200,8 +200,7 @@ pre.payload{margin:0 24px 12px;font-family:var(--mono);font-size:12px;line-heigh
 </style>
 
 <!-- LogRocket — separate project from the rest of the site (ppo9zo/hyper-grid),
-     shared with /asia/brochure so both node-based-brochure flows' sessions
-     land in the same isolated LogRocket project. -->
+     so /asia/brochure sessions are isolated in their own LogRocket project. -->
 <script src="https://cdn.lr-in-prod.com/LogRocket.min.js" crossorigin="anonymous"></script>
 <script>
   if (window.LogRocket) window.LogRocket.init('ppo9zo/meta-node-form');
@@ -235,8 +234,8 @@ pre.payload{margin:0 24px 12px;font-family:var(--mono);font-size:12px;line-heigh
 <script>
 /* ===== Edit before going live ===== */
 const CONFIG = {
-  floorArea: "160 to 270 sq ft",
-  floorAreaFt: "160 to 270 sq ft",
+  floorArea: "15 to 25 m²",
+  floorAreaFt: "160 to 270 sq ft",        // shown alternating with the m² figure
   analyticsUrl: "",                  // optional: your own endpoint that accepts JSON POSTs of each event
   analyticsDebug: false,               // true = also print every event in the browser console
   brochureUrl: "/brochure/hypergrid-brochure-northamerica.pdf",
@@ -306,6 +305,15 @@ const COUNTRY_PHONE_SPECS = {
   'Spain': { code: '+34', length: 9 },
   'Italy': { code: '+39', length: [9, 10] },
 };
+/* Reverse map: lower-cased country name → COUNTRY_PHONE_SPECS key, built once */
+const PHONE_COUNTRY_BY_NAME = {};
+(function(){
+  for (const [k] of Object.entries(COUNTRY_PHONE_SPECS)) PHONE_COUNTRY_BY_NAME[k.toLowerCase()] = k;
+  /* extra aliases so ipapi.co country_name variants match */
+  PHONE_COUNTRY_BY_NAME['united arab emirates'] = 'UAE';
+  PHONE_COUNTRY_BY_NAME['united states'] = 'United States';
+  PHONE_COUNTRY_BY_NAME['united kingdom'] = 'United Kingdom';
+})();
 const COUNTRY_ALIASES = { 'uk':'GB','u.k.':'GB','britain':'GB','great britain':'GB','england':'GB','scotland':'GB','wales':'GB','northern ireland':'GB','usa':'US','u.s.':'US','u.s.a.':'US','us':'US','united states of america':'US','america':'US','holland':'NL','czechia':'CZ' };
 let _names=null;
 function countryCode(name){
@@ -339,7 +347,7 @@ const N = {
     qPlain:'What’s your venue called? (then its address, city and country)', next:'space',
     note:'Address search suggests places as the visitor types (Google Places, same source as the main brochure form) and fills address, city and country. They can also type everything by hand.'},
 
-  space:{branch:'Questions', q:()=>`Can you set aside <span class="unit"><span class="u on">${CONFIG.floorAreaFt}</span></span> of space for HyperGrid?`, qPlain:'Can you set aside 160 to 270 sq ft of space for HyperGrid?', opts:[
+  space:{branch:'Questions', q:()=>`Can you set aside <span class="unit" id="unit" role="text" aria-label="${CONFIG.floorArea} (${CONFIG.floorAreaFt})"><span class="u on" aria-hidden="true">${CONFIG.floorArea}</span><span class="u" aria-hidden="true">${CONFIG.floorAreaFt}</span></span> of space for HyperGrid?`, qPlain:'Can you set aside 15 to 25 m² (160 to 270 sq ft) of space for HyperGrid?', opts:[
     o('Yes, I can make space','budget',{set:{space:'Yes, I can make space'}}),
     o('I’m tight on space, can try if numbers add up','budget',{set:{space:'I’m tight on space, can try if numbers add up'}}),
     o('Not right now, but I’d like to know more','budget',{set:{space:'Not right now, but I’d like to know more'}}),
@@ -347,8 +355,8 @@ const N = {
 
   budget:{branch:'Questions', q:'What’s your investment budget for new games this year?', opts:[
     o('Over $100K','name',{set:{budget:'Over $100K'}}),
-    o('$50K–$100K','name',{set:{budget:'$50K–$100K'}}),
-    o('$25K–$50K','name',{set:{budget:'$25K–$50K'}}),
+    o('$50K – $100K','name',{set:{budget:'$50K – $100K'}}),
+    o('$25K – $50K','name',{set:{budget:'$25K – $50K'}}),
     o('Under $25K','name',{set:{budget:'Under $25K'}}),
   ]},
 
@@ -402,21 +410,31 @@ function route(){ return S.hist.includes('end') ? 'done' : 'pending'; }
    Lead conversion, so ad optimization isn't skewed by low-intent form-fillers. */
 const isPositiveLead=()=>{
   const spaceYes=S.set.space==='Yes, I can make space' || S.set.space==='I’m tight on space, can try if numbers add up';
-  const budgetYes=S.set.budget==='Over $100K' || (S.set.budget||'').startsWith('$50K');
+  const isNA = regionOf() === 'na';
+  const budgetYes = isNA
+    ? (S.set.budget==='Over $100K' || (S.set.budget||'').startsWith('$50K'))
+    : (S.set.budget==='Over $100K' || (S.set.budget||'').startsWith('$50K') || (S.set.budget||'').startsWith('$25K'));
   const isOperator=S.set.segment==='Operates multiple venues' || S.set.segment==='Operates one venue' || S.set.segment==='Building first venue';
+  if (S.set.segment==='Just exploring') return false; /* exploring = always a negative lead */
   return isOperator ? (spaceYes || budgetYes) : (spaceYes && budgetYes);
 };
 /* The real "Lead" conversion is sent server-side only (see /api/meta-capi,
    called from the positive-lead branch in render() below) so it can never
    double-fire and never fires for a disqualified (negative-lead) visitor.
-   This client pixel only ever marks low-intent thank-yous with a custom
-   event that's excluded from ad optimization. */
+   Client-side, standard events mark funnel progress for everyone: Subscribe
+   on landing here (= clicking Request Brochure), CompleteRegistration on
+   reaching the final step (either lead type). Negative leads additionally
+   get a custom low-intent marker, excluded from ad optimization. */
 let _pixelLoaded=false;
-function firePixel(){
+function loadPixel(){
   if (!CONFIG.metaPixelId || _pixelLoaded) return;
   _pixelLoaded=true;
   (function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)})(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
   window.fbq('init', CONFIG.metaPixelId);
+  window.fbq('track', 'Subscribe');
+}
+function firePixel(){
+  loadPixel();
   window.fbq('trackCustom', 'HG_LowIntentThankYou');
 }
 function sendServerLead(){
@@ -518,7 +536,7 @@ const UTM=(()=>{ const o={}; try{ const q=new URLSearchParams(location.search); 
 const STEP_NAME={intro:'start',role:'role',loc:'venue_location',space:'floor_space',budget:'budget',budget_eu:'budget',budget_na:'budget',name:'name',email:'work_email',phone:'phone',comm:'contact_preference',end:'thank_you'};
 const seenSteps=new Set(); let lastStep=null, completed=false, exited=false;
 function track(event, props={}){
-  const data={event, form:'hypergrid-brochure-northamerica', session_id:SID, ts:new Date().toISOString(), ...UTM, ...props};
+  const data={event, form:'hypergrid-brochure', session_id:SID, ts:new Date().toISOString(), ...UTM, ...props};
   try{
     if (typeof window.gtag==='function') window.gtag('event', event, data);
     else (window.dataLayer=window.dataLayer||[]).push(data);
@@ -558,10 +576,11 @@ document.addEventListener('visibilitychange',()=>{ if (document.visibilityState=
 /* ===== Render ===== */
 const stage=document.getElementById('stage');
 let timer=null, unitTimer=null;
-/* Unit cycling (m² <-> sq ft): disabled for North America (fixed to sq ft) */
+/* Unit cycling (m² <-> sq ft): each unit holds for 3s, then swaps instantly
+   (no CSS transition — see .unit .u below) to the other unit. */
 function startUnit(){
   const el=document.getElementById('unit'); if(!el) return;
-  const [a,b]=el.querySelectorAll('.u'); if(!a||!b) return;
+  const [a,b]=el.querySelectorAll('.u');
   unitTimer=setInterval(()=>{ a.classList.toggle('on'); b.classList.toggle('on'); },3000);
 }
 
@@ -635,6 +654,8 @@ function render(){
       <div class="err" id="err"></div><div class="nav">${backBtn()}</div></div>`;
   }
   else if (n.type==='end'){
+    loadPixel();
+    window.fbq('track', 'CompleteRegistration');
     if (isPositiveLead()){
       sendServerLead();
       sendSheetLead();
@@ -774,11 +795,17 @@ function bindVenue(){
   const position=()=>{
     const r=inp.getBoundingClientRect();
     const creditH=28, wantH=Math.min(items.length,VISIBLE_ROWS)*ROW_H+creditH;
-    const spaceBelow=innerHeight-r.bottom, spaceAbove=r.top;
+    // Clamp available space below the input to stop above the Next/Back nav
+    // row instead of the raw viewport edge — otherwise the dropdown renders
+    // on top of Next (it's position:fixed, higher z-index) and a click meant
+    // for Next actually lands on a suggestion underneath it instead.
+    const navEl=stage.querySelector('.nav');
+    const navTop=navEl? navEl.getBoundingClientRect().top : innerHeight;
+    const spaceBelow=Math.max(0, navTop-r.bottom-8), spaceAbove=r.top;
     const openUp = spaceBelow<wantH+8 && spaceAbove>spaceBelow;
     list.style.position='fixed'; list.style.left=r.left+'px'; list.style.width=r.width+'px';
     if (openUp){ list.style.bottom=(innerHeight-r.top+6)+'px'; list.style.top='auto'; list.style.maxHeight=Math.min(spaceAbove-8,wantH)+'px'; }
-    else { list.style.top=(r.bottom+6)+'px'; list.style.bottom='auto'; list.style.maxHeight=Math.min(spaceBelow-8,wantH)+'px'; }
+    else { list.style.top=(r.bottom+6)+'px'; list.style.bottom='auto'; list.style.maxHeight=Math.min(spaceBelow,wantH)+'px'; }
   };
   const paint=()=>{
     list.innerHTML=items.map((r,i)=>`<li role="option" data-k="${i}" aria-selected="${i===hi}"><span class="sugg-main">${esc(r.mainText||r.label)}</span>${r.secondaryText?`<span class="sugg-sec">${esc(r.secondaryText)}</span>`:''}</li>`).join('')
@@ -978,6 +1005,24 @@ vb.onclick=()=>setView(document.getElementById('mapview').hidden?'map':'form');
 // if (location.hash==='#map') setView('map');
 
 buildMap();
+loadPixel();
+/* IP-based country code pre-selection — fires in background; phone step reads S.f.ccName */
+(function detectPhoneCountry(){
+  if (S.f.ccName) return; /* already set (e.g. returning visitor) */
+  fetch('https://ipapi.co/json/', {cache:'no-store'})
+    .then(r=>r.ok ? r.json() : Promise.reject())
+    .then(d=>{
+      const name = (d.country_name||'').toLowerCase();
+      const match = PHONE_COUNTRY_BY_NAME[name];
+      if (match && !S.f.ccName) {
+        S.f.ccName = match;
+        /* If the phone step is currently rendered, update the select live */
+        const sel = document.getElementById('f-cc');
+        if (sel) sel.value = match;
+      }
+    })
+    .catch(()=>{ /* silent fail — default 'India' remains */ });
+})();
 render();
 
 /* keep the focused field above the on-screen keyboard (mobile) */

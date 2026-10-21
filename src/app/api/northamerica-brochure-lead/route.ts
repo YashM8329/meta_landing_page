@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { appendBrochureLead } from "@/lib/googleSheets";
 
-/** Same shape as /api/asia-brochure-lead, writing to its own "Sheet3" tab
- * instead of Sheet2 — Sheet1 and Sheet2 are untouched by this route. */
+/** Same as /api/asia-brochure-lead: appends to the same Sheet2 tab. */
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -28,8 +27,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
     }
 
-    const { duplicate } = await appendBrochureLead(
-      {
+    const { duplicate } = await appendBrochureLead({
         segment: segment ?? "",
         venueAddress: venueAddress ?? "",
         city: city ?? "",
@@ -45,9 +43,7 @@ export async function POST(request: Request) {
         leadQuality: leadQuality === "Positive" ? "Positive" : "Negative",
         sourceUrl,
         utmParams,
-      },
-      "Sheet3"
-    );
+      });
 
     if (duplicate) {
       console.warn(`[Sheets] Duplicate /northamerica/brochure lead skipped: ${email}`);

@@ -415,6 +415,7 @@ const isPositiveLead=()=>{
     ? (S.set.budget==='Over $100K' || (S.set.budget||'').startsWith('$50K'))
     : (S.set.budget==='Over $100K' || (S.set.budget||'').startsWith('$50K') || (S.set.budget||'').startsWith('$25K'));
   const isOperator=S.set.segment==='Operates multiple venues' || S.set.segment==='Operates one venue' || S.set.segment==='Building first venue';
+  if (S.set.segment==='Just exploring') return false; /* exploring = always a negative lead */
   return isOperator ? (spaceYes || budgetYes) : (spaceYes && budgetYes);
 };
 /* The real "Lead" conversion is sent server-side only (see /api/meta-capi,

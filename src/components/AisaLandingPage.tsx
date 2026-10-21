@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Script from "next/script";
 import NavBar from "@/components/NavBar";
 import HeroSection from "@/components/HeroSection";
@@ -40,7 +41,10 @@ export default function AisaLandingPage({
   heroImageSrc,
 }: { brochureBasePath?: string; heroImageSrc?: string } = {}) {
   const { t } = useTranslation();
-  const brochureHref = `${brochureBasePath}/brochure`;
+  // Forward the ad URL's query string (utm_*, fbclid, ...) so the brochure form can record it.
+  const [qs, setQs] = useState("");
+  useEffect(() => { setQs(window.location.search); }, []);
+  const brochureHref = `${brochureBasePath}/brochure${qs}`;
 
   const featureCards: CarouselCard[] = [
     { label: t.features.cards.unattended.label, sublabel: t.features.cards.unattended.sublabel, gradient: "linear-gradient(160deg,#0a1838 0%,#11317a 55%,#1d6cef 100%)", accentGlow: "rgba(29,108,239,0.45)", image: "/features/unmanned.png" },
