@@ -305,6 +305,15 @@ const COUNTRY_PHONE_SPECS = {
   'Spain': { code: '+34', length: 9 },
   'Italy': { code: '+39', length: [9, 10] },
 };
+/* Reverse map: lower-cased country name → COUNTRY_PHONE_SPECS key, built once */
+const PHONE_COUNTRY_BY_NAME = {};
+(function(){
+  for (const [k] of Object.entries(COUNTRY_PHONE_SPECS)) PHONE_COUNTRY_BY_NAME[k.toLowerCase()] = k;
+  /* extra aliases so ipapi.co country_name variants match */
+  PHONE_COUNTRY_BY_NAME['united arab emirates'] = 'UAE';
+  PHONE_COUNTRY_BY_NAME['united states'] = 'United States';
+  PHONE_COUNTRY_BY_NAME['united kingdom'] = 'United Kingdom';
+})();
 const COUNTRY_ALIASES = { 'uk':'GB','u.k.':'GB','britain':'GB','great britain':'GB','england':'GB','scotland':'GB','wales':'GB','northern ireland':'GB','usa':'US','u.s.':'US','u.s.a.':'US','us':'US','united states of america':'US','america':'US','holland':'NL','czechia':'CZ' };
 let _names=null;
 function countryCode(name){
@@ -996,6 +1005,23 @@ vb.onclick=()=>setView(document.getElementById('mapview').hidden?'map':'form');
 
 buildMap();
 loadPixel();
+/* IP-based country code pre-selection — fires in background; phone step reads S.f.ccName */
+(function detectPhoneCountry(){
+  if (S.f.ccName) return; /* already set (e.g. returning visitor) */
+  fetch('https://ipapi.co/json/', {cache:'no-store'})
+    .then(r=>r.ok ? r.json() : Promise.reject())
+    .then(d=>{
+      const name = (d.country_name||'').toLowerCase();
+      const match = PHONE_COUNTRY_BY_NAME[name];
+      if (match && !S.f.ccName) {
+        S.f.ccName = match;
+        /* If the phone step is currently rendered, update the select live */
+        const sel = document.getElementById('f-cc');
+        if (sel) sel.value = match;
+      }
+    })
+    .catch(()=>{ /* silent fail — default 'India' remains */ });
+})();
 render();
 
 /* keep the focused field above the on-screen keyboard (mobile) */
