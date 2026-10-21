@@ -3,6 +3,7 @@
 import Script from "next/script";
 import NavBar from "@/components/NavBar";
 import HeroSection from "@/components/HeroSection";
+import StatsSection from "@/components/StatsSection";
 import VideoSection from "@/components/VideoSection";
 import KeyFeaturesSection from "@/components/KeyFeaturesSection";
 import MomentsSection from "@/components/MomentsSection";
@@ -90,7 +91,8 @@ export default function AisaLandingPage({
         <NavBar brochureHref={brochureHref} />
 
         <main className="page-canvas min-h-screen relative">
-          <HeroSection brochureHref={brochureHref} stackBrochureBelowVideo heroImageSrc={heroImageSrc} />
+          <HeroSection brochureHref={brochureHref} stackBrochureBelowVideo heroImageSrc={heroImageSrc} showSeparateStats />
+          <StatsSection />
           <KeyFeaturesSection cards={featureCards} brochureHref={brochureHref} />
           <MomentsSection cards={momentsCards} brochureHref={brochureHref} />
           <ProofSection brochureHref={brochureHref} />

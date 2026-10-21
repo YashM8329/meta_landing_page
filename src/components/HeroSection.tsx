@@ -10,10 +10,12 @@ export default function HeroSection({
   brochureHref = "#brochure-form",
   stackBrochureBelowVideo = false,
   heroImageSrc = "/hero/hypergrid-hero.png",
+  showSeparateStats = false,
 }: {
   brochureHref?: string;
   stackBrochureBelowVideo?: boolean;
   heroImageSrc?: string;
+  showSeparateStats?: boolean;
 } = {}) {
   const { t } = useTranslation();
   const { showCTA } = useCTA();
@@ -148,23 +150,46 @@ export default function HeroSection({
                 onClick={() => setIsOpen(true)}
                 className={
                   stackBrochureBelowVideo
-                    ? "bg-white text-ink font-semibold text-[17px] lg:text-[21px] px-7 py-4 rounded-xl flex items-center gap-2.5 cursor-pointer !border !border-black/5 shadow-[0_12px_40px_rgba(0,0,0,0.08)]"
+                    ? "relative bg-white text-ink font-semibold text-[17px] lg:text-[21px] px-7 py-4 rounded-xl flex items-center gap-2.5 cursor-pointer !border !border-black/5 shadow-[0_12px_40px_rgba(0,0,0,0.08)] overflow-hidden"
                     : "btn-glass-light text-ink font-semibold text-[17px] lg:text-[21px] px-7 py-4 rounded-xl flex items-center gap-2.5 cursor-pointer"
                 }
               >
-                {t.hero.watchVideo}
-                <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M6 4L12 8L6 12V4Z" fill="currentColor" />
-                </svg>
+                {stackBrochureBelowVideo && (
+                  <div
+                    className="absolute inset-0 opacity-30 pointer-events-none"
+                    style={{
+                      backgroundImage: 'radial-gradient(circle, rgba(10,10,10,0.7) 1.5px, transparent 2px)',
+                      backgroundSize: '6px 6px',
+                      WebkitMaskImage: 'linear-gradient(to right, black 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.05) 65%, black 100%)',
+                      maskImage: 'linear-gradient(to right, black 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.05) 65%, black 100%)',
+                    }}
+                  />
+                )}
+                <span className="relative z-10 flex items-center gap-2.5">
+                  {t.hero.watchVideo}
+                  <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M6 4L12 8L6 12V4Z" fill="currentColor" />
+                  </svg>
+                </span>
               </button>
             </div>
             {showCTA && stackBrochureBelowVideo && (
               <a
                 href={brochureHref}
-                className="bg-white text-ink font-semibold text-[18px] lg:text-[22px] px-8 py-4 rounded-xl flex items-center gap-2.5 !border !border-black/5 shadow-[0_12px_40px_rgba(0,0,0,0.08)]"
+                className="relative bg-white text-ink font-semibold text-[18px] lg:text-[22px] px-8 py-4 rounded-xl flex items-center gap-2.5 !border !border-black/5 shadow-[0_12px_40px_rgba(0,0,0,0.08)] overflow-hidden"
               >
+                {/* Halftone pattern matching the mobile brochure CTA */}
+                <div
+                  className="absolute inset-0 opacity-30 pointer-events-none"
+                  style={{
+                    backgroundImage: 'radial-gradient(circle, rgba(10,10,10,0.7) 1.5px, transparent 2px)',
+                    backgroundSize: '6px 6px',
+                    WebkitMaskImage: 'linear-gradient(to right, black 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.05) 65%, black 100%)',
+                    maskImage: 'linear-gradient(to right, black 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.05) 65%, black 100%)',
+                  }}
+                />
                 <motion.span
-                  className="flex items-center justify-center gap-2.5"
+                  className="relative z-10 flex items-center justify-center gap-2.5"
                   animate={{ scale: [1, 1, 1.05, 1, 1] }}
                   transition={{
                     times: [0, 0.14, 0.20, 0.26, 1.0],
@@ -183,21 +208,23 @@ export default function HeroSection({
           </motion.div>
 
           {/* Stats row — desktop only */}
-          <motion.div variants={item} className={`flex items-stretch gap-5 ${stackBrochureBelowVideo ? "mt-16" : "mt-10"} border-t border-white/10 pt-8 w-full`}>
-            {[
-              { value: "150+", label: t.hero.stats.venues },
-              { value: "15+", label: t.hero.stats.countries },
-              { value: t.hero.stats.fastestROIValue, label: t.hero.stats.fastestROI },
-            ].map(({ value, label }) => (
-              <div
-                key={label}
-                className="bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-2xl py-4 px-5 flex flex-col justify-center items-center border-[3px] border-accent shadow-[0_0_0_6px_rgba(29,108,239,0.16),0_10px_30px_rgba(0,0,0,0.25)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 min-w-[160px]"
-              >
-                <p className="text-[28px] lg:text-[36px] xl:text-[40px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center whitespace-nowrap">{value}</p>
-                <p className="text-[13px] lg:text-[16px] font-bold text-[#0A0A0A] mt-2 leading-tight text-center whitespace-nowrap">{label}</p>
-              </div>
-            ))}
-          </motion.div>
+          {!showSeparateStats && (
+            <motion.div variants={item} className={`flex items-stretch gap-5 ${stackBrochureBelowVideo ? "mt-16" : "mt-10"} border-t border-white/10 pt-8 w-full`}>
+              {[
+                { value: "150+", label: t.hero.stats.venues },
+                { value: "15+", label: t.hero.stats.countries },
+                { value: t.hero.stats.fastestROIValue, label: t.hero.stats.fastestROI },
+              ].map(({ value, label }) => (
+                <div
+                  key={label}
+                  className="bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-2xl py-4 px-5 flex flex-col justify-center items-center border-[3px] border-accent shadow-[0_0_0_6px_rgba(29,108,239,0.16),0_10px_30px_rgba(0,0,0,0.25)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 min-w-[160px]"
+                >
+                  <p className="text-[28px] lg:text-[36px] xl:text-[40px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center whitespace-nowrap">{value}</p>
+                  <p className="text-[13px] lg:text-[16px] font-bold text-[#0A0A0A] mt-2 leading-tight text-center whitespace-nowrap">{label}</p>
+                </div>
+              ))}
+            </motion.div>
+          )}
         </motion.div>
 
         {/* Right Column: Hero Image */}
@@ -316,10 +343,20 @@ export default function HeroSection({
             {showCTA && stackBrochureBelowVideo && (
               <a
                 href={brochureHref}
-                className="bg-white text-ink font-semibold text-[18px] px-8 py-4 rounded-xl flex items-center gap-2.5 !border !border-black/5 shadow-[0_12px_40px_rgba(0,0,0,0.08)]"
+                className="relative bg-white text-ink font-semibold text-[18px] px-8 py-4 rounded-xl flex items-center gap-2.5 !border !border-black/5 shadow-[0_12px_40px_rgba(0,0,0,0.08)] overflow-hidden"
               >
+                {/* Halftone pattern matching the mobile brochure CTA */}
+                <div
+                  className="absolute inset-0 opacity-30 pointer-events-none"
+                  style={{
+                    backgroundImage: 'radial-gradient(circle, rgba(10,10,10,0.7) 1.5px, transparent 2px)',
+                    backgroundSize: '6px 6px',
+                    WebkitMaskImage: 'linear-gradient(to right, black 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.05) 65%, black 100%)',
+                    maskImage: 'linear-gradient(to right, black 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.05) 65%, black 100%)',
+                  }}
+                />
                 <motion.span
-                  className="flex items-center justify-center gap-2.5"
+                  className="relative z-10 flex items-center justify-center gap-2.5"
                   animate={{ scale: [1, 1, 1.05, 1, 1] }}
                   transition={{
                     times: [0, 0.14, 0.20, 0.26, 1.0],
@@ -338,21 +375,23 @@ export default function HeroSection({
           </motion.div>
 
           {/* Stats row */}
-          <motion.div variants={item} className={`flex items-stretch gap-4 ${stackBrochureBelowVideo ? "mt-14" : "mt-8"} border-t border-white/10 pt-6 w-full justify-between`}>
-            {[
-              { value: "150+", label: t.hero.stats.venues },
-              { value: "15+", label: t.hero.stats.countries },
-              { value: t.hero.stats.fastestROIValue, label: t.hero.stats.fastestROI },
-            ].map(({ value, label }) => (
-              <div
-                key={label}
-                className="bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-3xl py-5 px-6 flex flex-col justify-center items-center border-[3px] border-accent shadow-[0_0_0_6px_rgba(29,108,239,0.16),0_10px_30px_rgba(0,0,0,0.25)] flex-1 min-w-[160px]"
-              >
-                <p className="text-[34px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center whitespace-nowrap">{value}</p>
-                <p className="text-[15px] font-bold text-[#0A0A0A] mt-2 leading-tight text-center whitespace-nowrap">{label}</p>
-              </div>
-            ))}
-          </motion.div>
+          {!showSeparateStats && (
+            <motion.div variants={item} className={`flex items-stretch gap-4 ${stackBrochureBelowVideo ? "mt-14" : "mt-8"} border-t border-white/10 pt-6 w-full justify-between`}>
+              {[
+                { value: "150+", label: t.hero.stats.venues },
+                { value: "15+", label: t.hero.stats.countries },
+                { value: t.hero.stats.fastestROIValue, label: t.hero.stats.fastestROI },
+              ].map(({ value, label }) => (
+                <div
+                  key={label}
+                  className="bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-3xl py-5 px-6 flex flex-col justify-center items-center border-[3px] border-accent shadow-[0_0_0_6px_rgba(29,108,239,0.16),0_10px_30px_rgba(0,0,0,0.25)] flex-1 min-w-[160px]"
+                >
+                  <p className="text-[34px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center whitespace-nowrap">{value}</p>
+                  <p className="text-[15px] font-bold text-[#0A0A0A] mt-2 leading-tight text-center whitespace-nowrap">{label}</p>
+                </div>
+              ))}
+            </motion.div>
+          )}
         </motion.div>
       </div>
 
@@ -443,10 +482,20 @@ export default function HeroSection({
             <motion.div variants={item} className="w-full mt-4">
               <a
                 href={brochureHref}
-                className="bg-white text-ink font-semibold text-[17px] px-7 py-4 rounded-xl flex items-center justify-center gap-2.5 w-full !border !border-black/5 shadow-[0_12px_40px_rgba(0,0,0,0.08)]"
+                className="relative bg-white text-ink font-semibold text-[17px] px-7 py-4 rounded-xl flex items-center justify-center gap-2.5 w-full !border !border-black/5 shadow-[0_12px_40px_rgba(0,0,0,0.08)] overflow-hidden"
               >
+                {/* Halftone pattern matching the mobile brochure CTA */}
+                <div
+                  className="absolute inset-0 opacity-30 pointer-events-none"
+                  style={{
+                    backgroundImage: 'radial-gradient(circle, rgba(10,10,10,0.7) 1.5px, transparent 2px)',
+                    backgroundSize: '6px 6px',
+                    WebkitMaskImage: 'linear-gradient(to right, black 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.05) 65%, black 100%)',
+                    maskImage: 'linear-gradient(to right, black 0%, rgba(0,0,0,0.05) 35%, rgba(0,0,0,0.05) 65%, black 100%)',
+                  }}
+                />
                 <motion.span
-                  className="flex items-center justify-center gap-2.5"
+                  className="relative z-10 flex items-center justify-center gap-2.5"
                   animate={{ scale: [1, 1, 1.05, 1, 1] }}
                   transition={{
                     times: [0, 0.14, 0.20, 0.26, 1.0],
@@ -465,42 +514,44 @@ export default function HeroSection({
           )}
 
           {/* Mobile-only Stats Grid matching mockup */}
-          <motion.div
-            variants={item}
-            className={`grid grid-cols-12 gap-2 ${stackBrochureBelowVideo ? "mt-8" : "mt-4"} w-full`}
-          >
-            {/* Row 1: Venues (col-3), Countries (col-3), ROI (col-6) */}
-            <div className="col-span-3 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
-              <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">150+</p>
-              <p className="text-[10px] sm:text-[11px] font-bold text-[#0A0A0A] mt-1 leading-tight text-center">{t.hero.stats.venues}</p>
-            </div>
+          {!showSeparateStats && (
+            <motion.div
+              variants={item}
+              className={`grid grid-cols-12 gap-2 ${stackBrochureBelowVideo ? "mt-8" : "mt-4"} w-full`}
+            >
+              {/* Row 1: Venues (col-3), Countries (col-3), ROI (col-6) */}
+              <div className="col-span-3 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
+                <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">150+</p>
+                <p className="text-[10px] sm:text-[11px] font-bold text-[#0A0A0A] mt-1 leading-tight text-center">{t.hero.stats.venues}</p>
+              </div>
 
-            <div className="col-span-3 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
-              <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">15+</p>
-              <p className="text-[10px] sm:text-[11px] font-bold text-[#0A0A0A] mt-1 leading-tight text-center">{t.hero.stats.countries}</p>
-            </div>
+              <div className="col-span-3 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
+                <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">15+</p>
+                <p className="text-[10px] sm:text-[11px] font-bold text-[#0A0A0A] mt-1 leading-tight text-center">{t.hero.stats.countries}</p>
+              </div>
 
-            <div className="col-span-6 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-xl py-2 px-3.5 flex flex-col justify-center shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
-              <p className="text-[26px] sm:text-[18px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">{t.hero.stats.avgPaybackValue}</p>
-              <p className="text-[10px] sm:text-[10px] font-bold text-[#0A0A0A] mt-1 leading-tight text-center">{t.hero.stats.avgPayback}</p>
-            </div>
+              <div className="col-span-6 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-xl py-2 px-3.5 flex flex-col justify-center shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
+                <p className="text-[26px] sm:text-[18px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">{t.hero.stats.avgPaybackValue}</p>
+                <p className="text-[10px] sm:text-[10px] font-bold text-[#0A0A0A] mt-1 leading-tight text-center">{t.hero.stats.avgPayback}</p>
+              </div>
 
-            {/* Row 2: Gameplay (col-6), Players (col-3), Age (col-3) */}
-            <div className="col-span-6 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-xl py-2 px-3.5 flex flex-col justify-center shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
-              <p className="text-[26px] sm:text-[18px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">{t.hero.stats.gameplayValue}</p>
-              <p className="text-[10px] sm:text-[10px] font-bold text-[#0A0A0A] mt-1 leading-tight text-center">{t.hero.stats.gameplay}</p>
-            </div>
+              {/* Row 2: Gameplay (col-6), Players (col-3), Age (col-3) */}
+              <div className="col-span-6 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-xl py-2 px-3.5 flex flex-col justify-center shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
+                <p className="text-[26px] sm:text-[18px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">{t.hero.stats.gameplayValue}</p>
+                <p className="text-[10px] sm:text-[10px] font-bold text-[#0A0A0A] mt-1 leading-tight text-center">{t.hero.stats.gameplay}</p>
+              </div>
 
-            <div className="col-span-3 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
-              <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">1-6</p>
-              <p className="text-[10px] sm:text-[11px] font-bold text-[#0A0A0A] mt-1 leading-tight text-center">{t.hero.stats.players}</p>
-            </div>
+              <div className="col-span-3 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
+                <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">1-6</p>
+                <p className="text-[10px] sm:text-[11px] font-bold text-[#0A0A0A] mt-1 leading-tight text-center">{t.hero.stats.players}</p>
+              </div>
 
-            <div className="col-span-3 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
-              <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">4+</p>
-              <p className="text-[10px] sm:text-[11px] font-bold text-[#0A0A0A] mt-1 leading-tight text-center">{t.hero.stats.age}</p>
-            </div>
-          </motion.div>
+              <div className="col-span-3 bg-white/60 backdrop-blur-[14px] saturate-[1.4] rounded-2xl py-2.5 px-2 flex flex-col justify-center shadow-[0_0_0_4px_rgba(29,108,239,0.16),0_8px_24px_rgba(0,0,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
+                <p className="text-[26px] sm:text-[22px] font-black text-[#0A0A0A] tracking-tighter leading-none text-center">4+</p>
+                <p className="text-[10px] sm:text-[11px] font-bold text-[#0A0A0A] mt-1 leading-tight text-center">{t.hero.stats.age}</p>
+              </div>
+            </motion.div>
+          )}
         </motion.div>
       </div>
 
