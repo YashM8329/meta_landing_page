@@ -60,7 +60,20 @@ const COUNTRY_PHONE_SPECS: Record<string, { code: string; length: number | numbe
   "Ireland": { code: "+353", length: 9 },
   "Netherlands": { code: "+31", length: 9 },
   "Spain": { code: "+34", length: 9 },
-  "Italy": { code: "+39", length: [9, 10] }
+  "Italy": { code: "+39", length: [9, 10] },
+  "Thailand": { code: "+66", length: 9 },
+  "Indonesia": { code: "+62", length: [9, 10, 11, 12] },
+  "Malaysia": { code: "+60", length: [9, 10] },
+  "Vietnam": { code: "+84", length: 9 },
+  "Philippines": { code: "+63", length: 10 },
+  "Cambodia": { code: "+855", length: [8, 9] },
+  "Myanmar": { code: "+95", length: [7, 8, 9, 10] },
+  "Hong Kong": { code: "+852", length: 8 },
+  "Taiwan": { code: "+886", length: 9 },
+  "South Korea": { code: "+82", length: [9, 10] },
+  "Nepal": { code: "+977", length: 10 },
+  "Pakistan": { code: "+92", length: 10 },
+  "Bolivia": { code: "+591", length: 8 }
 };
 
 const inputBase = "w-full h-[50px] lg:h-[52px] rounded-xl border px-4 text-[15px] lg:text-[16px] font-medium text-ink placeholder-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/40 transition-all duration-150";

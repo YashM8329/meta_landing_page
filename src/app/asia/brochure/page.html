@@ -304,6 +304,19 @@ const COUNTRY_PHONE_SPECS = {
   'Netherlands': { code: '+31', length: 9 },
   'Spain': { code: '+34', length: 9 },
   'Italy': { code: '+39', length: [9, 10] },
+  'Thailand': { code: '+66', length: 9 },
+  'Indonesia': { code: '+62', length: [9, 10, 11, 12] },
+  'Malaysia': { code: '+60', length: [9, 10] },
+  'Vietnam': { code: '+84', length: 9 },
+  'Philippines': { code: '+63', length: 10 },
+  'Cambodia': { code: '+855', length: [8, 9] },
+  'Myanmar': { code: '+95', length: [7, 8, 9, 10] },
+  'Hong Kong': { code: '+852', length: 8 },
+  'Taiwan': { code: '+886', length: 9 },
+  'South Korea': { code: '+82', length: [9, 10] },
+  'Nepal': { code: '+977', length: 10 },
+  'Pakistan': { code: '+92', length: 10 },
+  'Bolivia': { code: '+591', length: 8 },
 };
 /* Reverse map: lower-cased country name → COUNTRY_PHONE_SPECS key, built once */
 const PHONE_COUNTRY_BY_NAME = {};
@@ -447,6 +460,16 @@ function sendServerLead(){
     }).catch(()=>{});
   }catch(e){}
 }
+/* Resolves City/Country for the sheet when the visitor never picked a Places
+   autocomplete suggestion (so S.f.city/S.f.country were never set): falls
+   back to the country they picked in the phone step, then to IP geolocation. */
+function resolveCityCountry(){
+  let city=S.f.city||'', country=S.f.country||'';
+  if (!country && S.f.ccName) country=S.f.ccName;
+  if (!country && IPGEO && IPGEO.countryName) country=IPGEO.countryName;
+  if (!city && IPGEO && IPGEO.city) city=IPGEO.city;
+  return {city, country};
+}
 /* Logs every completed submission (positive and negative lead alike) to the
    Sheet2 tab in the same Google Sheet Sheet1 already uses, with one column
    per question this flow asks. */
@@ -458,14 +481,15 @@ function sendSheetLead(){
     const utmParams=Object.keys(UTM).length
       ? Object.entries(UTM).map(([k,v])=>`${k}=${encodeURIComponent(v)}`).join('&')
       : 'direct';
+    const {city, country}=resolveCityCountry();
     fetch('/api/asia-brochure-lead',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         segment:S.set.segment||'',
         venueAddress:S.f.address||'',
-        city:S.f.city||'',
-        country:S.f.country||'',
+        city,
+        country,
         spaceAnswer:S.set.space||'',
         budgetAnswer:S.set.budget||'',
         fullName:S.f.name||'',
@@ -629,10 +653,13 @@ function render(){
       <div class="err" id="err"></div>${navOK('Next')}</div>`;
   }
   else if (n.type==='phone'){
-    const cur=S.f.ccName||'India';
+    const cur=S.f.ccName||'';
     h=`<div class="q">${head}<div class="fields">
       <div class="phone">
-        <select class="inp" id="f-cc" aria-label="Country code">${Object.keys(COUNTRY_PHONE_SPECS).map(name=>`<option value="${esc(name)}" ${name===cur?'selected':''}>${esc(COUNTRY_PHONE_SPECS[name].code)} ${esc(name)}</option>`).join('')}</select>
+        <select class="inp" id="f-cc" aria-label="Country code">
+          <option value="" ${cur?'':'selected'} disabled hidden>Select country</option>
+          ${Object.keys(COUNTRY_PHONE_SPECS).map(name=>`<option value="${esc(name)}" ${name===cur?'selected':''}>${esc(COUNTRY_PHONE_SPECS[name].code)} ${esc(name)}</option>`).join('')}
+        </select>
         <input class="inp" id="f-phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="98765 43210" value="${esc(S.f.phone)}">
       </div>
     </div><div class="err" id="err"></div>${navOK('Next')}</div>`;
@@ -853,7 +880,9 @@ function validate(id){
     case 'email': S.f.email=g('f-email').value.trim();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(S.f.email)) return err('Check the email. It needs an @ and a domain.');
       return true;
-    case 'phone': S.f.ccName=g('f-cc').value; S.f.cc=COUNTRY_PHONE_SPECS[S.f.ccName].code; S.f.phone=g('f-phone').value.trim();
+    case 'phone': S.f.ccName=g('f-cc').value; S.f.phone=g('f-phone').value.trim();
+      if (!S.f.ccName) return err('Please select your country.');
+      S.f.cc=COUNTRY_PHONE_SPECS[S.f.ccName].code;
       { const spec=COUNTRY_PHONE_SPECS[S.f.ccName];
         const d=S.f.phone.replace(/\D/g,'');
         const lens=Array.isArray(spec.length)?spec.length:[spec.length];
@@ -1006,22 +1035,27 @@ vb.onclick=()=>setView(document.getElementById('mapview').hidden?'map':'form');
 
 buildMap();
 loadPixel();
-/* IP-based country code pre-selection — fires in background; phone step reads S.f.ccName */
-(function detectPhoneCountry(){
-  if (S.f.ccName) return; /* already set (e.g. returning visitor) */
+/* IP geolocation — fires once in background. Pre-selects the phone country
+   dropdown (no default shown until this resolves or the visitor picks one
+   manually) and backstops city/country for the venue step when the visitor
+   never selects a Places autocomplete suggestion. */
+let IPGEO = null;
+(function detectIPGeo(){
   fetch('https://ipapi.co/json/', {cache:'no-store'})
     .then(r=>r.ok ? r.json() : Promise.reject())
     .then(d=>{
-      const name = (d.country_name||'').toLowerCase();
-      const match = PHONE_COUNTRY_BY_NAME[name];
-      if (match && !S.f.ccName) {
-        S.f.ccName = match;
-        /* If the phone step is currently rendered, update the select live */
-        const sel = document.getElementById('f-cc');
-        if (sel) sel.value = match;
+      IPGEO = { countryName: d.country_name||'', countryCodeISO: (d.country||'').toUpperCase(), city: d.city||'' };
+      if (!S.f.ccName) {
+        const match = PHONE_COUNTRY_BY_NAME[(d.country_name||'').toLowerCase()];
+        if (match) {
+          S.f.ccName = match;
+          /* If the phone step is currently rendered, update the select live */
+          const sel = document.getElementById('f-cc');
+          if (sel) sel.value = match;
+        }
       }
     })
-    .catch(()=>{ /* silent fail — default 'India' remains */ });
+    .catch(()=>{ /* silent fail — country dropdown stays on "Select country" */ });
 })();
 render();
 
