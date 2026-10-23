@@ -234,8 +234,8 @@ pre.payload{margin:0 24px 12px;font-family:var(--mono);font-size:12px;line-heigh
 <script>
 /* ===== Edit before going live ===== */
 const CONFIG = {
-  floorArea: "15 to 25 m²",
-  floorAreaFt: "160 to 270 sq ft",        // shown alternating with the m² figure
+  floorArea: "15 to 25 m²",              // not shown on this region's page; sq ft only below
+  floorAreaFt: "160 to 270 sq ft",
   analyticsUrl: "",                  // optional: your own endpoint that accepts JSON POSTs of each event
   analyticsDebug: false,               // true = also print every event in the browser console
   brochureUrl: "/brochure/hypergrid-brochure-northamerica.pdf",
@@ -360,7 +360,7 @@ const N = {
     qPlain:'What’s your venue called? (then its address, city and country)', next:'space',
     note:'Address search suggests places as the visitor types (Google Places, same source as the main brochure form) and fills address, city and country. They can also type everything by hand.'},
 
-  space:{branch:'Questions', q:()=>`Can you set aside <span class="unit" id="unit" role="text" aria-label="${CONFIG.floorArea} (${CONFIG.floorAreaFt})"><span class="u on" aria-hidden="true">${CONFIG.floorArea}</span><span class="u" aria-hidden="true">${CONFIG.floorAreaFt}</span></span> of space for HyperGrid?`, qPlain:'Can you set aside 15 to 25 m² (160 to 270 sq ft) of space for HyperGrid?', opts:[
+  space:{branch:'Questions', q:()=>`Can you set aside <span class="unit">${CONFIG.floorAreaFt}</span> of space for HyperGrid?`, qPlain:'Can you set aside 160 to 270 sq ft of space for HyperGrid?', opts:[
     o('Yes, I can make space','budget',{set:{space:'Yes, I can make space'}}),
     o('I’m tight on space, can try if numbers add up','budget',{set:{space:'I’m tight on space, can try if numbers add up'}}),
     o('Not right now, but I’d like to know more','budget',{set:{space:'Not right now, but I’d like to know more'}}),
@@ -537,11 +537,18 @@ function slotsFor(iso, now=new Date()){
   return SLOTS.filter(x=>x.end>h);
 }
 function dayOptions(now=new Date()){
-  const mk=(add,name)=>{ const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+add); const sh=shortDate(d); return {iso:ymd(d), short:sh, label:name?`${name} · ${sh}`:sh}; };
+  // Sunday is never offered as a call day — skip ahead to Monday instead.
+  const mk=(add,name)=>{ let d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+add); if (d.getDay()===0) d=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1); const sh=shortDate(d); return {iso:ymd(d), short:sh, label:name?`${name} · ${sh}`:sh}; };
   const hoursLeft=24-(now.getHours()+now.getMinutes()/60);
-  const out=[], today=mk(0,'Today');
-  if (hoursLeft>=5 && slotsFor(today.iso,now).length) out.push(today);
-  out.push(mk(1,'Tomorrow'), mk(2,''), {iso:'next-week', short:'next week', label:'Next week'});
+  const out=[];
+  if (now.getDay()!==0){
+    const today=mk(0,'Today');
+    if (hoursLeft>=5 && slotsFor(today.iso,now).length) out.push(today);
+  }
+  const day1=mk(1,'Tomorrow'), day2=mk(2,'');
+  out.push(day1);
+  if (day2.iso!==day1.iso) out.push(day2);
+  out.push({iso:'next-week', short:'next week', label:'Next week'});
   return out;
 }
 const onDay=()=> S.f.dayISO==='next-week' ? 'during <b>next week</b>' : `on <b>${esc(S.f.dayShort)}</b>`;
@@ -599,17 +606,9 @@ document.addEventListener('visibilitychange',()=>{ if (document.visibilityState=
 
 /* ===== Render ===== */
 const stage=document.getElementById('stage');
-let timer=null, unitTimer=null;
-/* Unit cycling (m² <-> sq ft): each unit holds for 3s, then swaps instantly
-   (no CSS transition — see .unit .u below) to the other unit. */
-function startUnit(){
-  const el=document.getElementById('unit'); if(!el) return;
-  const [a,b]=el.querySelectorAll('.u');
-  unitTimer=setInterval(()=>{ a.classList.toggle('on'); b.classList.toggle('on'); },3000);
-}
-
+let timer=null;
 function render(){
-  clearTimeout(timer); clearInterval(unitTimer);
+  clearTimeout(timer);
   const id=cur(), n=N[id];
   trackStep(id);
   const done=S.hist.filter(h=>N[h].type!=='router').length-1;
@@ -700,7 +699,6 @@ function render(){
   updateTools();
   if (n.type==='end'){ firePixel(); autoDownload(); collapseHistoryDepth(); }
   else syncHistoryDepth();
-  startUnit();
   const first=stage.querySelector('input.inp');
   if (first) first.focus({preventScroll:true});
 }

@@ -537,11 +537,18 @@ function slotsFor(iso, now=new Date()){
   return SLOTS.filter(x=>x.end>h);
 }
 function dayOptions(now=new Date()){
-  const mk=(add,name)=>{ const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+add); const sh=shortDate(d); return {iso:ymd(d), short:sh, label:name?`${name} · ${sh}`:sh}; };
+  // Sunday is never offered as a call day — skip ahead to Monday instead.
+  const mk=(add,name)=>{ let d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+add); if (d.getDay()===0) d=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1); const sh=shortDate(d); return {iso:ymd(d), short:sh, label:name?`${name} · ${sh}`:sh}; };
   const hoursLeft=24-(now.getHours()+now.getMinutes()/60);
-  const out=[], today=mk(0,'Today');
-  if (hoursLeft>=5 && slotsFor(today.iso,now).length) out.push(today);
-  out.push(mk(1,'Tomorrow'), mk(2,''), {iso:'next-week', short:'next week', label:'Next week'});
+  const out=[];
+  if (now.getDay()!==0){
+    const today=mk(0,'Today');
+    if (hoursLeft>=5 && slotsFor(today.iso,now).length) out.push(today);
+  }
+  const day1=mk(1,'Tomorrow'), day2=mk(2,'');
+  out.push(day1);
+  if (day2.iso!==day1.iso) out.push(day2);
+  out.push({iso:'next-week', short:'next week', label:'Next week'});
   return out;
 }
 const onDay=()=> S.f.dayISO==='next-week' ? 'during <b>next week</b>' : `on <b>${esc(S.f.dayShort)}</b>`;
